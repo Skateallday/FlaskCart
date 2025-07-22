@@ -1,2 +1,2 @@
 # React-Flask
-A prototype for my Honours project, this is a full stack web project that uses Python Flask and React.js combined with webpack and node package manager.
+A Flask/React project for keeping an eye on shopping stuff
