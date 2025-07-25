@@ -3,11 +3,19 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Searchbar from './searchbar';
+import DataDisplay from './getinventory';
+import DisplayGrid from './displaygrid';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <App />
+
+    <Searchbar />
+    <DisplayGrid />
+    <DataDisplay />
+
   </React.StrictMode>
 );
 

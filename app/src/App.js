@@ -1,6 +1,6 @@
 // src/App.js
 import React from "react";
-import DataDisplay from "./datadisplay";
+import DataDisplay from "./getinventory";
 
 function App() {
   return (
