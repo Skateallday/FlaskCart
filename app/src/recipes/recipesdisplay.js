@@ -10,4 +10,4 @@ function RecipesPage() {
   );
 }
 
-export default RecipesPage;3
+export default RecipesPage;
