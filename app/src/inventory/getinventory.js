@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function inventoryDisplay() {
+function InventoryDisplay() {
   const [pantry, setPantry] = useState([]);
 
   useEffect(() => {
@@ -83,4 +83,4 @@ function inventoryDisplay() {
   );
 }
 
-export default inventoryDisplay;
+export default InventoryDisplay;

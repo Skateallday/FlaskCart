@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import DataDisplay from './inventory/getinventory';
+import InventoryDisplay from './inventory/getinventory';
 import DisplayGrid from './gird/displaygrid';
 import Header from './header/header';
 import Footer from './footer/footer';
@@ -15,7 +14,7 @@ root.render(
     <App />
 
     <DisplayGrid />
-    <DataDisplay />
+    <InventoryDisplay />
     <Footer />
 
   </React.StrictMode>
