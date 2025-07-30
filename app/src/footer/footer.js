@@ -1,10 +1,10 @@
-import React from 'react';
+
 
 
 function Footer() {
     
     return (
-        <p>footer</p>
+        <p>Made with ❤️ by <a href="https://www.jamfish.co.uk">Jamfish</a></p>
     );
 }
 

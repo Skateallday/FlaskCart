@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
+import { BASE_URL } from "../config/config";
+
 
 function GetRecipes() {
   const [pantry, setPantry] = useState([]);
 
   useEffect(() => {
-    fetch("https://skateallday.pythonanywhere.com/api/pantry")
+    fetch(`${BASE_URL}/api/pantry`)
       .then((res) => res.json())
       .then((data) => setPantry(data))
       .catch((err) => console.error("Failed to fetch pantry:", err));
   }, []);
 
   const handleAddToStock = (item) => {
-    fetch(`https://skateallday.pythonanywhere.com/api/pantry/${item.ROWID}/add`, {
+    fetch(`${BASE_URL}/api/pantry/${item.ROWID}/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: 1 }),
@@ -26,7 +28,7 @@ function GetRecipes() {
   }
 
   const handleTakeawayFromStock = (item) => {
-    fetch(`https://skateallday.pythonanywhere.com/api/pantry/${item.ROWID}/remove`, {
+    fetch(`${BASE_URL}/api/pantry/${item.ROWID}/remove`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: 1 }),
