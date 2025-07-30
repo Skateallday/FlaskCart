@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://skateallday.pythonanywhere.com";
 
 export async function submitText(text) {
   const res = await fetch(`${BASE_URL}/api/parse`, {

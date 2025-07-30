@@ -4,14 +4,14 @@ function InventoryDisplay() {
   const [pantry, setPantry] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/pantry")
+    fetch("https://skateallday.pythonanywhere.com/api/pantry")
       .then((res) => res.json())
       .then((data) => setPantry(data))
       .catch((err) => console.error("Failed to fetch pantry:", err));
   }, []);
 
   const handleAddToStock = (item) => {
-    fetch(`http://localhost:5000/api/pantry/${item.ROWID}/add`, {
+    fetch(`https://skateallday.pythonanywhere.com/api/pantry/${item.ROWID}/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: 1 }),
@@ -26,7 +26,7 @@ function InventoryDisplay() {
   }
 
   const handleTakeawayFromStock = (item) => {
-    fetch(`http://localhost:5000/api/pantry/${item.ROWID}/remove`, {
+    fetch(`https://skateallday.pythonanywhere.com/api/pantry/${item.ROWID}/remove`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: 1 }),

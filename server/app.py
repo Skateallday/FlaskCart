@@ -1,7 +1,7 @@
 import random
 import os
 import sqlite3
-from flask import Flask, render_template, request, session, g, redirect, flash, url_for, jsonify
+from flask import Flask, render_template, request, session, g, redirect, flash, url_for, jsonify, send_from_directory
 from flask_bcrypt import Bcrypt, generate_password_hash, check_password_hash
 from config import Config
 from flask_cors import CORS
@@ -9,7 +9,7 @@ from flask_wtf.csrf import CSRFProtect, CSRFError
 
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 bcrypt = Bcrypt(app)
 
 CORS(app, origins=["http://localhost:3000"])
@@ -26,6 +26,18 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    file_path = os.path.join(app.static_folder, path)
+    if os.path.exists(file_path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
+
 @app.route("/api/pantry", methods=["GET"])
 def get_pantry():
     conn = get_db_connection()
@@ -41,9 +53,6 @@ def before_request():
         if 'username' in session:
                 g.username = session['username']
 
-@app.route('/')
-def index():
-        return render_template('index.html')
 
 @app.route('/home')
 def home():
