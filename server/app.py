@@ -47,6 +47,15 @@ def get_pantry():
     pantry_list = [dict(row) for row in rows]
     return jsonify(pantry_list)
 
+@app.route("/api/recipes", methods=["GET"])
+def get_recipes():
+    conn = get_db_connection()
+    rows = conn.execute("SELECT ROWID, * FROM Recipes").fetchall()
+    conn.close()
+
+    recipes_list = [dict(row) for row in rows]
+    return jsonify(recipes_list)
+
 @app.before_request
 def before_request():
         g.username = None

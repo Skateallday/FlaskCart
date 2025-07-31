@@ -6,14 +6,14 @@ function GetRecipes() {
   const [pantry, setPantry] = useState([]);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/pantry`)
+    fetch(`${BASE_URL}/api/recipes`)
       .then((res) => res.json())
       .then((data) => setPantry(data))
       .catch((err) => console.error("Failed to fetch pantry:", err));
   }, []);
 
   const handleAddToStock = (item) => {
-    fetch(`${BASE_URL}/api/pantry/${item.ROWID}/add`, {
+    fetch(`${BASE_URL}/api/recipes/${item.ROWID}/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: 1 }),
@@ -28,7 +28,7 @@ function GetRecipes() {
   }
 
   const handleTakeawayFromStock = (item) => {
-    fetch(`${BASE_URL}/api/pantry/${item.ROWID}/remove`, {
+    fetch(`${BASE_URL}/api/recipes/${item.ROWID}/remove`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: 1 }),
@@ -44,7 +44,7 @@ function GetRecipes() {
 
   return (
     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>Pantry Items</h1>
+      <h1>Recipes</h1>
       <table border="1" cellPadding="8" style={{ borderCollapse: "collapse" }}>
         <thead>
           <tr>
