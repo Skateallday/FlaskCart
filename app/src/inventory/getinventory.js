@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "../config/config";
 
 
-function InventoryDisplay() {
+function InventoryDisplay({ filter }) {
   const [pantry, setPantry] = useState([]);
 
   useEffect(() => {
@@ -42,6 +42,8 @@ function InventoryDisplay() {
       .catch((err) => console.error("Failed to remove from stock:", err));
   };
 
+  const filteredPantry = filter && filter !== 'null' ? pantry.filter(item => item.foodType === filter) : pantry;
+
   return (
     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
       <h1 className="text-3xl font-bold underline">
@@ -59,7 +61,7 @@ Pantry Items</h1>
           </tr>
         </thead>
         <tbody>
-          {pantry.map((item) => (
+          {filteredPantry.map((item) => (
             <tr key={item.ROWID}>
               <td className="border border-gray-300">{item.foodName}</td>
               <td className="border border-gray-300">{item.foodType}</td>

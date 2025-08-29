@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import InventoryDisplay from './inventory/getinventory';
-import DisplayGrid from './gird/displaygrid';
 import Header from './header/header';
 import Footer from './footer/footer';
 
@@ -14,8 +12,6 @@ root.render(
     <div className="max-w-7xl mx-auto px-4 bg-gray-100">
       <App />
 
-    <DisplayGrid />
-    <InventoryDisplay />
     </div>
     
     <Footer />
