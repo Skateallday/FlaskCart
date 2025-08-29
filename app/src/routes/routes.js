@@ -1,24 +1,17 @@
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Home from './Home';
+import { BrowserRouter as Routes, Route } from 'react-router-dom';
 import RecipesPage from '../recipes/recipesdisplay';
-import Login from '../login/login';
 
 
 
-function Routes() {
+function Router() {
     
     return (
-        <Router>
-            <Switch>
-                <Route path="/" exact component={Home} />
-                <Route path="/recipes" component={RecipesPage} />
-                <Route path="/displaygrid" component={DisplayGrid} />
-                <Route path="/login" component={Login} />
-            </Switch>
-        </Router>
+        <div className="text-center text-white p-4">
+            <h2 className="text-2xl font-bold">Navigation</h2>
+        </div>
     );
 }
 
     
 
-export default Routes;
+export default Router;

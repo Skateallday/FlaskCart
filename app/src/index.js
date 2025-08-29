@@ -11,10 +11,13 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Header />
-    <App />
+    <div className="max-w-7xl mx-auto px-4 bg-gray-100">
+      <App />
 
     <DisplayGrid />
     <InventoryDisplay />
+    </div>
+    
     <Footer />
 
   </React.StrictMode>
