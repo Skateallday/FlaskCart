@@ -5,7 +5,7 @@ function RecipesPage() {
   return (
     <div>
       <h1>Recipes</h1>
-      <Recipes />
+      <p>We'll get there, chat!</p>
     </div>
   );
 }

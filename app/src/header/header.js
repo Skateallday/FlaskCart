@@ -1,14 +1,33 @@
-import Routes from '../routes/routes';
-
+import {Link, NavLink} from 'react-router-dom';
 
 function Header() {
+
+    const navLinks = [
+        { to:'/', label: 'Home' },
+        { to:'/about', label: 'About' },
+        { to:'/recipes', label: 'Recipes' },
+        { to:'/inventory', label: 'Inventory' },
+    ]
     
     return (
-        <header className='bg-blue-500 pt-5 pb-5'>
-            <h2 className='text-white text-3xltext-center'>FlaskCart - A simple inventory management system</h2>
-            <Routes />
+        
+        <header className='bg-teal-600 text-white pt-5 pb-5'>
+             <nav className='flex gap-4 text-xl justify-center '>
+                    {navLinks.map((link) => (
+                        <NavLink
+                            key={link.to}
+                            to={link.to}
+                            className={({ isActive }) =>
+                            `transition-colors hover:underline ${
+                                isActive ? 'font-bold underline' : ''
+                            }`}
+                    >
+                        {link.label}
+                    </NavLink>))}
+                </nav>
            
         </header>
+        
     );
 }
 
