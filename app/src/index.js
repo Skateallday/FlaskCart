@@ -1,16 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Header from './header/header';
 import Footer from './footer/footer';
+import  Routes  from './routes/routes';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Header />
-    <div className="max-w-7xl mx-auto px-4 bg-gray-100">
-      <App />
+    <div className="max-w-7xl mx-auto  bg-gray-100">
+          <Routes />
+
 
     </div>
     

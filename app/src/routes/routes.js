@@ -1,17 +1,30 @@
-import { BrowserRouter as Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import App from '../App';
+import  About  from '../about/about';
 import RecipesPage from '../recipes/recipesdisplay';
+import InventoryDisplay from '../inventory/getinventory';
+import Header from '../header/header';  
 
 
 
-function Router() {
+function Routers() {
     
     return (
-        <div className="text-center text-white p-4">
-            <h2 className="text-2xl font-bold">Navigation</h2>
-        </div>
+        
+            <Router>
+                <Header />
+               
+                <Routes>
+                    <Route path="/" element={<App />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/recipes" element={<RecipesPage />} />
+                    <Route path="/inventory" element={<InventoryDisplay />} />
+                </Routes>
+            </Router>
+        
     );
 }
 
     
 
-export default Router;
+export default Routers;

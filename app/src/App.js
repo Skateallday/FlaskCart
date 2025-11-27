@@ -1,5 +1,5 @@
 
-import './app.css'; 
+import './App.css'; 
 import React from 'react';
 import InventoryDisplay from './inventory/getinventory';
 import DisplayGrid from './gird/displaygrid';
