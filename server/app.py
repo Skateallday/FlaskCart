@@ -47,6 +47,22 @@ def get_pantry():
     pantry_list = [dict(row) for row in rows]
     return jsonify(pantry_list)
 
+@app.route("/api/pantry/<id>/add", methods=["POST"])
+def updateInventAdd(id):
+    conn = get_db_connection()
+    conn.execute("UPDATE stock SET value = value + 1 WHERE id = ?", id)
+    conn.commit()
+    conn.close()
+    return {"status":"okay", "id": id}
+
+@app.route("/api/pantry/<ID>/remove", methods=["GET", "POST"])
+def updateInventRemove(id):
+    conn = get_db_connection()
+    conn.execute("UPDATE stock SET value = value - 1 WHERE id = ?", id)
+    conn.commit()
+    conn.close()
+    return {"status":"okay", "id": id}
+
 @app.route("/api/recipes", methods=["GET"])
 def get_recipes():
     conn = get_db_connection()
@@ -86,10 +102,6 @@ def get_test():
     testing_list = rows
     return random.choice(testing_list)
 
-
-@app.route('/writing')
-def writing():
-    return render_template('writing.html')
 
 if __name__ == '__main__':
       app.run('localhost', 5000, debug=True)
