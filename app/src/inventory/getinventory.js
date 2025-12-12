@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../config/config";
-
+import AddButton  from './addinvent';
+import RemoveButton from './removeinvent.js';
 
 function InventoryDisplay({ filter }) {
+
   const [pantry, setPantry] = useState([]);
 
   useEffect(() => {
@@ -12,35 +14,21 @@ function InventoryDisplay({ filter }) {
       .catch((err) => console.error("Failed to fetch pantry:", err));
   }, []);
 
-  const handleAddToStock = (item) => {
-    fetch(`${BASE_URL}/api/pantry/${item.ROWID}/add`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity: 1 }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setPantry((prev) =>
-          prev.map((i) => (i.ROWID === item.ROWID ? { ...i, stock: i.stock + 1 } : i))
-        );
-      })
-      .catch((err) => console.error("Failed to add to stock:", err));
-  }
+const addStock = (foodName) => {
+  setPantry(prev =>
+    prev.map(i =>
+      i.foodName === foodName ? { ...i, stock: Number(i.stock) + 1 } : i
+    )
+  );
+};
 
-  const handleTakeawayFromStock = (item) => {
-    fetch(`${BASE_URL}/api/pantry/${item.ROWID}/remove`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity: 1 }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setPantry((prev) =>
-          prev.map((i) => (i.ROWID === item.ROWID ? { ...i, stock: i.stock - 1 } : i))
-        );
-      })
-      .catch((err) => console.error("Failed to remove from stock:", err));
-  };
+const removeStock = (foodName) => {
+  setPantry(prev =>
+    prev.map(i =>
+      i.foodName === foodName ? { ...i, stock: Number(i.stock) - 1 } : i
+    )
+  );
+};
 
   const filteredPantry = filter && filter !== 'null' ? pantry.filter(item => item.foodType === filter) : pantry;
 
@@ -70,10 +58,10 @@ function InventoryDisplay({ filter }) {
               <td className="border border-gray-300">{item.servingSize}</td>
               <td className="border border-gray-300">{item.stock}</td>
               <td className="border border-gray-300">
-                <button className="bg-teal-600 w-full text-white font-bold px-4 py-2 rounded" onClick={() => handleAddToStock(item)}>Add</button>
+                <AddButton item={item} onUpdate={addStock}>Add</AddButton>
               </td>
               <td className="border border-gray-300">
-                <button className="bg-red-500 w-full font-bold text-white px-4 py-2 rounded" onClick={() => handleTakeawayFromStock(item)}>Remove</button>
+                <RemoveButton item={item} onUpdate={removeStock}>Remove</RemoveButton>
               </td>
             </tr>
           ))}

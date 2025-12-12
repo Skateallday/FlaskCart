@@ -5,14 +5,14 @@ from flask import Flask, render_template, request, session, g, redirect, flash, 
 from flask_bcrypt import Bcrypt, generate_password_hash, check_password_hash
 from config import Config
 from flask_cors import CORS
-from flask_wtf.csrf import CSRFProtect, CSRFError
+from flask_wtf.csrf import CSRFProtect, CSRFError, generate_csrf
 
 
 
 app = Flask(__name__, static_folder='static')
 bcrypt = Bcrypt(app)
 
-CORS(app, origins=["http://localhost:3000"])
+CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 
 DB_PATH = "foods.db"
 
@@ -26,6 +26,11 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+@app.after_request
+def inject_csrf_token(response):
+     response.set_cookie("csrf_token", generate_csrf())
+     return response
+
 @app.route('/')
 def index():
     return send_from_directory(app.static_folder, 'index.html')
@@ -38,7 +43,7 @@ def serve_static(path):
     else:
         return send_from_directory(app.static_folder, 'index.html')
 
-@app.route("/api/pantry", methods=["GET"])
+@app.route("/api/pantry", methods=["GET", "POST"])
 def get_pantry():
     conn = get_db_connection()
     rows = conn.execute("SELECT ROWID, * FROM FoodItems").fetchall()
@@ -46,6 +51,48 @@ def get_pantry():
 
     pantry_list = [dict(row) for row in rows]
     return jsonify(pantry_list)
+
+@app.route("/api/pantry/<item>/add", methods=["GET", "POST"])
+def add_to_invent(item):
+    print(item)
+    if request.method == 'POST':
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        try:
+             cursor.execute("UPDATE FoodItems SET stock = stock + 1 WHERE foodName = ?", (item,))
+
+             conn.commit()
+        except sqlite3.Error as e:
+             print(f"A database error has happened: {e}")
+        finally:
+             conn.close()
+        # Handle POST request logic here (e.g., add item to pantry)
+        return {"message": "Item added successfully"}, 200
+    else:
+        # Handle GET request logic here (if applicable)
+        return {"message": "GET request for add endpoint"}, 200
+
+@app.route("/api/pantry/<item>/remove", methods=["GET", "POST"])
+def remove_from_invent(item):
+    print(item)
+    if request.method == 'POST':
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        try:
+             cursor.execute("UPDATE FoodItems SET stock = stock - 1 WHERE foodName = ?", (item,))
+
+             conn.commit()
+        except sqlite3.Error as e:
+             print(f"A database error has happened: {e}")
+        finally:
+             conn.close()
+        # Handle POST request logic here (e.g., add item to pantry)
+        return {"message": "Item added successfully"}, 200
+    else:
+        # Handle GET request logic here (if applicable)
+        return {"message": "GET request for add endpoint"}, 200
 
 @app.route("/api/recipes", methods=["GET"])
 def get_recipes():
@@ -63,33 +110,6 @@ def before_request():
                 g.username = session['username']
 
 
-@app.route('/home')
-def home():
-    return render_template('index.html')
-
-
-def post_test():
-    conn =sqlite3.connect('testData.db')
-    conn.row_factory = lambda cursor, row: row[0]
-    c = conn.cursor()
-    c.execute("select greeting from testData")
-    rows = c.fetchall()
-    testing_list = rows
-    return random.choice(testing_list)
-
-def get_test():
-    conn =sqlite3.connect('testData.db')
-    conn.row_factory = lambda cursor, row: row[0]
-    c = conn.cursor()
-    c.execute("select greeting from testData")
-    rows = c.fetchall()
-    testing_list = rows
-    return random.choice(testing_list)
-
-
-@app.route('/writing')
-def writing():
-    return render_template('writing.html')
 
 if __name__ == '__main__':
       app.run('localhost', 5000, debug=True)
