@@ -3,7 +3,7 @@ import os
 import sqlite3
 from flask import Flask, render_template, request, session, g, redirect, flash, url_for, jsonify, send_from_directory
 from flask_bcrypt import Bcrypt, generate_password_hash, check_password_hash
-from config import Config
+from .config import Config
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect, CSRFError, generate_csrf
 
