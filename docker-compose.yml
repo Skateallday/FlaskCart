@@ -21,3 +21,11 @@ services:
       - BROWSER=none
     depends_on:
       - server
+  
+  app-test:
+    build: ./app
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm test -- --watchAll=false
