@@ -1,23 +1,31 @@
-
-import './App.css'; 
+import './App.css';
 import React from 'react';
-import InventoryDisplay from './inventory/getinventory';
-import DisplayGrid from './gird/displaygrid';
-
+import Header from './header/header';
+import Footer from './footer/footer';
+import Sidebar from './sidebar/sidebar';
+import AppRoutes from './routes/routes'; // rename the export too
 import { ToastContainer } from 'react-toastify';
 
-
 function App() {
+  const [filter, setFilter] = React.useState(null);
 
-  const [filter, setFilter] = React.useState('null');
   return (
-    <div>
-      <ToastContainer/>
-      <h1 className="text-4xl font-bold text-center pt-8 pb-8">Welcome to FlaskCart 🍓</h1>
+    <div class="app">
+      <ToastContainer />
 
+      <Header />
 
-    <DisplayGrid onFilterChange={setFilter} />
-    <InventoryDisplay filter={filter} />
+      <div className="flex">
+        <div className="w-25 flex-none">
+          <Sidebar onFilterChange={setFilter} />
+        </div>
+
+        <div className="w-75 flex-auto">
+          <AppRoutes filter={filter} />
+        </div>
+      </div>
+
+      <Footer />
     </div>
   );
 }

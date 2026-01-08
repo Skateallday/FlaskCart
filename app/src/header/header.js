@@ -1,5 +1,4 @@
-import {Link, NavLink} from 'react-router-dom';
-
+import {NavLink} from 'react-router-dom';
 function Header() {
 
     const navLinks = [
@@ -10,7 +9,6 @@ function Header() {
     ]
     
     return (
-        
         <header className='bg-teal-600 text-white pt-5 pb-5'>
              <nav className='flex gap-4 text-xl justify-center '>
                     {navLinks.map((link) => (
@@ -25,9 +23,10 @@ function Header() {
                         {link.label}
                     </NavLink>))}
                 </nav>
+                
+      <h1 className="text-4xl font-bold text-center pt-8 pb-8">Welcome to FlaskCart 🍓</h1>
            
         </header>
-        
     );
 }
 

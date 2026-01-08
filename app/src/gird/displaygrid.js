@@ -6,7 +6,7 @@ function DisplayGrid({ onFilterChange }) {
     { id: 'Fruit', label: 'Fruits' },
     { id: 'Grain', label: 'Dry Store' },
     { id: 'Oil/Condiment', label: 'Condiments and Oils' },
-    { id: 'Baked Goods', label: 'Bakery' },
+    { id: 'Baked Good', label: 'Bakery' },
     { id: 'Household', label: 'Household' },
   ];
 

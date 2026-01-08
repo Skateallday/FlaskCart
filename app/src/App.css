@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-.App {
-  text-align: center;
+.app {
+  min-height: 100vh;
+  padding-bottom: 5rem
 }
 
 .App-logo {
