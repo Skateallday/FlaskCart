@@ -9,8 +9,8 @@ function Header() {
     ]
     
     return (
-        <header className='bg-teal-600 text-white pt-5 pb-5'>
-             <nav className='flex gap-4 text-xl justify-center '>
+        <header className='relative'>
+             <nav className='bg-teal-600 w-full text-white py-5 flex gap-4 text-xl justify-center mb-4 sticky top-0'>
                     {navLinks.map((link) => (
                         <NavLink
                             key={link.to}
@@ -24,7 +24,6 @@ function Header() {
                     </NavLink>))}
                 </nav>
                 
-      <h1 className="text-4xl font-bold text-center pt-8 pb-8">Welcome to FlaskCart 🍓</h1>
            
         </header>
     );
