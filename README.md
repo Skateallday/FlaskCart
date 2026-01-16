@@ -28,7 +28,6 @@ This project was created as a way to explore and practice full‑stack developme
 ## Features
 
 - REST API for product data
-- Full shopping cart functionality
 - Separation of backend API and frontend UI
 - Example of a full‑stack workflow
 
@@ -41,7 +40,7 @@ This project was created as a way to explore and practice full‑stack developme
 ### Prerequisites
 
 Make sure you have the following installed:
-- Python 3.x
+- Python 3.1
 - Node.js and npm (or yarn)
 
 ### Backend Setup
