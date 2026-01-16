@@ -10,17 +10,17 @@ function App() {
   const [filter, setFilter] = React.useState(null);
 
   return (
-    <div class="app">
+    <div className="app">
       <ToastContainer />
 
       <Header />
 
-      <div className="flex">
-        <div className="w-25 flex-none">
+      <div className="flex flex-row">
+        <div className="w-[25%] flex-none">
           <Sidebar onFilterChange={setFilter} />
         </div>
 
-        <div className="w-75 flex-auto">
+        <div className="w-[75%] flex-auto">
           <AppRoutes filter={filter} />
         </div>
       </div>

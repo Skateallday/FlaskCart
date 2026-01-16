@@ -53,7 +53,7 @@ const removeStock = (foodName) => {
         </thead>
         <tbody>
           {filteredPantry.map((item) => (
-            <tr key={item.ROWID} className="hover:bg-yellow-100 border-b-2">
+            <tr key={item.foodName} className="hover:bg-yellow-100 border-b-2">
               <td className="">{item.foodName}</td>
               <td className="">{item.foodType}</td>
               <td className="">{item.Calories}</td>
