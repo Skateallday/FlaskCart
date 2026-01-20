@@ -15,7 +15,7 @@ function InventoryDisplay() {
   const [pantry, setPantry] = useState([]);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/pantry`)
+    fetch(`/api/pantry`)
       .then((res) => res.json())
       .then((data) => setPantry(data))
       .catch((err) => console.error("Failed to fetch pantry:", err));
