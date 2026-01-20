@@ -1,17 +1,30 @@
-import React from 'react';
+
+import { useSearch } from "../context/searchContext";
+
+function Searchbar( ) {
 
 
-function Searchbar() {
+  /* Imports useSearch, creates a handleChange to track users typing in input field,
+   have used pipe characters in the value field to create a controlled input field,
+   onChange triggers each time a character is pressed.
+   */
 
-function search(formData) {
-    const query = formData.get("query");
-    alert(`You searched for '${query}'`);
+  const { search , setSearch } = useSearch();
+
+  const handleChange = (event) =>{
+    setSearch(event.target.value)
   }
+  
   return (
-    <form action={search}>
-      <input name="query" placeholder="Apples, bananas, orange..." className="border mx-2 rounded p-2" />
-      <button type="submit" className="bg-teal-600 text-white  px-4 py-2 rounded">Search</button>
-    </form>
+
+      <input 
+        name="query" 
+        placeholder="Apples, bananas, orange..." 
+        className="border mx-2 rounded p-2" 
+        value={search || ''}
+        onChange={handleChange}
+      />
+
   );
 }
 

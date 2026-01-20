@@ -8,7 +8,6 @@ import { FilterProvider } from './context/filterContext';
 import { ToastContainer } from 'react-toastify';
 
 function App() {
-  const [filter, setFilter] = React.useState(null);
 
   return (
     <FilterProvider>
@@ -19,11 +18,11 @@ function App() {
 
       <div className="flex flex-row">
         <div className="w-[25%] flex-none">
-          <Sidebar onFilterChange={setFilter} />
+          <Sidebar/>
         </div>
 
         <div className="w-[75%] flex-auto">
-          <AppRoutes filter={filter} />
+          <AppRoutes />
         </div>
       </div>
 

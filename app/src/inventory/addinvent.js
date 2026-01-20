@@ -14,7 +14,7 @@ export default function AddButton({ item, onUpdate }) {
 
   return (
     <button
-      className="bg-teal-600 w-full text-white font-bold px-4 py-2 rounded"
+      className="bg-teal-600 w-full text-black font-bold px-4 py-2 rounded"
       onClick={handleClick}
     >
       Add

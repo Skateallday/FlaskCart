@@ -4,11 +4,13 @@ import AddButton  from './addinvent';
 import RemoveButton from './removeinvent.js';
 import Searchbar from '../search/searchbar.js'
 import { useFilter } from "../context/filterContext.js";
+import { useSearch } from "../context/searchContext.js"
 
 function InventoryDisplay() {
 
   const { filter } = useFilter();
-  
+  const { search } = useSearch();
+
 
   const [pantry, setPantry] = useState([]);
 
@@ -37,12 +39,14 @@ const removeStock = (foodName) => {
 
   const filteredPantry = filter && filter !== 'null' ? pantry.filter(item => item.foodType === filter) : pantry;
 
+  const searchPantry = search && search !== 'null' ? pantry.filter(item => item.foodName === search) : pantry;
+
   return (
     <div className="p-4 w-full">
       <h2 className="text-3xl py-4 text-left">
         Pantry Items
       </h2><div className="bg-white p-4 rounded">
-      <Searchbar/>
+      <Searchbar />
       <table className="border-collapse my-4 w-full table-auto border-gray-300" cellPadding="8">
         <thead>
           <tr className="bg-gray-100 py-4">
@@ -56,7 +60,7 @@ const removeStock = (foodName) => {
           </tr>
         </thead>
         <tbody>
-          {filteredPantry.map((item) => (
+          {searchPantry.map((item) => (
             <tr key={item.foodName} className="hover:bg-yellow-100 border-b-2">
               <td className="">{item.foodName}</td>
               <td className="">{item.foodType}</td>

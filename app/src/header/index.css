@@ -13,3 +13,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.flaskcartlogo{
+  position: absolute;
+  height: 60px;
+  width: auto;
+  left: 15px;
+  top: 5px;
+}

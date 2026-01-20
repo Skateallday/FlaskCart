@@ -17,7 +17,7 @@ function Sidebar() {
 
   return (
     <aside className="h-full border-r-2 relative">
-    <div className="border-right text-center text-white font-bold gap-4 sticky top-0">
+    <div className="border-right text-center text-black font-bold gap-4 sticky top-0">
       
       <h2 className="w-full p-4 gap-4 text-left text-black border-b-2">Navigation</h2>
       {categories.map((cat) => (
