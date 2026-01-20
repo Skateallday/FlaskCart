@@ -5,12 +5,12 @@ import About from '../about/about';
 import RecipesPage from '../recipes/recipesdisplay';
 import InventoryDisplay from '../inventory/getinventory';
 
-export default function AppRoutes({ filter }) {
+export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/recipes" element={<RecipesPage filter={filter} />} />
+      <Route path="/" element={<Home/>} />
+      <Route path="/about" element={<About   />} />
+      <Route path="/recipes" element={<RecipesPage />} />
       <Route path="/inventory" element={<InventoryDisplay />} />
     </Routes>
   );

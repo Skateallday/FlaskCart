@@ -3,8 +3,12 @@ import { BASE_URL } from "../config/config";
 import AddButton  from './addinvent';
 import RemoveButton from './removeinvent.js';
 import Searchbar from '../search/searchbar.js'
+import { useFilter } from "../context/filterContext.js";
 
-function InventoryDisplay({ filter }) {
+function InventoryDisplay() {
+
+  const { filter } = useFilter();
+  
 
   const [pantry, setPantry] = useState([]);
 

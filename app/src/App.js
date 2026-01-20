@@ -3,13 +3,15 @@ import React from 'react';
 import Header from './header/header';
 import Footer from './footer/footer';
 import Sidebar from './sidebar/sidebar';
-import AppRoutes from './routes/routes'; // rename the export too
+import AppRoutes from './routes/routes';
+import { FilterProvider } from './context/filterContext';
 import { ToastContainer } from 'react-toastify';
 
 function App() {
   const [filter, setFilter] = React.useState(null);
 
   return (
+    <FilterProvider>
     <div className="app">
       <ToastContainer />
 
@@ -27,6 +29,7 @@ function App() {
 
       <Footer />
     </div>
+    </FilterProvider>
   );
 }
 
