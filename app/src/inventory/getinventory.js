@@ -8,8 +8,8 @@ import { useSearch } from "../context/searchContext.js"
 
 function InventoryDisplay() {
 
-  const { filter } = useFilter();
-  const { search } = useSearch();
+  const { filter, setFilter } = useFilter();
+  const { search, setSearch } = useSearch();
 
 
   const [pantry, setPantry] = useState([]);
@@ -37,16 +37,46 @@ const removeStock = (foodName) => {
   );
 };
 
-  const filteredPantry = filter && filter !== 'null' ? pantry.filter(item => item.foodType === filter) : pantry;
+  /* Filter and Search 
+  If there is a filter, and the filter isn't set to null, then filter the pantry items 
+  where the foodtype is the same as the filter, otherwise display everything
+  
+  We remove any spaces and turn the search query into lower case. The start of the process is the same as the filter,
+  but rather than look for a complete match, we're just looking to see if it's close enough. Not a full fuzzy 
+  search, but it works for this project
+  
+  */
+ const cleanedSearch = search?.trim().toLowerCase();
 
-  const searchPantry = search && search !== 'null' ? pantry.filter(item => item.foodName === search) : pantry;
+ let pantryState = pantry;
+
+  if (cleanedSearch && cleanedSearch !== 'null'){
+
+       pantryState = pantry.filter(item => item.foodName.toLowerCase().includes(cleanedSearch))
+      }
+
+  else if( filter && filter !== 'null' ){
+
+     pantryState = pantry.filter(item => item.foodType === filter)
+    }      
+
+  else {
+    pantryState = pantry
+  }
+
 
   return (
     <div className="p-4 w-full">
       <h2 className="text-3xl py-4 text-left">
         Pantry Items
       </h2><div className="bg-white p-4 rounded">
-      <Searchbar />
+      <Searchbar /> 
+
+      <button 
+        className="ml-4 p-2 bg-teal-600 text-black rounded hover:bg-teal-700 transition" 
+        onClick={() => {setFilter(null); setSearch('')}}>Reset
+      </button>
+
       <table className="border-collapse my-4 w-full table-auto border-gray-300" cellPadding="8">
         <thead>
           <tr className="bg-gray-100 py-4">
@@ -60,7 +90,7 @@ const removeStock = (foodName) => {
           </tr>
         </thead>
         <tbody>
-          {searchPantry.map((item) => (
+          {pantryState.map((item) => (
             <tr key={item.foodName} className="hover:bg-yellow-100 border-b-2">
               <td className="">{item.foodName}</td>
               <td className="">{item.foodType}</td>
