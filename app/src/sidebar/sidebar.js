@@ -18,7 +18,7 @@ function Sidebar() {
   return (
     <aside className="h-full border-r-2 relative">
     <div className="border-right text-center text-black font-bold gap-4 sticky top-0">
-      <form aria-labelledby="filter-items">
+
       <h2 className="hidden md:block w-full p-4 gap-4 text-left text-black border-b-2">Filter items</h2>
       {categories.map((cat) => (
         
@@ -26,7 +26,7 @@ function Sidebar() {
           role="tab"
             key={cat.id}
             id={cat.id}
-            className="border border-solid rounded-md md:border-0 border-gray-300 hover:bg-gray-300 m-2 md:m-4 md:w-full p-2 md:p-4 gap-4 rounded-lg text-left text-black"
+            className="border border-solid rounded-md md:border-0 border-gray-300 hover:bg-gray-300 md:rounded-none m-2 md:m-0 md:w-full p-2 md:p-4 gap-4 rounded-lg text-left text-black"
             onClick={() => setFilter(cat.id)}>
               <span className="md:mr-2">{cat.emoji}</span>
               <span className="hidden md:block">{cat.label}</span>
@@ -36,12 +36,11 @@ function Sidebar() {
       <button
       
           role="tab"
-        className="md:m-4 md:w-full p-2 md:p-4 gap-4 rounded-lg text-left text-black"
+            className="border border-solid rounded-md md:border-0 border-gray-300 hover:bg-gray-300 md:rounded-none m-2 md:m-0 md:w-full p-2 md:p-4 gap-4 rounded-lg text-left text-black"
         onClick={() => setFilter(null)}
       >
         Show All
       </button>
-      </form>
     </div>
     </aside>
   );
