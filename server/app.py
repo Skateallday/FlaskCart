@@ -14,7 +14,9 @@ bcrypt = Bcrypt(app)
 
 CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 
-DB_PATH = "foods.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "foods.db")
+
 
 app.config.from_object(Config)
 csrf = CSRFProtect(app)
@@ -131,7 +133,6 @@ def get_ingredients():
     conn.close()
 
     return jsonify([dict(row) for row in rows])
-
 
 
 @app.before_request
