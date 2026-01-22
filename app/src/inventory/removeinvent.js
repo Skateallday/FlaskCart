@@ -17,10 +17,10 @@ export default function RemoveButton({ item, onUpdate }) {
 
   return (
     <button
-      className="bg-red-600 w-full text-white font-bold px-4 py-2 rounded"
+      className="bg-red-600 flex  text-white font-bold px-4 py-2 rounded"
       onClick={handleClick}
-    >
-        Remove
+    >- <span className="hidden md:block"> Remove</span>
+      
     </button>
   );
 }

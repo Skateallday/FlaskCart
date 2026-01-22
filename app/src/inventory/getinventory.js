@@ -73,7 +73,7 @@ const removeStock = (foodName) => {
       <Searchbar /> 
 
       <button 
-        className="ml-4 p-2 bg-teal-600 text-black rounded hover:bg-teal-700 transition" 
+        className="ml-4 p-2 bg-teal-600 text-black font-bold rounded hover:bg-teal-700 transition" 
         onClick={() => {setFilter(null); setSearch('')}}>Reset
       </button>
 
@@ -82,8 +82,8 @@ const removeStock = (foodName) => {
           <tr className="bg-gray-100 py-4">
             <th className="border-none text-left">Name</th>
             <th className="border-none text-left">Type</th>
-            <th className="border-none text-left">Calories</th>
-            <th className="border-none text-left">Serving</th>
+            <th className="hidden md:block border-none text-left">Calories</th>
+            <th className="hidden md:block border-none text-left">Serving</th>
             <th className="border-none text-left">Stock</th>
             <th className="border-none text-left">Add</th>
             <th className="border-none text-left">Remove</th>
@@ -94,14 +94,14 @@ const removeStock = (foodName) => {
             <tr key={item.foodName} className="hover:bg-yellow-100 border-b-2">
               <td className="">{item.foodName}</td>
               <td className="">{item.foodType}</td>
-              <td className="">{item.Calories}</td>
-              <td className="">{item.servingSize}</td>
+              <td className="hidden md:block">{item.Calories}</td>
+              <td className="hidden md:block">{item.servingSize}</td>
               <td className="">{item.stock}</td>
               <td className="">
-                <AddButton item={item} onUpdate={addStock}>Add</AddButton>
+                <AddButton item={item} onUpdate={addStock} />
               </td>
               <td className="">
-                <RemoveButton item={item} onUpdate={removeStock}>Remove</RemoveButton>
+                <RemoveButton item={item} onUpdate={removeStock} />
               </td>
             </tr>
           ))}

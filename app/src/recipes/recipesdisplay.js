@@ -1,11 +1,10 @@
-import React from 'react';
-import Recipes from './recipesdisplay';
+import GetRecipes from "./getrecipes";
 
 function RecipesPage() {
   return (
-    <div>
+    <div className="container mx-auto p-4">
       <h1>Recipes</h1>
-      <p>We'll get there, chat!</p>
+      <GetRecipes />
     </div>
   );
 }

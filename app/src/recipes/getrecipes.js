@@ -1,87 +1,33 @@
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../config/config";
+import GetInstructions from "./getInstructions";
+import GetIngredients from "./getingredients";
 
 
 function GetRecipes() {
-  const [pantry, setPantry] = useState([]);
+
+  const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/recipes`)
       .then((res) => res.json())
-      .then((data) => setPantry(data))
-      .catch((err) => console.error("Failed to fetch pantry:", err));
+      .then((data) => setRecipes(data))
+      .catch((err) => console.error("Failed to fetch setRecipes:", err));
   }, []);
 
-  const handleAddToStock = (item) => {
-    fetch(`${BASE_URL}/api/recipes/${item.ROWID}/add`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity: 1 }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setPantry((prev) =>
-          prev.map((i) => (i.ROWID === item.ROWID ? { ...i, stock: i.stock + 1 } : i))
-        );
-      })
-      .catch((err) => console.error("Failed to add to stock:", err));
-  }
 
-  const handleTakeawayFromStock = (item) => {
-    fetch(`${BASE_URL}/api/recipes/${item.ROWID}/remove`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity: 1 }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setPantry((prev) =>
-          prev.map((i) => (i.ROWID === item.ROWID ? { ...i, stock: i.stock - 1 } : i))
-        );
-      })
-      .catch((err) => console.error("Failed to remove from stock:", err));
-  };
-
-  return (
-    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>Recipes</h1>
-      <table border="1" cellPadding="8" style={{ borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Calories</th>
-            <th>Serving</th>
-            <th>Vegan</th>
-            <th>Gluten-Free</th>
-            <th>Date Added</th>
-            <th>Stock</th>
-            <th>Add</th>
-            <th>Remove</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pantry.map((item) => (
-            <tr key={item.ROWID}>
-              <td>{item.foodName}</td>
-              <td>{item.foodType}</td>
-              <td>{item.Calories}</td>
-              <td>{item.servingSize}</td>
-              <td>{item.ifVegan ? "✅" : "❌"}</td>
-              <td>{item.isGlutenFree ? "✅" : "❌"}</td>
-              <td>{item.dateAdded}</td>
-              <td>{item.stock}</td>
-              <td>
-                <button onClick={() => handleAddToStock(item)}>Add</button>
-              </td>
-              <td>
-                <button onClick={() => handleTakeawayFromStock(item)}>Remove</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  return (<>
+  {recipes.map((recipes) =>(
+    <div key={recipes.recipe_id} className="hover:bg-yellow-200 border p-4 mb-4 rounded shadow">
+      <h2 className="text-xl font-bold mb-2">{recipes.recipe_name}</h2>
+      <h3>Ingredients:</h3>
+      <GetIngredients recipe_id={recipes.recipe_id} />
+      <h3>Steps:</h3>
+      <GetInstructions recipe_id={recipes.recipe_id} />
+      <button className="bg-teal-600 flex text-black font-bold px-4 py-2 rounded">Add to list</button>
     </div>
+  ))}
+  </>
   );
 }
 

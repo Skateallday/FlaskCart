@@ -103,6 +103,37 @@ def get_recipes():
     recipes_list = [dict(row) for row in rows]
     return jsonify(recipes_list)
 
+@app.route("/api/instructions", methods=["GET"])
+def get_instructions():
+    conn = get_db_connection()
+    rows = conn.execute("SELECT ROWID, * FROM RecipeInstructions").fetchall()
+    conn.close()
+
+    recipes_instructions = [dict(row) for row in rows]
+    return jsonify(recipes_instructions)
+
+@app.route("/api/ingredients", methods=["GET"])
+def get_ingredients():
+    conn = get_db_connection()
+    rows = conn.execute("""
+        SELECT
+            ri.ROWID AS rowid,
+            ri.recipe_id,
+            ri.fooditem_id,
+            fi.foodName AS fooditem_name,
+            ri.quantity,
+            ri.unit
+        FROM RecipeIngredients ri
+        JOIN FoodItems fi
+          ON fi.ROWID = ri.fooditem_id
+        ORDER BY ri.recipe_id, ri.ROWID
+    """).fetchall()
+    conn.close()
+
+    return jsonify([dict(row) for row in rows])
+
+
+
 @app.before_request
 def before_request():
         g.username = None

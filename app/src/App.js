@@ -16,12 +16,12 @@ function App() {
 
       <Header />
 
-      <div className="flex flex-row">
-        <div className="w-[25%] flex-none">
+      <div className="flex flex-col md:flex-row">
+        <div className="w-full md:w-[25%] flex-row md:flex-none">
           <Sidebar/>
         </div>
 
-        <div className="w-[75%] flex-auto">
+        <div className="w-full md:w-[75%] flex-auto">
           <AppRoutes />
         </div>
       </div>
