@@ -6,7 +6,7 @@ from flask_bcrypt import Bcrypt, generate_password_hash, check_password_hash
 from .config import Config
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect, CSRFError, generate_csrf
-
+from app.forms.forms import loginForm, contactForm, registration, recordSelection
 
 
 app = Flask(__name__, static_folder='static')
@@ -15,7 +15,7 @@ bcrypt = Bcrypt(app)
 CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "foods.db")
+DB_PATH = os.path.join(BASE_DIR, "app.db")
 
 
 app.config.from_object(Config)
@@ -140,6 +140,73 @@ def before_request():
         g.username = None
         if 'username' in session:
                 g.username = session['username']
+
+@app.route('/adminlogin', methods=['GET', 'POST'])
+def adminlogin():
+    form_type=request.args.get('form_type','login')
+    if g.username:
+        return redirect('admin-home')
+
+    else:
+        if form_type=='login':                
+            form = loginForm(request.form)  
+            if request.method == 'POST':  
+                conn = get_db_connection()       
+                with conn:
+                    c = conn.cursor()
+                try:
+                    find_user = ("SELECT * FROM users WHERE username = ?")
+                    c.execute(find_user, [(form.username.data)])
+                    results =c.fetchall()                        
+                    userResults = results[0]
+                    if bcrypt.check_password_hash(userResults[1],(form.password.data)):
+                        session['username'] = (form.username.data)
+                        return redirect(url_for('home'))
+                    else:
+                        flash('Either username or password was not recognised')
+                    return render_template('adminlogin.html', form_type=form_type, form=form)   
+                except Exception as e:print(e)
+
+            flash('Either username or password was not recognised')
+            return render_template('adminlogin.html', form_type=form_type, form=form)           
+        elif form_type=='signup':
+            form = registration(request.form)
+            if request.method == 'POST':                         
+                conn = get_db_connection()               
+                with conn:
+                    c = conn.cursor()
+                    try:
+                        find_user = ("SELECT * FROM users WHERE username = ?")
+                        c.execute(find_user, [(form.username.data)])
+                        results =c.fetchall()                        
+                        if results:
+                            flash('Username already taken')
+                            return render_template('adminlogin.html', form=form)   
+                        else:                                
+                            hashpass = bcrypt.generate_password_hash(form.password.data)
+                            insert_data = '''INSERT INTO users (username, password) VALUES (?, ?)'''
+                            c.execute(insert_data, (form.username.data, hashpass))
+                            conn.commit() 
+                            flash('Thanks for registering! Please login.')
+                        return render_template('adminlogin.html', form_type=form_type, form=form)   
+                    except Exception as e:print(e)
+
+            flash('Error registering user')                      
+    return render_template("adminlogin.html", form_type=form_type,form=form) 
+              
+@app.route('/admin-home')
+def adminhome():
+        if not g.username:
+                return redirect('adminlogin')
+        print("hello admin!")
+        return render_template('admin.html')
+
+@app.route("/logout")
+def logout():        
+        session['logged_in'] = True
+        session.clear()
+        flash("You have successfully logged out.")
+        return redirect('home')
 
 
 
