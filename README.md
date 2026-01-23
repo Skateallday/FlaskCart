@@ -1,10 +1,10 @@
 # FlaskCart
 
-A simple e‑commerce web application built with Flask (Python) and React (JavaScript) that demonstrates a full‑stack cart experience.
+A simple web application built with Flask (Python) and React (JavaScript) that demonstrates a full‑stack cart experience.
 
 ## Overview
 
-FlaskCart is a full‑stack project combining a Flask backend with a React frontend. The application allows users to browse products, add items to a shopping cart, and interact with the backend API for product and cart management.
+FlaskCart is a full‑stack project combining a Flask backend with a React frontend. The application allows users to browse products, add recipes to a shopping cart, and interact with the backend API for product and cart management.
 
 This project was created as a way to explore and practice full‑stack development using Python and modern frontend technologies.
 
