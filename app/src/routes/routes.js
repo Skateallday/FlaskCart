@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from '../home/home'; 
 import About from '../about/about';
 import RecipesPage from '../recipes/recipesdisplay';
+import DisplayInvent from '../inventory/displayInvent';
 import ShoppingList from '../shoppingList/shoppinglist';
 
 export default function AppRoutes() {
@@ -10,6 +11,7 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home/>} />
       <Route path="/about" element={<About   />} />
+      <Route path='/inventory' element={<DisplayInvent />} />
       <Route path="/recipes" element={<RecipesPage />} />
       <Route path="/shoppinglist" element={<ShoppingList />} />
     </Routes>

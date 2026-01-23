@@ -4,15 +4,14 @@ import AddButton  from './addinvent';
 import RemoveButton from './removeinvent.js';
 import Searchbar from '../search/searchbar.js'
 import { useFilter } from "../context/filterContext.js";
-import { useSearch } from "../context/searchContext.js"
+import { useSearch } from "../context/searchContext.js";
 
-function InventoryDisplay() {
+function GetInventory() {
 
   const { filter, setFilter } = useFilter();
   const { search, setSearch } = useSearch();
-
-
   const [pantry, setPantry] = useState([]);
+
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/pantry`)
@@ -82,8 +81,6 @@ const removeStock = (foodName) => {
           <tr className="bg-gray-100 py-4">
             <th className="border-none text-left">Name</th>
             <th className="border-none text-left">Type</th>
-            <th className="hidden md:block border-none text-left">Calories</th>
-            <th className="hidden md:block border-none text-left">Serving</th>
             <th className="border-none text-left">Stock</th>
             <th className="border-none text-left">Add</th>
             <th className="border-none text-left">Remove</th>
@@ -94,8 +91,6 @@ const removeStock = (foodName) => {
             <tr key={item.foodName} className="hover:bg-yellow-100 border-b-2">
               <td className="">{item.foodName}</td>
               <td className="">{item.foodType}</td>
-              <td className="hidden md:block">{item.Calories}</td>
-              <td className="hidden md:block">{item.servingSize}</td>
               <td className="">{item.stock}</td>
               <td className="">
                 <AddButton item={item} onUpdate={addStock} />
@@ -112,4 +107,4 @@ const removeStock = (foodName) => {
   );
 }
 
-export default InventoryDisplay;
+export default GetInventory;

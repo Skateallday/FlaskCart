@@ -9,6 +9,7 @@ function Header() {
     { to: "/", label: "Home" },
     { to: "/about", label: "About" },
     { to: "/recipes", label: "Recipes" },
+    { to: "/inventory", label: "Inventory" },
     { to: "/shoppinglist", label: "Shopping List" },
   ];
 

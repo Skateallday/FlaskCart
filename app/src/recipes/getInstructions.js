@@ -18,12 +18,12 @@ function GetInstructions({recipe_id}) {
 
   return (<>
   
-    <div className="hover:bg-yellow-200 p-4 mb-4 rounded ">
-      <ul className=" mb-2">
+    <div className="hover:bg-yellow-200 mb-4 rounded ">
+      <ol className="">
         {filteredInstructions.map((instructions) =>(
             <li key={instructions.instruction_id} >{instructions.step_text}</li>
             
-  ))}</ul>
+  ))}</ol>
     </div>
   </>
   );
