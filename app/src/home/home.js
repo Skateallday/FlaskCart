@@ -9,10 +9,14 @@ function Home() {
         <div>      
             <h1 className="text-4xl py-5 font-bold text-center mt-8 pb-8">Welcome to FlaskCart </h1>
         <About />
-        <h2>Check out our recipes</h2>
+        <section className="bg-teal-600 w-full p-4 mt-8 shadow-md">
+        <h2 className="text-2xl py-5 font-bold text-center mt-8 pb-8">Check out our recipes</h2>
         <GetRecipes />
-        <Contact />
+        </section>
         
+        <section className=" w-full p-4 mt-8 shadow-md">
+        <Contact />
+        </section>
         </div>
     );
 }

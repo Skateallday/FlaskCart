@@ -21,7 +21,7 @@ function GetRecipes() {
         return (
           <div
             key={recipes.recipe_id}
-            className="border w-[33%] p-4 m-4 rounded shadow"
+            className="border w-[33%] bg-white p-4 m-4 rounded shadow"
           >
             <div id="accordion" className="accordion">
               <h2 className="accordionItem text-xl font-bold mb-2">
