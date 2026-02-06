@@ -1,10 +1,18 @@
 import GetRecipes from "./getrecipes";
+import RecipeSidebar from "../sidebar/recipeSidebar";
+import { SearchProvider } from '../context/searchContext';
 
 function RecipesPage() {
   return (
-    <div className="container mx-auto p-4 bg-white">
-      <h1>Recipes</h1>
+        <div className="flex">
+      <div className="w-1/4">
+        <RecipeSidebar />
+      </div>
+      <div className="w-3/4">
+        <SearchProvider>
       <GetRecipes />
+        </SearchProvider>
+      </div>
     </div>
   );
 }

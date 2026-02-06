@@ -21,3 +21,9 @@ code {
   left: 15px;
   top: 5px;
 }
+
+
+.header{
+  position: relative;
+  z-index:10;
+}

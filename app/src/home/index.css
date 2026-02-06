@@ -1,0 +1,53 @@
+.home-hero{
+    background-image: url('../assets/images/hero-image.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 60vh;
+}
+
+.home-hero:after{
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height:100%;
+        background-color: rgba(12, 12, 12, 0.3); 
+    }
+
+.intro-text{
+    position: relative;
+    color: white;
+    text-align: center;
+    z-index: 10
+}
+
+.recipe-intro {
+    position: relative;
+    z-index: 10
+}
+
+h1, h2, h3, h4, h5, h6, p{
+    font-family: 'Figtree', sans-serif;
+}
+
+h1{
+    font-weight: 800;
+    font-size:clamp(2.5rem, 5vw, 4rem);
+}
+h2{
+    font-size:clamp(2.1rem, 4vw, 3.8rem);
+}h3{
+    font-size:clamp(1.8rem, 3vw, 3.3rem);
+}h4{
+    font-size:clamp(1.5rem, 3vw, 2.5rem);
+}h5{
+    font-size:clamp(1.3rem, 2vw, 1.8rem);
+}h6{
+    font-size:clamp(1.1rem, 2vw, 1.5rem);
+}
+
+p{
+    font-size:clamp(1rem, 1.5vw, 1.2rem);
+    line-height: 1.6;}

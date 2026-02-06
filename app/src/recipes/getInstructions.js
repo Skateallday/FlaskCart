@@ -18,7 +18,7 @@ function GetInstructions({recipe_id}) {
 
   return (<>
   
-    <div className="hover:bg-yellow-200 mb-4 rounded ">
+    <div className=" mb-4 rounded ">
       <ol className="">
         {filteredInstructions.map((instructions) =>(
             <li key={instructions.instruction_id} >{instructions.step_text}</li>

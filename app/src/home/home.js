@@ -1,23 +1,28 @@
 import "./index.css"
-import About from "../about/about";
 import GetRecipes from "../recipes/getrecipes";
 import Contact from "../contact/contact";
 
 function Home() {    
     
     return (
-        <div>      
-            <h1 className="text-4xl py-5 font-bold text-center mt-8 pb-8">Welcome to FlaskCart </h1>
-        <About />
-        <section className="bg-teal-600 w-full p-4 mt-8 shadow-md">
-        <h2 className="text-2xl py-5 font-bold text-center mt-8 pb-8">Check out our recipes</h2>
+        <>
+        <div class="home-hero">   
+            <div class="intro-text">   
+            <h1 className=" py-5 font-bold text-center pb-8">Welcome to FlaskCart </h1>
+        <p>Are you constantly creating new shopping lists each week? Never quite sure what you have in the house? Looking for something
+            new to cook with what you already have? Well, we've got you sorted!</p>
+            <p>Developed by an ex-Chef turned Developer, FlaskCart will help you keep on top of your pantry.</p>
+        </div>
+        </div>
+        <section className="recipe-intro bg-teal-600 w-full p-4  shadow-md">
+        <h2 className="py-5 font-bold text-center mt-8 pb-8">Check out our recipes</h2>
         <GetRecipes />
         </section>
         
         <section className=" w-full p-4 mt-8 shadow-md">
         <Contact />
         </section>
-        </div>
+        </>
     );
 }
 
