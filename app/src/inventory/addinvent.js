@@ -4,14 +4,16 @@ import { addToStock } from '../config/api';
 export default function AddButton({ item, value, onUpdate }) {
   async function handleClick() {
     
-    
-    console.log(item.stock)
-    console.log("Value is " +value)
-    toast(value + " " +item.foodName + "'s have been added");
+    try{
     await addToStock(item.foodName, value);  // Pass the foodName string
+    
+    toast(value + " " +item.foodName + "'s have been added");
     onUpdate(item.foodName);
 
+  } catch(error){
+    toast.error("Failed to add stock: " + error.message);
   }
+}
 
   return (
     <button

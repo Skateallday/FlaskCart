@@ -10,7 +10,7 @@ function GetInventory() {
   const { filter, setFilter } = useFilter();
   const { search, setSearch } = useSearch();
   const [pantry, setPantry] = useState([]);
-  const [inputValue, setInputValue] = useState(1);
+  const [inputValue, setInputValue] = useState({});
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/pantry`)

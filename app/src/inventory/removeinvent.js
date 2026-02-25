@@ -9,10 +9,14 @@ export default function RemoveButton({ item, value, onUpdate }) {
       return;
     }
     else{
-    toast(value + " " + item.foodName + "s have been removed");
-    await removeFromStock(item.foodName, value);  // Pass the foodName string
     
-    onUpdate(item.foodName);
+    try{  await removeFromStock(item.foodName, value);  // Pass the foodName string
+    
+    toast(value + " " + item.foodName + "s have been removed");
+    onUpdate(item.foodName);}
+    catch (error){
+      toast.error("Failed to remove stock: " + error.message);
+    }
   }}
 
   return (
