@@ -16,8 +16,8 @@ export async function submitText(text) {
   return await res.json();
 }
 
-export async function addToStock(item) {
-  await fetch(`${BASE_URL}/api/pantry/${item}/add`, {
+export async function addToStock(item, value) {
+  await fetch(`${BASE_URL}/api/pantry/${item}/add/${value}`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -28,8 +28,8 @@ export async function addToStock(item) {
 });
     }
 
-export async function removeFromStock(item) {
-  await fetch(`${BASE_URL}/api/pantry/${item}/remove`, {
+export async function removeFromStock(item, value) {
+  await fetch(`${BASE_URL}/api/pantry/${item}/remove/${value}`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

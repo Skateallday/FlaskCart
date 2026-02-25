@@ -54,15 +54,15 @@ def get_pantry():
     pantry_list = [dict(row) for row in rows]
     return jsonify(pantry_list)
 
-@app.route("/api/pantry/<item>/add", methods=["GET", "POST"])
-def add_to_invent(item):
+@app.route("/api/pantry/<item>/add/<value>", methods=["GET", "POST"])
+def add_to_invent(item, value):
     print(item)
     if request.method == 'POST':
 
         conn = get_db_connection()
         cursor = conn.cursor()
         try:
-             cursor.execute("UPDATE FoodItems SET stock = stock + 1 WHERE foodName = ?", (item,))
+             cursor.execute("UPDATE FoodItems SET stock = stock + ? WHERE foodName = ?", (value, item))
 
              conn.commit()
         except sqlite3.Error as e:
@@ -75,15 +75,15 @@ def add_to_invent(item):
         # Handle GET request logic here (if applicable)
         return {"message": "GET request for add endpoint"}, 200
 
-@app.route("/api/pantry/<item>/remove", methods=["GET", "POST"])
-def remove_from_invent(item):
+@app.route("/api/pantry/<item>/remove/<value>", methods=["GET", "POST"])
+def remove_from_invent(item, value):
     print(item)
     if request.method == 'POST':
 
         conn = get_db_connection()
         cursor = conn.cursor()
         try:
-             cursor.execute("UPDATE FoodItems SET stock = stock - 1 WHERE foodName = ?", (item,))
+             cursor.execute("UPDATE FoodItems SET stock = stock - ? WHERE foodName = ?", (value, item))
 
              conn.commit()
         except sqlite3.Error as e:
