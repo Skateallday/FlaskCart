@@ -1,66 +1,69 @@
-{% extends "admintemplate.html" %} {% block content %} {% for message in
-get_flashed_messages() %}
-<div class="alert alert-warning">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
+{% extends "admintemplate.html" %} {% block content %}
+
+{% for message in get_flashed_messages() %}
+<div class="w-full bg-white alert alert-warning flex justify-between items-center p-4 mb-2 rounded border border-yellow-300 bg-yellow-50">
   {{ message }}
+  <button type="button" onclick="this.parentElement.remove()" class="ml-4 text-gray-500 hover:text-gray-800 font-bold">&times;</button>
 </div>
 {% endfor %}
 
-<div class="w-full bg-white rounded-lg shadow-lg p-8 border border-gray-300 ">
-  <h1>Login to admin area</h1>
+<div class="container max-w-screen-sm mx-auto mt-8 bg-white rounded-lg shadow-lg p-8 border border-gray-300 ">
+  <h1 class="text-2xl font-bold mb-4">Login to admin area</h1>
   <div class="row">
     <div class="col-sm-5">
 
         {% if form_type =='login'%}
-      <h1>Login</h1>
-      <form method="POST" action="" enctype="multipart/form-data">
-        {{ form.hidden_tag() }} {{ form.csrf_token() }}
+      <h2 class="text-xl font-semibold mb-4">Login</h2>
+      <form method="POST" action="" enctype="multipart/form-data" class="flex flex-col gap-4">
+        {{ form.hidden_tag() }} 
 
         <label for="username">Username</label>
         {% if request.method == 'POST' %} {% for error in form.username.errors
         %}
         <span class="errors">[{{ error }}]</span>
-        {% endfor %} {% endif %} {{ form.username(class="form-control") }}
+        {% endfor %} {% endif %} {{ form.username(class="border rounded p-2") }}
 
         <label for="password">Password</label>
         {% if request.method == 'POST' %} {% for error in form.password.errors
         %}
         <span class="errors">[{{ error }}]</span>
-        {% endfor %} {% endif %} {{ form.password(class="form-control") }} {{
-        form.submit(class="btn btn-danger") }}
+        {% endfor %} {% endif %} {{ form.password(class="border rounded p-2") }} {{
+        form.submit(class="bg-blue-600 hover:bg-blue-600 text-white px-2 py-1 rounded mt-2") }}
       </form>
       
       {% elif form_type =='signup'%}
-            <h1>Sign up</h1>
-      <form method="POST" action="" enctype="multipart/form-data">
-        {{ form.hidden_tag() }} {{ form.csrf_token() }}
+            <h2 class="text-xl font-semibold mb-4">Sign up</h2>
+      <form method="POST" action="" enctype="multipart/form-data" class="flex flex-col gap-4">
+        {{ form.hidden_tag() }} 
 
         <label for="username">Username</label>
         {% if request.method == 'POST' %} {% for error in form.username.errors
         %}
         <span class="errors">[{{ error }}]</span>
-        {% endfor %} {% endif %} {{ form.username(class="form-control") }}
+        {% endfor %} {% endif %} {{ form.username(class="border rounded p-2") }}
+        <label for="emailAddress">Email</label>
+{{ form.emailAddress(class="border rounded p-2") }}
 
         <label for="password">Password</label>
         {% if request.method == 'POST' %} {% for error in form.password.errors
         %}
         <span class="errors">[{{ error }}]</span>
-        {% endfor %} {% endif %} {{ form.password(class="form-control") }} {{
-        form.submit(class="btn btn-danger") }}
+        {% endfor %} {% endif %} {{ form.password(class="border rounded p-2") }} {{
+        form.submit(class="bg-blue-600 hover:bg-blue-600 text-white px-2 py-1 rounded mt-2") }}
       </form>
       {% endif %}
     </div>
   </div>
   <div class="row">
     <div class="col-sm-12">
-      <p>Or...</p>
+      <p class="py-4">Or...</p>
 
       {% if form_type == 'login'%}
-      <a href="{{url_for('adminlogin', form_type='signup')}}" class="button bg-blue-300 font-white hover:bg-blue-500">
+      <a href="{{url_for('adminlogin', form_type='signup')}}" class="bg-blue-600 hover:bg-blue-600 text-white px-2 py-1 rounded mt-2">
         Click here to Sign Up
       </a>
       {% elif form_type == 'signup'%}
-        <a href="{{url_for('adminlogin', form_type='login')}}" class="button bg-blue-300 font-white hover:bg-blue-500">
+        <a href="{{url_for('adminlogin', form_type='login')}}" class="bg-blue-600 hover:bg-blue-600 text-white px-2 py-1 rounded mt-2">
             Click here to Login</a>
         {% endif %}
     </div>

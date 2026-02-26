@@ -1,12 +1,12 @@
-import random
 import os
 import sqlite3
 from flask import Flask, render_template, request, session, g, redirect, flash, url_for, jsonify, send_from_directory
-from flask_bcrypt import Bcrypt, generate_password_hash, check_password_hash
+from flask_bcrypt import Bcrypt
 from .config import Config
 from flask_cors import CORS
-from flask_wtf.csrf import CSRFProtect, CSRFError, generate_csrf
-from app.forms.forms import loginForm, contactForm, registration, recordSelection
+from flask_wtf.csrf import CSRFProtect, generate_csrf
+from app.forms.forms import loginForm, registration
+from functools import wraps
 
 
 app = Flask(__name__, static_folder='static')
@@ -20,7 +20,6 @@ DB_PATH = os.path.join(BASE_DIR, "app.db")
 
 app.config.from_object(Config)
 csrf = CSRFProtect(app)
-SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
 
 
 def get_db_connection():
@@ -32,6 +31,14 @@ def get_db_connection():
 def inject_csrf_token(response):
      response.set_cookie("csrf_token", generate_csrf())
      return response
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*arg, **kwargs):
+        if not g.username:
+            return redirect(url_for('adminlogin'))
+        return f(*arg, **kwargs)
+    return decorated_function
 
 @app.route('/')
 def index():
@@ -145,47 +152,48 @@ def before_request():
 def adminlogin():
     form_type=request.args.get('form_type','login')
     if g.username:
-        return redirect('admin-home')
+        return redirect(url_for('adminhome'))
 
     else:
         if form_type=='login':                
             form = loginForm(request.form)  
             if request.method == 'POST':  
-                conn = get_db_connection()       
-                with conn:
+                conn = get_db_connection()   
+                try:                    
                     c = conn.cursor()
-                try:
                     find_user = ("SELECT * FROM users WHERE username = ?")
                     c.execute(find_user, [(form.username.data)])
                     results =c.fetchall()                        
                     userResults = results[0]
-                    if bcrypt.check_password_hash(userResults[1],(form.password.data)):
+                    if bcrypt.check_password_hash(userResults[3],(form.password.data)):
+                        session.permanent = True
                         session['username'] = (form.username.data)
-                        return redirect(url_for('home'))
+                        return redirect(url_for('adminhome'))
                     else:
                         flash('Either username or password was not recognised')
                     return render_template('adminlogin.html', form_type=form_type, form=form)   
                 except Exception as e:print(e)
 
             flash('Either username or password was not recognised')
-            return render_template('adminlogin.html', form_type=form_type, form=form)           
+            return render_template('adminlogin.html', form_type=form_type, form=form)   
+                
         elif form_type=='signup':
             form = registration(request.form)
             if request.method == 'POST':                         
-                conn = get_db_connection()               
+                conn = get_db_connection()     
                 with conn:
                     c = conn.cursor()
                     try:
                         find_user = ("SELECT * FROM users WHERE username = ?")
                         c.execute(find_user, [(form.username.data)])
-                        results =c.fetchall()                        
+                        results =c.fetchall()                
                         if results:
                             flash('Username already taken')
                             return render_template('adminlogin.html', form=form)   
                         else:                                
-                            hashpass = bcrypt.generate_password_hash(form.password.data)
-                            insert_data = '''INSERT INTO users (username, password) VALUES (?, ?)'''
-                            c.execute(insert_data, (form.username.data, hashpass))
+                            hashpass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+                            insert_data = '''INSERT INTO users (username, email, password) VALUES (?, ?, ?)'''
+                            c.execute(insert_data, (form.username.data, form.emailAddress.data, hashpass))
                             conn.commit() 
                             flash('Thanks for registering! Please login.')
                         return render_template('adminlogin.html', form_type=form_type, form=form)   
@@ -195,18 +203,15 @@ def adminlogin():
     return render_template("adminlogin.html", form_type=form_type,form=form) 
               
 @app.route('/admin-home')
+@login_required
 def adminhome():
-        if not g.username:
-                return redirect('adminlogin')
-        print("hello admin!")
         return render_template('admin.html')
 
 @app.route("/logout")
 def logout():        
-        session['logged_in'] = True
         session.clear()
         flash("You have successfully logged out.")
-        return redirect('home')
+        return redirect('/')
 
 
 
