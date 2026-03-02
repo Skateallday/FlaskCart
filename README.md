@@ -40,14 +40,14 @@ This project was created as a way to explore and practice full‑stack developme
 ### Prerequisites
 
 Make sure you have the following installed:
-- Python 3.1
+- Python 3.12+ (or 3.10+)
 - Node.js and npm (or yarn)
 
 ### Backend Setup
 
 1. Navigate to the backend folder:
    ```bash
-   cd backend
+   cd server
    ```
 
 2. Create a virtual environment:
@@ -77,7 +77,7 @@ Make sure you have the following installed:
 
 1. Navigate to the frontend folder:
    ```bash
-   cd frontend
+   cd app
    ```
 
 2. Install dependencies:
@@ -89,6 +89,11 @@ Make sure you have the following installed:
    ```bash
    npm start
    ```
+
+
+## Project Status
+
+For a feature-focused site development roadmap, see `NEXT_STEPS.md`.
 
 ## Learning Points
 
