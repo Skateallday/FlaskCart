@@ -6,17 +6,6 @@ const csrfToken = document.cookie
   ?.split("=")[1];
 
 
-
-export async function submitText(text) {
-  const res = await fetch(`${BASE_URL}/api/parse`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text }),
-  });
-  if (!res.ok) throw new Error("Failed to submit text");
-  return await res.json();
-}
-
 export async function addToStock(item, value) {
   const res = await fetch(`${BASE_URL}/api/pantry/${item}/add/${value}`, {
   method: "POST",
