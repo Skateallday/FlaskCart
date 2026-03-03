@@ -1,45 +1,16 @@
-import { useEffect, useState } from "react";
-import { BASE_URL } from "../config/config";
-import AddButton from "./addinvent";
-import RemoveButton from "./removeinvent.js";
+import { useState } from "react";
 import Searchbar from "../search/searchbar.js";
+import { useInventory } from "../context/inventoryContext.jsx";
 import { useFilter } from "../context/filterContext.js";
 import { useSearch } from "../context/searchContext.js";
+import  AddButton  from "./addinvent.js"
+import RemoveButton from "./removeinvent.js";
 
 function GetInventory() {
   const { filter, setFilter } = useFilter();
   const { search, setSearch } = useSearch();
-  const [pantry, setPantry] = useState([]);
+  const {pantry, addStock, removeStock} = useInventory();
   const [inputValue, setInputValue] = useState({});
-
-  useEffect(() => {
-    fetch(`${BASE_URL}/api/pantry`)
-      .then((res) => res.json())
-      .then((data) => setPantry(data))
-      .catch((err) => console.error("Failed to fetch pantry:", err));
-  }, []);
-
-  const addStock = (foodName) => {
-    const inputQty = inputValue[foodName] || 1; // Default to 1 if no input value is set
-    setPantry((prev) =>
-      prev.map((i) =>
-        i.foodName === foodName
-          ? { ...i, stock: Number(i.stock) + Number(inputQty) }
-          : i,
-      ),
-    );
-  };
-
-  const removeStock = (foodName) => {
-    const inputQty = inputValue[foodName] || 1; // Default to 1 if no input value is set
-    setPantry((prev) =>
-      prev.map((i) =>
-        i.foodName === foodName
-          ? { ...i, stock: Number(i.stock) - Number(inputQty) }
-          : i,
-      ),
-    );
-  };
 
   /* Filter and Search 
   If there is a filter, and the filter isn't set to null, then filter the pantry items 
@@ -47,9 +18,9 @@ function GetInventory() {
   
   We remove any spaces and turn the search query into lower case. The start of the process is the same as the filter,
   but rather than look for a complete match, we're just looking to see if it's close enough. Not a full fuzzy 
-  search, but it works for this project
-  
+  search, but it works for this project.  
   */
+
   const cleanedSearch = search?.trim().toLowerCase();
 
   let pantryState = pantry;

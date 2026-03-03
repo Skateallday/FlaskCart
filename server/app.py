@@ -61,7 +61,7 @@ def get_pantry():
     pantry_list = [dict(row) for row in rows]
     return jsonify(pantry_list)
 
-@app.route("/api/pantry/<item>/add/<value>", methods=["GET", "POST"])
+@app.route("/api/pantry/<item>/add/<value>", methods=["POST"])
 def add_to_invent(item, value):
     print(item)
     if request.method == 'POST':
@@ -82,7 +82,7 @@ def add_to_invent(item, value):
         # Handle GET request logic here (if applicable)
         return {"message": "GET request for add endpoint"}, 200
 
-@app.route("/api/pantry/<item>/remove/<value>", methods=["GET", "POST"])
+@app.route("/api/pantry/<item>/remove/<value>", methods=["POST"])
 def remove_from_invent(item, value):
     print(item)
     if request.method == 'POST':

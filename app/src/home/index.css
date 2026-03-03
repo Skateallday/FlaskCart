@@ -20,7 +20,10 @@
     position: relative;
     color: white;
     text-align: center;
-    z-index: 10
+    z-index: 10;
+    margin-left: auto;
+    width: 60%;
+    margin-right: auto;
 }
 
 .recipe-intro {
@@ -31,23 +34,27 @@
 h1, h2, h3, h4, h5, h6, p{
     font-family: 'Figtree', sans-serif;
 }
-
-h1{
+h1 {
     font-weight: 800;
-    font-size:clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
 }
-h2{
-    font-size:clamp(2.1rem, 4vw, 3.8rem);
-}h3{
-    font-size:clamp(1.8rem, 3vw, 3.3rem);
-}h4{
-    font-size:clamp(1.5rem, 3vw, 2.5rem);
-}h5{
-    font-size:clamp(1.3rem, 2vw, 1.8rem);
-}h6{
-    font-size:clamp(1.1rem, 2vw, 1.5rem);
+h2 {
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+}
+h3 {
+    font-size: clamp(1.1rem, 1.75vw, 1.4rem);
+}
+h4 {
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+}
+h5 {
+    font-size: clamp(0.9rem, 1.25vw, 1.1rem);
+}
+h6 {
+    font-size: clamp(0.85rem, 1vw, 1rem);
 }
 
-p{
-    font-size:clamp(1rem, 1.5vw, 1.2rem);
-    line-height: 1.6;}
+p {
+    font-size: clamp(0.8rem, 1vw, 0.95rem);
+    line-height: 1.6;
+}

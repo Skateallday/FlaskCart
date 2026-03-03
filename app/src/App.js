@@ -4,11 +4,13 @@ import Footer from './footer/footer';
 import AppRoutes from './routes/routes';
 import { FilterProvider } from './context/filterContext';
 import { ToastContainer } from 'react-toastify';
+import { InventoryProvider } from './context/inventoryContext.jsx';
 
 function App() {
 
   return (
     <FilterProvider>
+      <InventoryProvider>
     <div className="app">
       <ToastContainer />
 
@@ -24,6 +26,7 @@ function App() {
 
       <Footer />
     </div>
+    </InventoryProvider>
     </FilterProvider>
   );
 }
