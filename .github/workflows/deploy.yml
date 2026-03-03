@@ -1,0 +1,46 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install and build
+        run: |
+          cd app
+          npm install
+          npm run build
+
+      - name: Copy build to server/static
+        run: |
+          cp app/build/index.html server/static/
+          cp app/build/asset-manifest.json server/static/
+          cp app/build/manifest.json server/static/
+          cp app/build/robots.txt server/static/
+          cp app/build/favicon.ico server/static/
+          cp -r app/build/static server/static/
+
+      - name: Commit and push static files
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add server/static/
+          git commit -m "Auto deploy $(date)" || echo "Nothing to commit"
+          git push
+
+      - name: Reload PythonAnywhere
+        run: |
+          curl -X POST \
+            -H "Authorization: Token ${{ secrets.PYTHONANYWHERE_TOKEN }}" \
+            https://www.pythonanywhere.com/api/v0/user/${{ secrets.PYTHONANYWHERE_USERNAME }}/webapps/skateallday.pythonanywhere.com/reload/

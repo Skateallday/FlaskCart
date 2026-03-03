@@ -9,6 +9,7 @@ function Home() {
         <div class="home-hero">   
             <div class="intro-text">   
             <h1 className=" py-5 font-bold text-center pb-8">Welcome to FlaskCart </h1>
+            <h2>Let's get cooking!</h2>
         <p>Are you constantly creating new shopping lists each week? Never quite sure what you have in the house? Looking for something
             new to cook with what you already have? Well, we've got you sorted!</p>
             <p>Developed by an ex-Chef turned Developer, FlaskCart will help you keep on top of your pantry.</p>
