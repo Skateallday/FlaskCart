@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout production
         uses: actions/checkout@v3
@@ -24,10 +26,13 @@ jobs:
         run: |
           cd app
           npm install
+          chmod +x node_modules/.bin/react-scripts
           npm run build
 
       - name: Copy build to server/static
         run: |
+          rm -rf server/static/*
+          mkdir -p server/static
           cp app/build/index.html server/static/
           cp app/build/asset-manifest.json server/static/
           cp app/build/manifest.json server/static/
@@ -41,10 +46,15 @@ jobs:
           git config user.email "actions@github.com"
           git add server/static/
           git commit -m "Auto deploy $(date)" || echo "Nothing to commit"
-          git push
+          git push origin production
 
       - name: Reload PythonAnywhere
         run: |
-          curl -X POST \
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
             -H "Authorization: Token ${{ secrets.PYTHONANYWHERE_TOKEN }}" \
-            https://www.pythonanywhere.com/api/v0/user/${{ secrets.PYTHONANYWHERE_USERNAME }}/webapps/skateallday.pythonanywhere.com/reload/
+            https://www.pythonanywhere.com/api/v0/user/${{ secrets.PYTHONANYWHERE_USERNAME }}/webapps/skateallday.pythonanywhere.com/reload/)
+          if [ "$response" != "200" ]; then
+            echo "Failed to reload PythonAnywhere, status code: $response"
+            exit 1
+          fi
+          echo "Successfully reloaded PythonAnywhere!"
