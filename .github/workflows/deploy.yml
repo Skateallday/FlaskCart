@@ -44,7 +44,8 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add server/static/
+          git add -f server/static/
+          git status
           git commit -m "Auto deploy $(date)" || echo "Nothing to commit"
           git push origin production
 
