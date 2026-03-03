@@ -1,7 +1,0 @@
-{
-  "short_name": "FlaskCart",
-  "name": "FlaskCart",
-  "start_url": ".",
-  "display": "standalone",
-  "favicon": "favicon.ico"
-}
