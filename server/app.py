@@ -2,14 +2,14 @@ import os
 import sqlite3
 from flask import Flask, render_template, request, session, g, redirect, flash, url_for, jsonify, send_from_directory
 from flask_bcrypt import Bcrypt
-from .config import Config
+from config import Config
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-from app.forms.forms import loginForm, registration
+from forms.forms import loginForm, registration
 from functools import wraps
 
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__, static_folder='static', static_url_path='')
 bcrypt = Bcrypt(app)
 
 CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
