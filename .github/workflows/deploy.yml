@@ -40,19 +40,26 @@ jobs:
           cp app/build/favicon.ico server/static/
           cp -r app/build/static server/static/
 
-      - name: Debug gitignore
-        run: |
-            cat .gitignore
-            git check-ignore -v server/static/index.html
+
 
       - name: Commit and push static files
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add -f server/static/
-          git status
+          git add -A server/static/
           git commit -m "Auto deploy $(date)" || echo "Nothing to commit"
           git push origin production
+
+      - name: Pull on PythonAnywhere
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ssh.pythonanywhere.com
+          username: ${{ secrets.PYTHONANYWHERE_USERNAME }}
+          key: ${{ secrets.PYTHONANYWHERE_SSH_KEY }}
+          script: |
+            cd ~/FlaskCart
+            source venv/bin/activate
+            git pull origin production
 
       - name: Reload PythonAnywhere
         run: |
