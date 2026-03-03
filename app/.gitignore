@@ -8,6 +8,14 @@
 # testing
 /coverage
 
+# build output
+/app/build
+
+# Python
+__pycache__
+*.pyc
+.env
+
 # production
 #/public
 #/src
