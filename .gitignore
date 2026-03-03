@@ -11,7 +11,7 @@ server/__pycache__
 /coverage
 
 # build output
-/app/build
+app/build
 
 # Python
 __pycache__
