@@ -1,12 +1,16 @@
 {
   "files": {
-    "main.js": "/static/js/main.fefdb057.js",
+    "main.css": "/static/css/main.c9ff131f.css",
+    "main.js": "/static/js/main.fa765561.js",
     "static/js/453.1a16ed4e.chunk.js": "/static/js/453.1a16ed4e.chunk.js",
+    "static/media/cart-avo.png": "/static/media/cart-avo.34520163f4418cbf121a.png",
     "index.html": "/index.html",
-    "main.fefdb057.js.map": "/static/js/main.fefdb057.js.map",
+    "main.c9ff131f.css.map": "/static/css/main.c9ff131f.css.map",
+    "main.fa765561.js.map": "/static/js/main.fa765561.js.map",
     "453.1a16ed4e.chunk.js.map": "/static/js/453.1a16ed4e.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.fefdb057.js"
+    "static/css/main.c9ff131f.css",
+    "static/js/main.fa765561.js"
   ]
 }
