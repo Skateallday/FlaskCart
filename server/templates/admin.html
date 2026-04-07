@@ -1,8 +1,24 @@
 {% extends "admintemplate.html" %} {% block content %}
 
-<div
-  class="container max-w-screen-sm mx-auto mt-8 bg-white rounded-lg shadow-lg p-8 border border-gray-300"
->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="mb-4">
+      {% for category, message in messages %}
+        <div class="
+          p-3 rounded mb-2
+          {% if category == 'success' %} bg-green-100 text-green-800
+          {% elif category == 'danger' %} bg-red-100 text-red-800
+          {% else %} bg-gray-100 text-gray-800
+          {% endif %}
+        ">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="container max-w-screen-sm mx-auto mt-8 bg-white rounded-lg shadow-lg p-8 border border-gray-300">
   <h1 class="text-2xl font-bold mb-4">Admin area</h1>
   <div class="row">
     <div class="col-sm-5">
@@ -11,18 +27,51 @@
   </div>
   <div class="row">
     <div class="columns-4">
-        <div class="border min-block-40 rounded-lg p-4">
-<h2 class="text-l font-bold mb-4">Add new food item   </h2> </div>
-    <div class=" border min-block-40 rounded-lg p-4">
-<h2 class="text-l font-bold mb-4">Edit or delete existing food item  </h2>   </div>
-    <div class=" border min-block-40 rounded-lg p-4">
-<h2 class="text-l font-bold mb-4">Add new recipe    </h2> </div>
-    <div class=" border min-block-40 rounded-lg p-4">
-<h2 class="text-l font-bold mb-4">Edit or delete existing recipe    </h2> </div>
-</div>
-      <p class="py-4">Or...</p>
-      <a class="bg-red-600 hover:bg-red-600 text-white px-4 py-2 rounded mt-2" href="{{ url_for('logout') }}">Logout</a>
+      <div class="border min-block-40 rounded-lg p-4">
+        <a href="{{url_for('adminhome', section='new_food')}}">
+        <h2 class="text-l font-bold mb-4">Add new food item </h2>
+        </a>
+      </div>
+      <div class=" border min-block-40 rounded-lg p-4">
+        
+        <a href="{{url_for('adminhome', section='edit_food')}}">
+        <h2 class="text-l font-bold mb-4">Edit or delete existing food item </h2>
+        </a>
+      </div>
+      <div class=" border min-block-40 rounded-lg p-4">
+        
+        <a href="{{url_for('adminhome', section='new_recipe')}}">
+        <h2 class="text-l font-bold mb-4">Add new recipe </h2>
+        </a>
+      </div>
+      <div class=" border min-block-40 rounded-lg p-4">
+        
+        <a href="{{url_for('adminhome', section='edit_recipe')}}">
+        <h2 class="text-l font-bold mb-4">Edit or delete existing recipe </h2>
+        </a>
+      </div>
     </div>
   </div>
+  <div class="row">
+    {% if active_section == 'new_food' %}
+    {% include 'formTemplates/_newFood.html' %}
+
+    {% elif active_section == 'edit_food' %}
+    {% include 'formTemplates/_editFood.html' %}
+
+    {% elif active_section == 'new_recipe' %}
+    {% include 'formTemplates/_newRecipe.html' %}
+
+    {% elif active_section == 'edit_recipe' %}
+    {% include 'formTemplates/_editRecipe.html' %}
+
+    {% endif %}
+  </div>
+  <div class="row">
+
+    <p class="py-4">Or...</p>
+    <a class="bg-red-600 hover:bg-red-600 text-white px-4 py-2 rounded mt-2" href="{{ url_for('logout') }}">Logout</a>
+  </div>
+</div>
 
 {% endblock %}

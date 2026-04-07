@@ -5,8 +5,14 @@ from flask_bcrypt import Bcrypt
 from .config import Config
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-from app.forms.forms import loginForm, registration
+from app.forms.forms import loginForm, registration, NewFoodsForm, NewRecipeForm, EditFoodForm, EditRecipeForm
 from functools import wraps
+from app.handlers import (
+    handle_new_food,
+    handle_edit_food,
+    handle_new_recipe,
+    handle_edit_recipe,
+)
 
 
 app = Flask(__name__, static_folder='static')
@@ -202,10 +208,34 @@ def adminlogin():
             flash('Error registering user')                      
     return render_template("adminlogin.html", form_type=form_type,form=form) 
               
-@app.route('/admin-home')
+@app.route('/admin-home', methods=['GET', 'POST'])
 @login_required
 def adminhome():
-        return render_template('admin.html')
+    section = request.args.get('section', 'none')
+
+    form_map = {
+        'new_food': NewFoodsForm,
+        'edit_food': EditFoodForm,
+        'new_recipe': NewRecipeForm,
+        'edit_recipe': EditRecipeForm,
+    }
+
+    handler_map = {
+        'new_food': handle_new_food,
+        'edit_food': handle_edit_food,
+        'new_recipe': handle_new_recipe,
+        'edit_recipe': handle_edit_recipe,
+    }
+
+    form_class = form_map.get(section)
+    form = form_class() if form_class else None
+
+    if form and section in handler_map and form.validate_on_submit():
+        response = handler_map[section](form)
+        if response:
+            return response
+
+    return render_template('admin.html', active_section=section, form=form)
 
 @app.route("/logout")
 def logout():        

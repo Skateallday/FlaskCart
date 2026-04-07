@@ -1,20 +1,7 @@
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, \
-    FileField, StringField, validators, RadioField, SelectMultipleField
-from wtforms.widgets import TextArea
-from wtforms.widgets import ListWidget, CheckboxInput
+from wtforms import StringField, PasswordField, SubmitField, BooleanField,  IntegerField
 from flask_wtf import FlaskForm
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp
-from wtforms.fields import DateField
-from flask_wtf.file import FileField, FileRequired
-from werkzeug.utils import secure_filename
-from flask_bcrypt import Bcrypt, generate_password_hash, check_password_hash
-from datetime import datetime, date, timedelta
-from flask import session
-from wtforms.validators import NumberRange
+from wtforms.validators import DataRequired, Length, Email, NumberRange
 
-
-class recordSelection(FlaskForm):
-    recordSelection = SelectField('Select Item', choices=[('Skater','Skater'), ('Skateboards','Skateboards'), ('Shoes','Shoes'), ('Trucks','Trucks'), ('Wheels','Wheels'), ('Tricks','Tricks')])
 
 class contactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=3, max=30)])
@@ -33,3 +20,42 @@ class registration(FlaskForm):
     password = PasswordField('password', validators=[DataRequired(), Length(min=2, max=30)])
     emailAddress = StringField('Email Address', validators=[DataRequired(), Email()])
     submit = SubmitField('Register')
+
+class NewFoodsForm(FlaskForm):
+    foodName = StringField('foodName', validators=[DataRequired(), Length(min=2, max=30)])
+    foodType = StringField('foodType', validators=[DataRequired(), Length(min=2, max=30)])
+    calories = IntegerField('calories', validators=[DataRequired(), NumberRange(min=0)])
+    servingSize = IntegerField('servingSize', validators=[DataRequired(), NumberRange(min=0)])
+    isVegan=BooleanField('isVegan')
+    isGlutenFree=BooleanField('isGlutenFree')
+    stock = IntegerField('stock', validators=[DataRequired(), NumberRange(min=0)])
+
+
+class NewRecipeForm(FlaskForm):
+    foodName = StringField('foodName', validators=[DataRequired(), Length(min=2, max=30)])
+    foodType = StringField('foodType', validators=[DataRequired(), Length(min=2, max=30)])
+    calories = IntegerField('calories', validators=[DataRequired(), NumberRange(min=0)])
+    servingSize = IntegerField('servingSize', validators=[DataRequired(), NumberRange(min=0)])
+    isVegan=BooleanField('isVegan')
+    isGlutenFree=BooleanField('isGlutenFree')
+    stock = IntegerField('stock', validators=[DataRequired(), NumberRange(min=0)])     
+
+
+class EditFoodForm(FlaskForm):
+    foodName = StringField('foodName', validators=[DataRequired(), Length(min=2, max=30)])
+    foodType = StringField('foodType', validators=[DataRequired(), Length(min=2, max=30)])
+    calories = IntegerField('calories', validators=[DataRequired(), NumberRange(min=0)])
+    servingSize = IntegerField('servingSize', validators=[DataRequired(), NumberRange(min=0)])
+    isVegan=BooleanField('isVegan')
+    isGlutenFree=BooleanField('isGlutenFree')
+    stock = IntegerField('stock', validators=[DataRequired(), NumberRange(min=0)])     
+
+
+class EditRecipeForm(FlaskForm):
+    foodName = StringField('foodName', validators=[DataRequired(), Length(min=2, max=30)])
+    foodType = StringField('foodType', validators=[DataRequired(), Length(min=2, max=30)])
+    calories = IntegerField('calories', validators=[DataRequired(), NumberRange(min=0)])
+    servingSize = IntegerField('servingSize', validators=[DataRequired(), NumberRange(min=0)])
+    isVegan=BooleanField('isVegan')
+    isGlutenFree=BooleanField('isGlutenFree')
+    stock = IntegerField('stock', validators=[DataRequired(), NumberRange(min=0)])                                
