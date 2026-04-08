@@ -7,7 +7,7 @@ export default function AddButton({ item, value, onUpdate }) {
     try{
     await addToStock(item.foodName, value);  // Pass the foodName string
     
-    toast(value + " " +item.foodName + "'s have been added");
+    toast.success(`${value} ${item.foodName}${value == 1 ? '' : 's'} added`);
     onUpdate(item.foodName);
 
   } catch(error){

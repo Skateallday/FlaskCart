@@ -1,6 +1,7 @@
+from datetime import date
 import os
 import sqlite3
-from flask import redirect, url_for, flash
+from flask import redirect, url_for, flash, request
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "app.db")
@@ -95,21 +96,88 @@ def handle_new_recipe(form):
     conn = get_db_connection()
 
     try:
-        conn.execute(
+        cursor = conn.cursor()
+
+        cursor.execute(
             """
             INSERT INTO Recipes (
-                recipeName,
-                method,
-                prepTime
+                recipe_name,
+                servings,
+                date_added,
+                image_url,
+                image_alt,
+                short_description,
+                prep_time_minutes,
+                cook_time_minutes,
+                total_time_minutes,
+                recipeType,
+                calories
             )
-            VALUES (?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
-                form.recipeName.data,
-                form.method.data,
-                form.prepTime.data,
+                form.recipe_name.data,
+                form.servings.data,
+                date.today().isoformat(),
+                form.image_url.data,
+                form.image_alt.data,
+                form.short_description.data,
+                form.prep_time_minutes.data,
+                form.cook_time_minutes.data,
+                form.total_time_minutes.data,
+                form.recipeType.data,
+                form.calories.data,
             )
         )
+
+        recipe_id = cursor.lastrowid
+
+        step_texts = request.form.getlist('step_text[]')
+        ingredient_ids = request.form.getlist('ingredient_id[]')
+        quantities = request.form.getlist('quantity[]')
+        units = request.form.getlist('unit[]')
+        optional_flags = request.form.getlist('optional[]')
+        tag_ids = request.form.getlist('tag_id[]')
+
+        for index, step_text in enumerate(step_texts, start=1):
+            if step_text.strip():
+                cursor.execute(
+                    """
+                    INSERT INTO RecipeInstructions (recipe_id, step_number, step_text)
+                    VALUES (?, ?, ?)
+                    """,
+                    (recipe_id, index, step_text.strip())
+                )
+
+        for i in range(len(ingredient_ids)):
+            if ingredient_ids[i]:
+                optional_value = 1 if i < len(optional_flags) and optional_flags[i] == '1' else 0
+
+
+                cursor.execute(
+                    """
+                    INSERT INTO RecipeIngredients (recipe_id, fooditem_id, quantity, unit, optional)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (
+                        recipe_id,
+                        ingredient_ids[i],
+                        quantities[i] or None,
+                        units[i] if i < len(units) else None,
+                        optional_value,
+                    )
+                )
+
+        for tag_id in tag_ids:
+            if tag_id:
+                cursor.execute(
+                    """
+                    INSERT INTO RecipeTags (recipe_id, tag_id)
+                    VALUES (?, ?)
+                    """,
+                    (recipe_id, tag_id)
+                )
+
         conn.commit()
         flash('Recipe added successfully.', 'success')
 
@@ -121,7 +189,6 @@ def handle_new_recipe(form):
         conn.close()
 
     return redirect(url_for('adminhome', section='new_recipe'))
-
 
 def handle_edit_recipe(form):
     conn = get_db_connection()

@@ -40,10 +40,12 @@ def inject_csrf_token(response):
 
 def login_required(f):
     @wraps(f)
-    def decorated_function(*arg, **kwargs):
-        if not g.username:
+    def decorated_function(*args, **kwargs):
+        if not getattr(g, 'username', None):
+            if request.path.startswith('/api/'):
+                return jsonify({'error': 'Unauthorized'}), 401
             return redirect(url_for('adminlogin'))
-        return f(*arg, **kwargs)
+        return f(*args, **kwargs)
     return decorated_function
 
 @app.route('/')
@@ -68,6 +70,7 @@ def get_pantry():
     return jsonify(pantry_list)
 
 @app.route("/api/pantry/<item>/add/<value>", methods=["POST"])
+@login_required
 def add_to_invent(item, value):
     print(item)
     if request.method == 'POST':
@@ -89,6 +92,7 @@ def add_to_invent(item, value):
         return {"message": "GET request for add endpoint"}, 200
 
 @app.route("/api/pantry/<item>/remove/<value>", methods=["POST"])
+@login_required
 def remove_from_invent(item, value):
     print(item)
     if request.method == 'POST':
@@ -227,6 +231,11 @@ def adminhome():
         'edit_recipe': handle_edit_recipe,
     }
 
+    conn = get_db_connection()
+    food_items = conn.execute("SELECT ROWID as id, * FROM FoodItems").fetchall()
+    tags = conn.execute("SELECT * FROM Tags").fetchall()
+    conn.close()
+
     form_class = form_map.get(section)
     form = form_class() if form_class else None
 
@@ -235,7 +244,7 @@ def adminhome():
         if response:
             return response
 
-    return render_template('admin.html', active_section=section, form=form)
+    return render_template('admin.html', active_section=section, form=form, food_items=food_items, tags=tags)
 
 @app.route("/logout")
 def logout():        

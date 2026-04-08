@@ -15,7 +15,7 @@ function GetRecipes() {
   }, []);
 
   return (
-    <div className="flex justify-center m-4">
+    <div className="flex flex-wrap justify-center m-4">
       {recipes.map((recipes) => {
         const isOpen = openRecipeID === recipes.recipe_id;
         return (
@@ -34,9 +34,9 @@ function GetRecipes() {
               </h2>
               <h3 className="text-lg mb-2">{recipes.short_description}</h3>
 
-              <p className="bg-gray-100 p-2 rounded mb-4">
+              <span className="bg-gray-100 p-2 rounded mb-4">
                 <h4 className="font-bold">{recipes.recipeType}</h4>
-              </p>
+              </span>
               <div className="inline-flex gap-4">
                 <p class="bg-gray-100 p-2 rounded mb-4">
                   <span className="font-bold">👥 </span>
