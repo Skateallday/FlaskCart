@@ -250,7 +250,7 @@ def adminhome():
 def logout():        
         session.clear()
         flash("You have successfully logged out.")
-        return redirect('/')
+        return redirect('/adminlogin')
 
 
 

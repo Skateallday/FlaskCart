@@ -1,6 +1,29 @@
 body{
     background-image: url(../images/patterned-background.jpg);
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 100vh;
+    background-size: 100vw;
+    background-repeat: repeat;
+    padding: 0 0 5rem 0;
+
+}
+
+header{
+    background: #222222;
+    width: 100vw;
+    padding: 1rem 2.5rem;
+    color: #fff;
+}
+
+.nav-links{
+    display: flex;
+    gap: 1rem;
+    flex-direction: row;
+}
+
+footer{
+    position: fixed;
+    bottom: 0;
+    background: #222222;
+    width: 100vw;
+    padding: 1rem 2.5rem;
+    color: #fff;
 }
