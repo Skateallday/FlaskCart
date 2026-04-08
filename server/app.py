@@ -5,8 +5,14 @@ from flask_bcrypt import Bcrypt
 from config import Config
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-from forms.forms import loginForm, registration
+from app.forms.forms import loginForm, registration, NewFoodsForm, NewRecipeForm, EditFoodForm, EditRecipeForm
 from functools import wraps
+from app.handlers import (
+    handle_new_food,
+    handle_edit_food,
+    handle_new_recipe,
+    handle_edit_recipe,
+)
 
 
 app = Flask(__name__, static_folder='static', static_url_path='')
@@ -34,10 +40,12 @@ def inject_csrf_token(response):
 
 def login_required(f):
     @wraps(f)
-    def decorated_function(*arg, **kwargs):
-        if not g.username:
+    def decorated_function(*args, **kwargs):
+        if not getattr(g, 'username', None):
+            if request.path.startswith('/api/'):
+                return jsonify({'error': 'Unauthorized'}), 401
             return redirect(url_for('adminlogin'))
-        return f(*arg, **kwargs)
+        return f(*args, **kwargs)
     return decorated_function
 
 @app.route('/')
@@ -62,6 +70,7 @@ def get_pantry():
     return jsonify(pantry_list)
 
 @app.route("/api/pantry/<item>/add/<value>", methods=["POST"])
+@login_required
 def add_to_invent(item, value):
     print(item)
     if request.method == 'POST':
@@ -83,6 +92,7 @@ def add_to_invent(item, value):
         return {"message": "GET request for add endpoint"}, 200
 
 @app.route("/api/pantry/<item>/remove/<value>", methods=["POST"])
+@login_required
 def remove_from_invent(item, value):
     print(item)
     if request.method == 'POST':
@@ -202,16 +212,45 @@ def adminlogin():
             flash('Error registering user')                      
     return render_template("adminlogin.html", form_type=form_type,form=form) 
               
-@app.route('/admin-home')
+@app.route('/admin-home', methods=['GET', 'POST'])
 @login_required
 def adminhome():
-        return render_template('admin.html')
+    section = request.args.get('section', 'none')
+
+    form_map = {
+        'new_food': NewFoodsForm,
+        'edit_food': EditFoodForm,
+        'new_recipe': NewRecipeForm,
+        'edit_recipe': EditRecipeForm,
+    }
+
+    handler_map = {
+        'new_food': handle_new_food,
+        'edit_food': handle_edit_food,
+        'new_recipe': handle_new_recipe,
+        'edit_recipe': handle_edit_recipe,
+    }
+
+    conn = get_db_connection()
+    food_items = conn.execute("SELECT ROWID as id, * FROM FoodItems").fetchall()
+    tags = conn.execute("SELECT * FROM Tags").fetchall()
+    conn.close()
+
+    form_class = form_map.get(section)
+    form = form_class() if form_class else None
+
+    if form and section in handler_map and form.validate_on_submit():
+        response = handler_map[section](form)
+        if response:
+            return response
+
+    return render_template('admin.html', active_section=section, form=form, food_items=food_items, tags=tags)
 
 @app.route("/logout")
 def logout():        
         session.clear()
         flash("You have successfully logged out.")
-        return redirect('/')
+        return redirect('/adminlogin')
 
 
 

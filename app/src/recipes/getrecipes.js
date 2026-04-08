@@ -15,40 +15,45 @@ function GetRecipes() {
   }, []);
 
   return (
-    <div className="flex justify-center m-4">
+    <div className="flex flex-wrap justify-center m-4">
       {recipes.map((recipes) => {
         const isOpen = openRecipeID === recipes.recipe_id;
         return (
           <div
             key={recipes.recipe_id}
-            className="border w-[33%] bg-white p-4 m-4 rounded shadow"
+            className="border w-[33%] bg-white p-4 m-4 rounded-xl shadow-2xl"
           >
             <div id="accordion" className="accordion">
-              <h2 className="accordionItem text-xl font-bold mb-2">
-                {recipes.recipe_name}
-              </h2>
-
               <img
                 src={recipes.image_url}
                 alt={recipes.image_alt}
                 className=" h-auto mt-4 rounded"
               />
-              <h3 className="my-4">{recipes.short_description}</h3>
+              <h2 className="accordionItem text-xl font-bold mb-2 mt-4">
+                {recipes.recipe_name}
+              </h2>
+              <h3 className="text-lg mb-2">{recipes.short_description}</h3>
 
-              <p>
-                <span className="font-bold">Prep time:</span>{" "}
-                {recipes.prep_time_minutes} minutes
-              </p>
-              <p>
-                <span className="font-bold">Cook time:</span>{" "}
-                {recipes.cook_time_minutes} minutes
-              </p>
-              <p>
-                <span className="font-bold">Total time:</span>{" "}
-                {recipes.total_time_minutes} minutes
-              </p>
-
-              <div aria-labelledby={`accordion${recipes.recipe_id}`} role="region"
+              <span className="bg-gray-100 p-2 rounded mb-4">
+                <h4 className="font-bold">{recipes.recipeType}</h4>
+              </span>
+              <div className="inline-flex gap-4">
+                <p class="bg-gray-100 p-2 rounded mb-4">
+                  <span className="font-bold">👥 </span>
+                  {recipes.servings}
+                </p>
+                <p class="bg-gray-100 p-2 rounded mb-4">
+                  <span className="font-bold">🔥</span>
+                  {recipes.calories} calories
+                </p>
+                <p class="bg-gray-100 p-2 rounded mb-4">
+                  <span className="font-bold">🕛</span>
+                  {recipes.total_time_minutes} minutes
+                </p>
+              </div>
+              <div
+                aria-labelledby={`accordion${recipes.recipe_id}`}
+                role="region"
                 className={`mb-4 overflow-hidden transition-all duration-300 ease-in-out will-change-transform
     ${
       isOpen
@@ -64,9 +69,10 @@ function GetRecipes() {
                   Add to list
                 </button>
               </div>
-              <button aria-controls={`accordion${recipes.recipe_id}`}
-              aria-selected={isOpen}
-              role="tab"
+              <button
+                aria-controls={`accordion${recipes.recipe_id}`}
+                aria-selected={isOpen}
+                role="tab"
                 className="bg-teal-600 flex text-black font-bold px-4 py-2 rounded mt-4"
                 onClick={() =>
                   setOpenRecipeId(isOpen ? null : recipes.recipe_id)

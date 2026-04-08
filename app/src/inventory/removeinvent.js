@@ -12,7 +12,7 @@ export default function RemoveButton({ item, value, onUpdate }) {
     
     try{  await removeFromStock(item.foodName, value);  // Pass the foodName string
     
-    toast(value + " " + item.foodName + "s have been removed");
+    toast.success(`${value} ${item.foodName}${value == 1 ? '' : 's'} removed`);
     onUpdate(item.foodName);}
     catch (error){
       toast.error("Failed to remove stock: " + error.message);
