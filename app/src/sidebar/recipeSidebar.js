@@ -15,7 +15,7 @@ function RecipeSidebar() {
   return (
     <aside className="h-full border-r-2 relative">
       <div className="border-right text-center text-black font-bold gap-4 sticky top-0">
-        <h2 className="hidden md:block w-full p-4 gap-4 text-left text-black border-b-2">
+        <h2 className="hidden md:block w-full p-4 gap-4 text-left text-lg text-black border-b-2">
           Filter recipes
         </h2>
         {categories.map((cat) => (
