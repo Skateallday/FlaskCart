@@ -16,7 +16,7 @@ function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="header relative bg-teal-600 w-full ">
+    <header className="header relative bg-teal-600 w-full flex flex-row justify-between items-center p-4">
       <a href="/">
         <img className="flaskcartlogo z-50" src={cartAvo} alt="Flask Cart Logo" />
       </a>

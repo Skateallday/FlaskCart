@@ -1,0 +1,288 @@
+<h3 class="text-xl font-bold mb-4">Add new recipe</h3>
+
+<form method="POST" action="{{ url_for('adminhome', section='new_recipe') }}" class="space-y-6">
+  {{ form.hidden_tag() }}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="space-y-2">
+        {% for category, message in messages %}
+          <div class="p-3 rounded
+            {% if category == 'success' %}bg-green-100 text-green-800
+            {% elif category == 'danger' %}bg-red-100 text-red-800
+            {% else %}bg-gray-100 text-gray-800{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      {{ form.recipe_name.label(class="block mb-1 font-semibold") }}
+      {{ form.recipe_name(class="w-full border rounded p-2") }}
+      {% for error in form.recipe_name.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <div>
+      {{ form.servings.label(class="block mb-1 font-semibold") }}
+      {{ form.servings(class="w-full border rounded p-2") }}
+      {% for error in form.servings.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <div>
+      {{ form.image_url.label(class="block mb-1 font-semibold") }}
+      {{ form.image_url(class="w-full border rounded p-2") }}
+      {% for error in form.image_url.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <div>
+      {{ form.image_alt.label(class="block mb-1 font-semibold") }}
+      {{ form.image_alt(class="w-full border rounded p-2") }}
+      {% for error in form.image_alt.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <div class="md:col-span-2">
+      {{ form.short_description.label(class="block mb-1 font-semibold") }}
+      {{ form.short_description(class="w-full border rounded p-2 min-h-24") }}
+      {% for error in form.short_description.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <div>
+      {{ form.prep_time_minutes.label(class="block mb-1 font-semibold") }}
+      {{ form.prep_time_minutes(class="w-full border rounded p-2") }}
+      {% for error in form.prep_time_minutes.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <div>
+      {{ form.cook_time_minutes.label(class="block mb-1 font-semibold") }}
+      {{ form.cook_time_minutes(class="w-full border rounded p-2") }}
+      {% for error in form.cook_time_minutes.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <div>
+      {{ form.total_time_minutes.label(class="block mb-1 font-semibold") }}
+      {{ form.total_time_minutes(class="w-full border rounded p-2") }}
+      {% for error in form.total_time_minutes.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <div>
+      {{ form.recipeType.label(class="block mb-1 font-semibold") }}
+      {{ form.recipeType(class="w-full border rounded p-2") }}
+      {% for error in form.recipeType.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <div>
+      {{ form.calories.label(class="block mb-1 font-semibold") }}
+      {{ form.calories(class="w-full border rounded p-2") }}
+      {% for error in form.calories.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <hr class="my-6">
+
+  <div>
+    <div class="flex items-center justify-between mb-3">
+      <h4 class="text-lg font-bold">Instructions</h4>
+      <button
+        type="button"
+        id="add-step"
+        class="bg-gray-800 text-white px-3 py-2 rounded"
+      >
+        + Add step
+      </button>
+    </div>
+
+    <div id="steps-wrapper" class="space-y-3">
+      <div class="step-row border rounded p-3">
+        <label class="block mb-1 font-semibold">Step 1</label>
+        <textarea
+          name="step_text[]"
+          class="w-full border rounded p-2 min-h-24"
+          placeholder="Describe this step"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-6">
+
+  <div>
+    <div class="flex items-center justify-between mb-3">
+      <h4 class="text-lg font-bold">Ingredients</h4>
+      <button
+        type="button"
+        id="add-ingredient"
+        class="bg-gray-800 text-white px-3 py-2 rounded"
+      >
+        + Add ingredient
+      </button>
+    </div>
+
+    <div id="ingredients-wrapper" class="space-y-3">
+      <div class="ingredient-row border rounded p-3 grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+        <div>
+          <label class="block mb-1 font-semibold">Ingredient</label>
+          <select name="ingredient_id[]" class="w-full border rounded p-2">
+            <option value="">Select ingredient</option>
+            {% for item in food_items %}
+              <option value="{{ item.id }}">{{ item.foodName }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-1 font-semibold">Quantity</label>
+          <input
+            type="number"
+            step="any"
+            name="quantity[]"
+            class="w-full border rounded p-2"
+            placeholder="e.g. 2"
+          >
+        </div>
+
+        <div>
+          <label class="block mb-1 font-semibold">Unit</label>
+          <input
+            type="text"
+            name="unit[]"
+            class="w-full border rounded p-2"
+            placeholder="e.g. cups"
+          >
+        </div>
+
+        <div class="flex items-center gap-2 pb-2">
+          <input type="hidden" name="optional[]" value="0">
+          <input type="checkbox" name="optional[]" value="1" class="h-4 w-4">
+          <label>Optional</label>
+        </div>
+
+        <div>
+          <button
+            type="button"
+            class="remove-row bg-red-600 text-white px-3 py-2 rounded w-full"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-6">
+
+  <div>
+    <h4 class="text-lg font-bold mb-3">Tags</h4>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+      {% for tag in tags %}
+        <label class="flex items-center gap-2 border rounded p-2">
+          <input type="checkbox" name="tag_id[]" value="{{ tag.tag_id }}">
+          <span>{{ tag.tag_name }}</span>
+        </label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="pt-4">
+    {{ form.submit(class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded") }}
+  </div>
+</form>
+
+<button id="deleteRecipeButton" type="button" class="bg-red-500 text-black px-4 py-2 rounded">
+            DELETE RECIPE
+</button>
+
+<script>
+  const stepsWrapper = document.getElementById('steps-wrapper');
+  const addStepBtn = document.getElementById('add-step');
+
+  addStepBtn.addEventListener('click', () => {
+    const stepCount = stepsWrapper.querySelectorAll('.step-row').length + 1;
+
+    const stepRow = document.createElement('div');
+    stepRow.className = 'step-row border rounded p-3';
+    stepRow.innerHTML = `
+      <div class="flex items-center justify-between mb-1">
+        <label class="block font-semibold">Step ${stepCount}</label>
+        <button type="button" class="remove-row text-red-600">Remove</button>
+      </div>
+      <textarea
+        name="step_text[]"
+        class="w-full border rounded p-2 min-h-24"
+        placeholder="Describe this step"
+      ></textarea>
+    `;
+
+    stepsWrapper.appendChild(stepRow);
+  });
+
+  const ingredientsWrapper = document.getElementById('ingredients-wrapper');
+  const addIngredientBtn = document.getElementById('add-ingredient');
+
+  addIngredientBtn.addEventListener('click', () => {
+    const firstRow = ingredientsWrapper.querySelector('.ingredient-row');
+    const newRow = firstRow.cloneNode(true);
+
+    newRow.querySelectorAll('input').forEach(input => {
+      if (input.type === 'checkbox') {
+        input.checked = false;
+      } else {
+        input.value = '';
+      }
+    });
+
+    newRow.querySelectorAll('select').forEach(select => {
+      select.selectedIndex = 0;
+    });
+
+    ingredientsWrapper.appendChild(newRow);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.classList.contains('remove-row')) return;
+
+    const stepRows = stepsWrapper.querySelectorAll('.step-row');
+    const ingredientRows = ingredientsWrapper.querySelectorAll('.ingredient-row');
+    const row = event.target.closest('.step-row, .ingredient-row');
+
+    if (!row) return;
+
+    if (row.classList.contains('step-row') && stepRows.length > 1) {
+      row.remove();
+
+      const updatedSteps = stepsWrapper.querySelectorAll('.step-row');
+      updatedSteps.forEach((stepRow, index) => {
+        const label = stepRow.querySelector('label');
+        if (label) {
+          label.textContent = `Step ${index + 1}`;
+        }
+      });
+    }
+
+    if (row.classList.contains('ingredient-row') && ingredientRows.length > 1) {
+      row.remove();
+    }
+  });
+</script>
