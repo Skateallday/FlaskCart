@@ -15,7 +15,7 @@ function Sidebar() {
   return (
     <aside className="h-full border-r-2 relative">
       <div className="border-right text-center text-black font-bold gap-4 sticky top-0">
-        <h2 className="hidden md:block w-full p-4 gap-4 text-left text-black border-b-2">
+        <h2 className="hidden md:block w-full p-4 gap-4 text-left text-black text-lg border-b-2">
           Filter items
         </h2>
         {categories.map((cat) => (

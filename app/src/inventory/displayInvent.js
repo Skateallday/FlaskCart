@@ -6,10 +6,10 @@ import { SearchProvider } from '../context/searchContext';
 export default function DisplayInvent() {
   return (
     <div className="flex">
-      <div className="w-1/4">
+      <div className="w-1/6">
         <Sidebar />
       </div>
-      <div className="w-3/4">
+      <div className="w-5/6">
         <SearchProvider>
             <GetInventory/>
         </SearchProvider>

@@ -25,31 +25,36 @@
       <h2 class="text-xl font-bold mb-4">Dashboard</h2>
     </div>
   </div>
-  <div class="row">
-    <div class="columns-4">
-      <div class="border min-block-40 rounded-lg p-4">
+  <div class="row mb-4">
+    <div class="flex flex-row gap-4 justify-start items-center">
         <a href="{{url_for('adminhome', section='new_food')}}">
-        <h2 class="text-l font-bold mb-4">Add new food item </h2>
+          
+      <div class="border border-green-500 rounded-lg p-4 bg-green-100 transition delay-100 duration-300 ease-in-out hover:bg-green-500 cursor-pointer">
+        <h2 class="text-l font-bold ">Add new food item </h2>
+        </div>
         </a>
-      </div>
-      <div class=" border min-block-40 rounded-lg p-4">
-        
+
         <a href="{{url_for('adminhome', section='edit_food')}}">
-        <h2 class="text-l font-bold mb-4">Edit or delete existing food item </h2>
-        </a>
-      </div>
-      <div class=" border min-block-40 rounded-lg p-4">
+      <div class="border border-yellow-500 rounded-lg p-4 bg-yellow-100 transition delay-100 duration-300 ease-in-out hover:bg-yellow-500 cursor-pointer">
         
+        <h2 class="text-l font-bold ">Edit or delete existing food item </h2>
+        
+      </div>
+</a>
         <a href="{{url_for('adminhome', section='new_recipe')}}">
-        <h2 class="text-l font-bold mb-4">Add new recipe </h2>
-        </a>
-      </div>
-      <div class=" border min-block-40 rounded-lg p-4">
+      <div class="border border-pink-500 rounded-lg p-4 bg-pink-100 transition delay-100 duration-300 ease-in-out hover:bg-pink-500 cursor-pointer ">
         
-        <a href="{{url_for('adminhome', section='edit_recipe')}}">
-        <h2 class="text-l font-bold mb-4">Edit or delete existing recipe </h2>
-        </a>
+        <h2 class="text-l font-bold ">Add new recipe </h2>
+        
       </div>
+</a>
+        <a href="{{url_for('adminhome', section='edit_recipe')}}">
+      <div class="border border-blue-500 rounded-lg p-4 bg-blue-100 transition delay-100 duration-300 ease-in-out hover:bg-blue-500 cursor-pointer ">
+        
+        <h2 class="text-l font-bold ">Edit or delete existing recipe </h2>
+        
+      </div>
+      </a>
     </div>
   </div>
   <div class="row">

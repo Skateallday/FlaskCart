@@ -5,10 +5,10 @@ import { SearchProvider } from '../context/searchContext';
 function RecipesPage() {
   return (
         <div className="flex">
-      <div className="w-1/4">
+      <div className="w-1/6">
         <RecipeSidebar />
       </div>
-      <div className="w-3/4">
+      <div className="w-5/6">
         <SearchProvider>
       <GetRecipes />
         </SearchProvider>

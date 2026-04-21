@@ -7,6 +7,16 @@ function GetRecipes() {
   const [recipes, setRecipes] = useState([]);
   const [openRecipeID, setOpenRecipeId] = useState(null);
 
+  const recipeTypeColours = [
+    { 'Dinner': 'bg-yellow-100' },
+    { 'Easy': 'bg-green-100' },
+    { 'Soup': 'bg-pink-100' },
+    { 'Easy': 'bg-blue-100' },
+    { 'Snack': 'bg-orange-100' },
+    { 'Breakfast': 'bg-purple-100' },
+    { 'Beverage': 'bg-teal-100' },
+  ]
+
   useEffect(() => {
     fetch(`${BASE_URL}/api/recipes`)
       .then((res) => res.json())
@@ -15,28 +25,33 @@ function GetRecipes() {
   }, []);
 
   return (
-    <div className="flex flex-wrap justify-center m-4">
+    <div className="w-full flex flex-wrap m-4">
       {recipes.map((recipes) => {
         const isOpen = openRecipeID === recipes.recipe_id;
         return (
           <div
             key={recipes.recipe_id}
-            className="border w-[33%] bg-white p-4 m-4 rounded-xl shadow-2xl"
+            className="border w-[30%] bg-white  m-4 rounded-3xl shadow-xl :hover shadow-3xl"
           >
             <div id="accordion" className="accordion">
               <img
                 src={recipes.image_url}
                 alt={recipes.image_alt}
-                className=" h-auto mt-4 rounded"
+                className=" h-auto rounded-tl-3xl rounded-tr-3xl"
               />
-              <h2 className="accordionItem text-xl font-bold mb-2 mt-4">
+              <div class="p-4">
+              <h2 className="accordionItem  mb-2 mt-4">
                 {recipes.recipe_name}
               </h2>
-              <h3 className="text-lg mb-2">{recipes.short_description}</h3>
+              <p className="mb-2">{recipes.short_description}</p>
 
-              <span className="bg-gray-100 p-2 rounded mb-4">
-                <h4 className="font-bold">{recipes.recipeType}</h4>
-              </span>
+              <p className={`p-2 rounded mb-4 
+                            ${recipeTypeColours.find((r) => r[recipes.recipeType])?.[recipes.recipeType] || 'bg-gray-100'}`
+                          }
+                >
+
+                <p className="font-bold">{recipes.recipeType}</p>
+              </p>
               <div className="inline-flex gap-4">
                 <p class="bg-gray-100 p-2 rounded mb-4">
                   <span className="font-bold">👥 </span>
@@ -80,6 +95,7 @@ function GetRecipes() {
               >
                 {isOpen ? "Close" : "View Recipe"}
               </button>
+            </div>
             </div>
           </div>
         );
