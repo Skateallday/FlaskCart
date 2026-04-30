@@ -7,6 +7,7 @@ from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from app.forms.forms import loginForm, registration, NewFoodsForm, NewRecipeForm, EditFoodForm, EditRecipeForm
 from functools import wraps
+from flask_mail import Mail, Message
 from app.handlers import (
     handle_new_food,
     handle_edit_food,
@@ -27,6 +28,14 @@ DB_PATH = os.path.join(BASE_DIR, "app.db")
 app.config.from_object(Config)
 csrf = CSRFProtect(app)
 
+app.config['MAIL_SERVER'] = 'smpt.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+
+mail =Mail(app)
 
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -151,6 +160,10 @@ def get_ingredients():
 
     return jsonify([dict(row) for row in rows])
 
+@app.route("/api/contact", methods=["POST"])
+def send_contact_form():
+    data = request.get_json()
+    print
 
 @app.before_request
 def before_request():

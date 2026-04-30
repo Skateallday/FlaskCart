@@ -50,7 +50,7 @@ function GetRecipes() {
                           }
                 >
 
-                <p className="font-bold">{recipes.recipeType}</p>
+                <span className="font-bold">{recipes.recipeType}</span>
               </p>
               <div className="inline-flex gap-4">
                 <p class="bg-gray-100 p-2 rounded mb-4">

@@ -6,8 +6,8 @@ function Home() {
     
     return (
         <>
-        <div class="home-hero">   
-            <div class="intro-text">   
+        <div className="home-hero">   
+            <div className="intro-text">   
             <h1 className=" py-5 font-bold text-center pb-8">Welcome to FlaskCart </h1>
             <h2>Let's get cookin!</h2>
         <p>Are you constantly creating new shopping lists each week? Never quite sure what you have in the house? Looking for something

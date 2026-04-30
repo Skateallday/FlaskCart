@@ -33,3 +33,15 @@ export async function removeFromStock(item, value) {
   if (!res.ok) throw new Error("Failed to Remove Stock");
 
     }
+
+export async function contactFormSubmit(formData, e){
+  e.preventDefault();
+  const response = await fetch('api/contact',{
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ name: formData.name, email: formData.email, message: formData.message}),
+
+  });
+  const data = await response.json();
+  console.log(data.status)
+}

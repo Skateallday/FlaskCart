@@ -1,6 +1,9 @@
 export default function Contact() {
+
+
+
   return (
-    <div className="max-w-3xl mx-auto p-4 space-y-4">
+    <div className=" mx-auto p-4 space-y-4">
       <h2 className="text-2xl py-5 font-bold text-center mt-8 pb-8">
         Contact us
       </h2>
@@ -22,15 +25,9 @@ export default function Contact() {
           </label>
           <input name="email" type="email"  className="border p-2 w-full" placeholder="Email address" />
 
-          <label
-            for="phone"
-            className="block text-gray-700 pt-2 text-sm font-bold mb-2"
-          >
-            Phone number
-          </label>
-          <input name="phone" type="phone"  className="border p-2 w-full" placeholder="Phone number" />
+          
 
-          <label for="name" className="block text-gray-700 pt-2 text-sm font-bold mb-2">Your message</label>
+          <label for="message" className="block text-gray-700 pt-2 text-sm font-bold mb-2">Your message</label>
           <textarea name="message"  className="border w-full p-2" placeholder="Your message" />
           <button
             className="bg-teal-600 flex text-black font-bold px-4 py-2 rounded mt-4"
