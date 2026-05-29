@@ -34,6 +34,34 @@ export async function removeFromStock(item, value) {
 
     }
 
+    export async function addToShoppingList(fooditem_id, quantity, unit) {
+  const res = await fetch(`${BASE_URL}/api/shoppinglist/`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-CSRFToken": csrfToken
+  },
+  credentials: "include", // important to send cookies
+  body: JSON.stringify({fooditem_id: fooditem_id, quantity: quantity, unit: unit})
+});
+  if (!res.ok) throw new Error("Failed to Add to Shopping List");
+
+    }
+
+export async function removeFromShoppingList(fooditem_id, quantity, unit) {
+  const res = await fetch(`${BASE_URL}/api/shoppinglist/`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-CSRFToken": csrfToken
+  },
+  credentials: "include", // important to send cookies
+  body: JSON.stringify({fooditem_id: fooditem_id, quantity: quantity, unit: unit})
+});
+  if (!res.ok) throw new Error("Failed to remove from shopping list");
+
+    }
+
 export async function contactFormSubmit(formData, e){
   e.preventDefault();
   const response = await fetch('api/contact',{

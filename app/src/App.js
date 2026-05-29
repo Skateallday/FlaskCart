@@ -5,12 +5,15 @@ import AppRoutes from './routes/routes';
 import { FilterProvider } from './context/filterContext';
 import { ToastContainer } from 'react-toastify';
 import { InventoryProvider } from './context/inventoryContext.jsx';
+import { ShoppingListProvider } from './context/shoppingListContext.jsx';
 
 function App() {
 
   return (
     <FilterProvider>
       <InventoryProvider>
+
+    <ShoppingListProvider>
     <div className="app">
       <ToastContainer />
 
@@ -26,6 +29,8 @@ function App() {
 
       <Footer />
     </div>
+
+    </ShoppingListProvider>
     </InventoryProvider>
     </FilterProvider>
   );

@@ -3,12 +3,22 @@ export default function Contact() {
 
 
   return (
-    <div className=" mx-auto p-4 space-y-4">
-      <h2 className="text-2xl py-5 font-bold text-center mt-8 pb-8">
+      
+      <div className="w-full flex flex-wrap ">
+
+      <div className="w-full bg-white flex flex-col p-4 m-4 rounded shadow-md">
+        
+      <div className="text-center max-w-2xl mx-auto">
+        <h2 className="text-2xl py-5 font-bold text-center mt-8 pb-8">
         Contact us
       </h2>
-      <div className="w-full bg-white max-w-xs flex flex-col p-4 m-4 rounded shadow-md">
-        <form>
+        <p>Have questions about our recipes, ingredients, or anything else? We're here to help! Please fill out the form on the left and we'll get back to you as soon as possible.</p>
+        <p>In the meantime, why don't  you check out some of our recipes here?</p>
+        <p><a href="/recipes" className="py-4 text-teal-600 hover:underline">
+          View Our Recipes
+        </a></p>
+      </div>
+        <form className="max-w-3xl">
           <label
             for="fullname"
             className="block text-gray-700 pt-2 text-sm font-bold mb-2"

@@ -20,7 +20,7 @@ function Home() {
         <GetRecipes />
         </section>
         
-        <section className=" w-full p-4 mt-8 shadow-md">
+        <section className="w-full p-4">
         <Contact />
         </section>
         </>
