@@ -40,7 +40,7 @@ function GetRecipes() {
                 alt={recipes.image_alt}
                 className=" h-auto rounded-tl-lg rounded-tr-lg"
               />
-              <div class="p-4">
+              <div className="p-4">
               <h2 className="accordionItem  mb-2 mt-4">
                 {recipes.recipe_name}
               </h2>
@@ -58,11 +58,11 @@ function GetRecipes() {
                   <span className="font-bold">👥 </span>
                   {recipes.servings}
                 </p>
-                <p class="bg-gray-100 p-2 rounded mb-4">
+                <p className="bg-gray-100 p-2 rounded mb-4">
                   <span className="font-bold">🔥</span>
                   {recipes.calories} calories
                 </p>
-                <p class="bg-gray-100 p-2 rounded mb-4">
+                <p className="bg-gray-100 p-2 rounded mb-4">
                   <span className="font-bold">🕛</span>
                   {recipes.total_time_minutes} minutes
                 </p>

@@ -35,7 +35,7 @@ export async function removeFromStock(item, value) {
     }
 
     export async function addToShoppingList(fooditem_id, quantity, unit) {
-  const res = await fetch(`${BASE_URL}/api/shoppinglist/`, {
+  const res = await fetch(`${BASE_URL}/api/shoppinglist/post`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -48,15 +48,15 @@ export async function removeFromStock(item, value) {
 
     }
 
-export async function removeFromShoppingList(fooditem_id, quantity, unit) {
-  const res = await fetch(`${BASE_URL}/api/shoppinglist/`, {
+export async function removeFromShoppingList(fooditem_id) {
+  const res = await fetch(`${BASE_URL}/api/shoppinglist/remove`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
     "X-CSRFToken": csrfToken
   },
   credentials: "include", // important to send cookies
-  body: JSON.stringify({fooditem_id: fooditem_id, quantity: quantity, unit: unit})
+  body: JSON.stringify({fooditem_id: fooditem_id})
 });
   if (!res.ok) throw new Error("Failed to remove from shopping list");
 

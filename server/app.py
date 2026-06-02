@@ -99,24 +99,59 @@ def shoppinglist():
     conn.close()
 
     shopping_list = [dict(row) for row in rows]
-    if request.method == "POST":
-        data = request.get_json()
-        fooditem_id = data.get("fooditem_id")
-        quantity = data.get("quantity")
-        unit = data.get("unit")        
-        print(f"Received data: fooditem_id={fooditem_id}, quantity={quantity}, unit={unit}")
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        try:
-             cursor.execute("INSERT INTO Shoppinglist (FoodItemID, Quantity, Unit) VALUES (?, ?, ?)", (fooditem_id, quantity, unit))
-             conn.commit()
-        except sqlite3.Error as e:
-             print(f"A database error has happened: {e}")
-        finally:
-             conn.close()
-
 
     return jsonify(shopping_list)
+
+
+@app.route("/api/shoppinglist/post", methods=["POST"])
+def shoppinglistpost():
+    
+    data = request.get_json()
+    fooditem_id = data.get("fooditem_id")
+    quantity = data.get("quantity")
+    unit = data.get("unit")        
+    print(f"Received data: fooditem_id={fooditem_id}, quantity={quantity}, unit={unit}")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:    
+            cursor.execute("SELECT * FROM ShoppingList WHERE FoodItemID = ?", (fooditem_id,))
+            food_item = cursor.fetchone()
+            if food_item is None:
+                cursor.execute("INSERT INTO ShoppingList (FoodItemID, Quantity, Unit) VALUES (?, ?, ?)", (fooditem_id, quantity, unit))
+                conn.commit()
+            else:
+                cursor.execute("UPDATE ShoppingList SET Quantity = Quantity + ? WHERE FoodItemID = ?", (quantity, fooditem_id))
+                conn.commit()     
+    except sqlite3.Error as e:
+            print(f"A database error has happened: {e}")
+    finally:
+            conn.close()
+
+
+    return jsonify({"message": "Item added to shopping list successfully"}), 200
+
+@app.route("/api/shoppinglist/remove", methods=["POST"])
+def shoppinglistremove():
+    
+    data = request.get_json()
+    fooditem_id = data.get("fooditem_id")
+    print(f"Received data: fooditem_id={fooditem_id}")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:    
+            
+            cursor.execute("DELETE FROM ShoppingList WHERE FoodItemID = ?", (fooditem_id,))
+            conn.commit()
+               
+    except sqlite3.Error as e:
+            print(f"A database error has happened: {e}")
+    finally:
+            conn.close()
+
+
+    return jsonify({"message": "Item removed from shopping list successfully"}), 200
 
 @app.route("/api/pantry/<item>/add/<value>", methods=["POST"])
 @login_required

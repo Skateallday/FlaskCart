@@ -23,15 +23,11 @@ export function ShoppingListProvider({ children }) {
     );
   };
 
-  const removeFromShoppingList = (foodName, inputQty) => {
-    setShoppingList((prev) =>
-      prev.map((i) =>
-        i.foodName === foodName
-          ? { ...i, stock: Number(i.stock) - Number(inputQty) }
-          : i,
-      ),
-    );
-  };
+const removeFromShoppingList = (fooditem_id) =>{
+  setShoppingList((prev) =>{
+    return prev.filter((item) => item.fooditem_id !== fooditem_id)
+  });
+};
 
   return(
     <ShoppingListContext.Provider value={{ shoppingList, addToShoppingList, removeFromShoppingList}}>

@@ -38,7 +38,7 @@ function GetShoppingList() {
               const inputQty = getInputValue(item.foodName);
               return (
                 <tr
-                  key={item.foodName}
+                  key={item.fooditem_id}
                   className="hover:bg-yellow-100 border-b-2"
                 >
                   <td className="">{item.fooditem_name}</td>
