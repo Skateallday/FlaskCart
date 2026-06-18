@@ -49,7 +49,6 @@ function GetShoppingList() {
                   <td className="">{item.is_purchased}</td>
                   <td className="">
                     <input
-                     className="bg-teal-600 flex text-black font-bold px-4 py-2 rounded"
                       type="number"
                       min="1"
                       value={inputValue[item.foodname] ?? 1}
