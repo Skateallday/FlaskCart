@@ -45,6 +45,7 @@ jobs:
       - name: Commit and push static files
         run: |
           git config user.name "GitHub Actions"
+          cp server/app.db server/app.db.backup
           git config user.email "actions@github.com"
           git add -A server/static/
           git commit -m "Auto deploy $(date)" || echo "Nothing to commit"
