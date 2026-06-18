@@ -38,7 +38,7 @@ jobs:
           cp app/build/manifest.json server/static/
           cp app/build/robots.txt server/static/
           cp app/build/favicon.ico server/static/
-          cp -r app/build/static server/static/
+          cp -r app/build/static/* server/static/
 
 
 

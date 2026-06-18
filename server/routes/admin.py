@@ -8,7 +8,7 @@ from auth import login_required
 
 admin_bp = Blueprint("admin", __name__)
 
-from ..handlers import (
+from handlers import (
     handle_new_food,
     handle_edit_food,
     handle_new_recipe,
