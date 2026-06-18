@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout production
         uses: actions/checkout@v4
+        with:
+          ref: production
 
       - name: Checkout app folder from master
         run: |
@@ -26,11 +28,15 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Install and build
+      - name: Install frontend dependencies
         run: |
           cd app
           npm install
-          npm run build
+
+      - name: Build frontend
+        run: |
+          cd app
+          node ./node_modules/react-scripts/bin/react-scripts.js build
 
       - name: Copy build to server/static
         run: |
@@ -43,13 +49,19 @@ jobs:
           cp app/build/favicon.ico server/static/
           cp -r app/build/static/* server/static/
 
-      - name: Commit and push static files
+      - name: Commit and push built static files
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+
           git add -A server/static/
-          git commit -m "Auto deploy $(date)" || echo "Nothing to commit"
-          git push origin production
+
+          if git diff --cached --quiet; then
+            echo "No static files changed"
+          else
+            git commit -m "Auto deploy built static files [skip ci]"
+            git push origin production
+          fi
 
       - name: Deploy on PythonAnywhere
         uses: appleboy/ssh-action@v1.0.0
@@ -72,7 +84,7 @@ jobs:
 
       - name: Reload PythonAnywhere
         run: |
-          for i in 1 2 3 4 5; do
+          for i in 1 2 3 4 5 6; do
             response=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
               -H "Authorization: Token ${{ secrets.PYTHONANYWHERE_TOKEN }}" \
               https://www.pythonanywhere.com/api/v0/user/${{ secrets.PYTHONANYWHERE_USERNAME }}/webapps/skateallday.pythonanywhere.com/reload/)
@@ -80,12 +92,12 @@ jobs:
             echo "Reload attempt $i returned status: $response"
 
             if [ "$response" = "200" ]; then
-              echo "Successfully reloaded PythonAnywhere!"
+              echo "Successfully reloaded PythonAnywhere"
               exit 0
             fi
 
             sleep 10
           done
 
-          echo "Failed to reload PythonAnywhere after 5 attempts"
+          echo "Failed to reload PythonAnywhere after several attempts"
           exit 1
