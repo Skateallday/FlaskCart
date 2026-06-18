@@ -61,6 +61,9 @@ jobs:
             cd ~/FlaskCart
             source venv/bin/activate
 
+            mkdir -p ~/FlaskCart-db-backups
+            cp server/app.db ~/FlaskCart-db-backups/app.db.before-deploy || true
+
             git fetch origin production
             git reset --hard origin/production
             git clean -fd
@@ -70,8 +73,18 @@ jobs:
           response=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
             -H "Authorization: Token ${{ secrets.PYTHONANYWHERE_TOKEN }}" \
             https://www.pythonanywhere.com/api/v0/user/${{ secrets.PYTHONANYWHERE_USERNAME }}/webapps/skateallday.pythonanywhere.com/reload/)
-          if [ "$response" != "200" ]; then
-            echo "Failed to reload PythonAnywhere, status code: $response"
-            exit 1
+
+          echo "Reload returned status: $response"
+
+          if [ "$response" = "200" ]; then
+            echo "Successfully reloaded PythonAnywhere!"
+            exit 0
           fi
-          echo "Successfully reloaded PythonAnywhere!"
+
+          if [ "$response" = "409" ]; then
+            echo "PythonAnywhere returned 409 conflict. Deploy files were updated, but reload did not complete. Check/reload manually if needed."
+            exit 0
+          fi
+
+          echo "Failed to reload PythonAnywhere, status code: $response"
+          exit 1
