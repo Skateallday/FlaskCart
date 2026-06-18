@@ -1,34 +1,35 @@
+
 import os
-import sqlite3
-from flask import Flask, render_template, request, session, g, redirect, flash, url_for, jsonify, send_from_directory
-from flask_bcrypt import Bcrypt
+from flask import Flask,  session, g
 from .config import Config
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-from app.forms.forms import loginForm, registration, NewFoodsForm, NewRecipeForm, EditFoodForm, EditRecipeForm
-from functools import wraps
-from flask_mail import Mail, Message
-from app.handlers import (
-    handle_new_food,
-    handle_edit_food,
-    handle_new_recipe,
-    handle_edit_recipe,
-)
+from flask_mail import Mail
+from .routes.pantry import pantry_bp
+from .routes.frontend import frontend_bp
+from .routes.shopping_list import shopping_list_bp
+from .routes.recipes import recipes_bp
+from .routes.contact import contact_bp
+from .routes.admin import admin_bp
+
 
 
 app = Flask(__name__, static_folder='static')
-bcrypt = Bcrypt(app)
+
+app.config.from_object(Config)
 
 CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "app.db")
+app.register_blueprint(pantry_bp, url_prefix="/api")
+app.register_blueprint(shopping_list_bp, url_prefix="/api")
+app.register_blueprint(recipes_bp, url_prefix="/api")
+app.register_blueprint(contact_bp, url_prefix="/api")
+app.register_blueprint(admin_bp)
+app.register_blueprint(frontend_bp)
 
-
-app.config.from_object(Config)
 csrf = CSRFProtect(app)
 
-app.config['MAIL_SERVER'] = 'smpt.gmail.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
@@ -37,308 +38,19 @@ app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
 mail =Mail(app)
 
-def get_db_connection():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+
 
 @app.after_request
 def inject_csrf_token(response):
      response.set_cookie("csrf_token", generate_csrf())
      return response
 
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not getattr(g, 'username', None):
-            if request.path.startswith('/api/'):
-                return jsonify({'error': 'Unauthorized'}), 401
-            return redirect(url_for('adminlogin'))
-        return f(*args, **kwargs)
-    return decorated_function
-
-@app.route('/')
-def index():
-    return send_from_directory(app.static_folder, 'index.html')
-
-@app.route('/<path:path>')
-def serve_static(path):
-    file_path = os.path.join(app.static_folder, path)
-    if os.path.exists(file_path):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
-
-@app.route("/api/pantry", methods=["GET", "POST"])
-def get_pantry():
-    conn = get_db_connection()
-    rows = conn.execute("SELECT ROWID, * FROM FoodItems").fetchall()
-    conn.close()
-
-    pantry_list = [dict(row) for row in rows]
-    return jsonify(pantry_list)
-
-@app.route("/api/shoppinglist/", methods=["GET", "POST"])
-def shoppinglist():
-    print(f"Route hit! Method: {request.method}")
-
-    conn = get_db_connection()
-    rows = conn.execute("""
-        SELECT
-            sl.ROWID AS rowid,
-            sl.FoodItemID AS fooditem_id,
-            fi.foodName AS fooditem_name,
-            sl.Quantity AS quantity,
-            sl.Unit AS unit,
-            sl.IsPurchased AS is_purchased
-        FROM ShoppingList sl
-        JOIN FoodItems fi
-        ON fi.ID = sl.FoodItemID
-        ORDER BY sl.ROWID
-    """).fetchall()
-    conn.close()
-
-    shopping_list = [dict(row) for row in rows]
-
-    return jsonify(shopping_list)
-
-
-@app.route("/api/shoppinglist/post", methods=["POST"])
-def shoppinglistpost():
-    
-    data = request.get_json()
-    fooditem_id = data.get("fooditem_id")
-    quantity = data.get("quantity")
-    unit = data.get("unit")        
-    print(f"Received data: fooditem_id={fooditem_id}, quantity={quantity}, unit={unit}")
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    try:    
-            cursor.execute("SELECT * FROM ShoppingList WHERE FoodItemID = ?", (fooditem_id,))
-            food_item = cursor.fetchone()
-            if food_item is None:
-                cursor.execute("INSERT INTO ShoppingList (FoodItemID, Quantity, Unit) VALUES (?, ?, ?)", (fooditem_id, quantity, unit))
-                conn.commit()
-            else:
-                cursor.execute("UPDATE ShoppingList SET Quantity = Quantity + ? WHERE FoodItemID = ?", (quantity, fooditem_id))
-                conn.commit()     
-    except sqlite3.Error as e:
-            print(f"A database error has happened: {e}")
-    finally:
-            conn.close()
-
-
-    return jsonify({"message": "Item added to shopping list successfully"}), 200
-
-@app.route("/api/shoppinglist/remove", methods=["POST"])
-def shoppinglistremove():
-    
-    data = request.get_json()
-    fooditem_id = data.get("fooditem_id")
-    print(f"Received data: fooditem_id={fooditem_id}")
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    try:    
-            
-            cursor.execute("DELETE FROM ShoppingList WHERE FoodItemID = ?", (fooditem_id,))
-            conn.commit()
-               
-    except sqlite3.Error as e:
-            print(f"A database error has happened: {e}")
-    finally:
-            conn.close()
-
-
-    return jsonify({"message": "Item removed from shopping list successfully"}), 200
-
-@app.route("/api/pantry/<item>/add/<value>", methods=["POST"])
-@login_required
-def add_to_invent(item, value):
-    print(item)
-    if request.method == 'POST':
-
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        try:
-             cursor.execute("UPDATE FoodItems SET stock = stock + ? WHERE foodName = ?", (value, item))
-
-             conn.commit()
-        except sqlite3.Error as e:
-             print(f"A database error has happened: {e}")
-        finally:
-             conn.close()
-        # Handle POST request logic here (e.g., add item to pantry)
-        return {"message": "Item added successfully"}, 200
-    else:
-        # Handle GET request logic here (if applicable)
-        return {"message": "GET request for add endpoint"}, 200
-
-@app.route("/api/pantry/<item>/remove/<value>", methods=["POST"])
-@login_required
-def remove_from_invent(item, value):
-    print(item)
-    if request.method == 'POST':
-
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        try:
-             cursor.execute("UPDATE FoodItems SET stock = stock - ? WHERE foodName = ?", (value, item))
-
-             conn.commit()
-        except sqlite3.Error as e:
-             print(f"A database error has happened: {e}")
-        finally:
-             conn.close()
-        # Handle POST request logic here (e.g., add item to pantry)
-        return {"message": "Item added successfully"}, 200
-    else:
-        # Handle GET request logic here (if applicable)
-        return {"message": "GET request for add endpoint"}, 200
-
-@app.route("/api/recipes", methods=["GET"])
-def get_recipes():
-    conn = get_db_connection()
-    rows = conn.execute("SELECT ROWID, * FROM Recipes").fetchall()
-    conn.close()
-
-    recipes_list = [dict(row) for row in rows]
-    return jsonify(recipes_list)
-
-@app.route("/api/instructions", methods=["GET"])
-def get_instructions():
-    conn = get_db_connection()
-    rows = conn.execute("SELECT ROWID, * FROM RecipeInstructions").fetchall()
-    conn.close()
-
-    recipes_instructions = [dict(row) for row in rows]
-    return jsonify(recipes_instructions)
-
-@app.route("/api/ingredients", methods=["GET"])
-def get_ingredients():
-    conn = get_db_connection()
-    rows = conn.execute("""
-        SELECT
-            ri.ROWID AS rowid,
-            ri.recipe_id,
-            ri.fooditem_id,
-            fi.foodName AS fooditem_name,
-            ri.quantity,
-            ri.unit
-        FROM RecipeIngredients ri
-        JOIN FoodItems fi
-          ON fi.ROWID = ri.fooditem_id
-        ORDER BY ri.recipe_id, ri.ROWID
-    """).fetchall()
-    conn.close()
-
-    return jsonify([dict(row) for row in rows])
-
-@app.route("/api/contact", methods=["POST"])
-def send_contact_form():
-    data = request.get_json()
-    print
 
 @app.before_request
 def before_request():
         g.username = None
         if 'username' in session:
                 g.username = session['username']
-
-@app.route('/adminlogin', methods=['GET', 'POST'])
-def adminlogin():
-    form_type=request.args.get('form_type','login')
-    if g.username:
-        return redirect(url_for('adminhome'))
-
-    else:
-        if form_type=='login':                
-            form = loginForm(request.form)  
-            if request.method == 'POST':  
-                conn = get_db_connection()   
-                try:                    
-                    c = conn.cursor()
-                    find_user = ("SELECT * FROM users WHERE username = ?")
-                    c.execute(find_user, [(form.username.data)])
-                    results =c.fetchall()                        
-                    userResults = results[0]
-                    if bcrypt.check_password_hash(userResults[3],(form.password.data)):
-                        session.permanent = True
-                        session['username'] = (form.username.data)
-                        return redirect(url_for('adminhome'))
-                    else:
-                        flash('Either username or password was not recognised')
-                    return render_template('adminlogin.html', form_type=form_type, form=form)   
-                except Exception as e:print(e)
-
-            flash('Either username or password was not recognised')
-            return render_template('adminlogin.html', form_type=form_type, form=form)   
-                
-        elif form_type=='signup':
-            form = registration(request.form)
-            if request.method == 'POST':                         
-                conn = get_db_connection()     
-                with conn:
-                    c = conn.cursor()
-                    try:
-                        find_user = ("SELECT * FROM users WHERE username = ?")
-                        c.execute(find_user, [(form.username.data)])
-                        results =c.fetchall()                
-                        if results:
-                            flash('Username already taken')
-                            return render_template('adminlogin.html', form=form)   
-                        else:                                
-                            hashpass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-                            insert_data = '''INSERT INTO users (username, email, password) VALUES (?, ?, ?)'''
-                            c.execute(insert_data, (form.username.data, form.emailAddress.data, hashpass))
-                            conn.commit() 
-                            flash('Thanks for registering! Please login.')
-                        return render_template('adminlogin.html', form_type=form_type, form=form)   
-                    except Exception as e:print(e)
-
-            flash('Error registering user')                      
-    return render_template("adminlogin.html", form_type=form_type,form=form) 
-              
-@app.route('/admin-home', methods=['GET', 'POST'])
-@login_required
-def adminhome():
-    section = request.args.get('section', 'none')
-
-    form_map = {
-        'new_food': NewFoodsForm,
-        'edit_food': EditFoodForm,
-        'new_recipe': NewRecipeForm,
-        'edit_recipe': EditRecipeForm,
-    }
-
-    handler_map = {
-        'new_food': handle_new_food,
-        'edit_food': handle_edit_food,
-        'new_recipe': handle_new_recipe,
-        'edit_recipe': handle_edit_recipe,
-    }
-
-    conn = get_db_connection()
-    food_items = conn.execute("SELECT ROWID as id, * FROM FoodItems").fetchall()
-    tags = conn.execute("SELECT * FROM Tags").fetchall()
-    conn.close()
-
-    form_class = form_map.get(section)
-    form = form_class() if form_class else None
-
-    if form and section in handler_map and form.validate_on_submit():
-        response = handler_map[section](form)
-        if response:
-            return response
-
-    return render_template('admin.html', active_section=section, form=form, food_items=food_items, tags=tags)
-
-@app.route("/logout")
-def logout():        
-        session.clear()
-        flash("You have successfully logged out.")
-        return redirect('/adminlogin')
 
 
 

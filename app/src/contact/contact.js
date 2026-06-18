@@ -1,5 +1,27 @@
+import { BASE_URL } from "../config/config";
+
+const csrfToken = document.cookie
+  .split("; ")
+  .find(row => row.startsWith("csrf_token="))
+  ?.split("=")[1];
+
 export default function Contact() {
 
+async function sendContactForm(event){
+    event.preventDefault();
+    const res = await fetch(`${BASE_URL}/api/contact`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken
+      },
+      credentials: "include",
+      body: JSON.stringify({})
+    });
+
+    if(!res.ok) throw new Error("Failed to send message");
+
+  }
 
 
   return (
