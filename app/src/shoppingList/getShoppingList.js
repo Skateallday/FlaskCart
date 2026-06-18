@@ -3,11 +3,11 @@ import { useShoppingList } from "../context/shoppingListContext.jsx";
 import RemoveFromShopping from "./removeShoppingList.js";
 
 function GetShoppingList() {
+  
   const { shoppingList, removeFromShoppingList } = useShoppingList();
   const [inputValue, setInputValue] = useState({});
 
   let shoppingListState = shoppingList;
-  console.log(shoppingListState)
 
   const getInputValue = (foodName) => {
     const value = inputValue[foodName];
@@ -30,6 +30,7 @@ function GetShoppingList() {
               <th className="border-none text-left">Stock</th>
               <th className="border-none text-left">Unit</th>
               <th className="border-none text-left">Purchased?</th>
+              <th className="border-none text-left">Add more</th>
               <th className="border-none text-left">Remove</th>
             </tr>
           </thead>
@@ -42,10 +43,23 @@ function GetShoppingList() {
                   className="hover:bg-yellow-100 border-b-2"
                 >
                   <td className="">{item.fooditem_name}</td>
-                  <td className="">{item.quantity}</td>   
-                               
-                  <td className="">{item.unit}</td>               
+                  <td className="">{item.quantity}</td>
+
+                  <td className="">{item.unit}</td>
                   <td className="">{item.is_purchased}</td>
+                  <td className="">
+                    <input
+                      type="number"
+                      min="1"
+                      value={inputValue[item.foodname] ?? 1}
+                      onChange={(event) =>
+                        setInputValue({
+                          ...inputValue,
+                          [item.foodName]: event.target.value,
+                        })
+                      }
+                    />
+                  </td>
                   <td className="">
                     <RemoveFromShopping
                       item={item}
