@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "../config/config";
 import GetInstructions from "./getInstructions";
 import GetIngredients from "./getingredients";
+import AddToShopping from "../shoppingList/addShoppingList";
 
 function GetRecipes() {
   const [recipes, setRecipes] = useState([]);
@@ -31,37 +32,37 @@ function GetRecipes() {
         return (
           <div
             key={recipes.recipe_id}
-            className="border w-[30%] bg-white  m-4 rounded-3xl shadow-xl :hover shadow-3xl"
+            className="border w-[30%] bg-white  m-4 rounded-lg shadow-xl :hover shadow-3xl"
           >
             <div id="accordion" className="accordion">
               <img
                 src={recipes.image_url}
                 alt={recipes.image_alt}
-                className=" h-auto rounded-tl-3xl rounded-tr-3xl"
+                className=" h-auto rounded-tl-lg rounded-tr-lg"
               />
-              <div class="p-4">
+              <div className="p-4">
               <h2 className="accordionItem  mb-2 mt-4">
                 {recipes.recipe_name}
               </h2>
               <p className="mb-2">{recipes.short_description}</p>
 
               <p className={`p-2 rounded mb-4 
-                            ${recipeTypeColours.find((r) => r[recipes.recipeType])?.[recipes.recipeType] || 'bg-gray-100'}`
-                          }
+                  ${recipeTypeColours.find((r) => r[recipes.recipeType])?.[recipes.recipeType] || 'bg-gray-100'}`
+                  }
                 >
 
-                <p className="font-bold">{recipes.recipeType}</p>
+                <span className="font-bold">{recipes.recipeType}</span>
               </p>
               <div className="inline-flex gap-4">
-                <p class="bg-gray-100 p-2 rounded mb-4">
+                <p className="bg-gray-100 p-2 rounded mb-4">
                   <span className="font-bold">👥 </span>
                   {recipes.servings}
                 </p>
-                <p class="bg-gray-100 p-2 rounded mb-4">
+                <p className="bg-gray-100 p-2 rounded mb-4">
                   <span className="font-bold">🔥</span>
                   {recipes.calories} calories
                 </p>
-                <p class="bg-gray-100 p-2 rounded mb-4">
+                <p className="bg-gray-100 p-2 rounded mb-4">
                   <span className="font-bold">🕛</span>
                   {recipes.total_time_minutes} minutes
                 </p>
@@ -80,9 +81,7 @@ function GetRecipes() {
                 <GetIngredients recipe_id={recipes.recipe_id} />
                 <h3 className="mt-2 font-bold">Steps:</h3>
                 <GetInstructions recipe_id={recipes.recipe_id} />
-                <button className="bg-teal-600 flex text-black font-bold px-4 py-2 rounded">
-                  Add to list
-                </button>
+                <AddToShopping recipe_id={recipes.recipe_id}/>
               </div>
               <button
                 aria-controls={`accordion${recipes.recipe_id}`}
