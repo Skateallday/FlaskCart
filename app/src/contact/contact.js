@@ -40,9 +40,9 @@ async function sendContactForm(event){
           View Our Recipes
         </a></p>
       </div>
-        <form className="max-w-3xl">
+        <form className="max-w-3xl" onSubmit={sendContactForm}>
           <label
-            for="fullname"
+            htmlFor="fullname"
             className="block text-gray-700 pt-2 text-sm font-bold mb-2"
           >
             Full name
@@ -50,7 +50,7 @@ async function sendContactForm(event){
           <input name="fullname" type="text" className="border p-2 w-full" placeholder="Full name" />
 
           <label
-            for="email"
+            htmlFor="email"
             className="block text-gray-700  pt-2 text-sm font-bold mb-2"
           >
             Email address
@@ -59,7 +59,7 @@ async function sendContactForm(event){
 
           
 
-          <label for="message" className="block text-gray-700 pt-2 text-sm font-bold mb-2">Your message</label>
+          <label htmlFor="message" className="block text-gray-700 pt-2 text-sm font-bold mb-2">Your message</label>
           <textarea name="message"  className="border w-full p-2" placeholder="Your message" />
           <button
             className="bg-teal-600 flex text-black font-bold px-4 py-2 rounded mt-4"
