@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 
-from ..db import get_db_connection
+from db import get_db_connection
 
 recipes_bp = Blueprint("recipes", __name__)
 

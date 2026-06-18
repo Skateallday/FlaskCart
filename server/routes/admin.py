@@ -1,10 +1,10 @@
 
 from flask import Blueprint, session, flash, render_template, redirect, request,  url_for, g
 from flask_bcrypt import check_password_hash, generate_password_hash
-from ..forms.forms import loginForm, registration, NewFoodsForm, NewRecipeForm, EditFoodForm, EditRecipeForm
+from forms.forms import loginForm, registration, NewFoodsForm, NewRecipeForm, EditFoodForm, EditRecipeForm
 
-from ..db import get_db_connection
-from ..auth import login_required
+from db import get_db_connection
+from auth import login_required
 
 admin_bp = Blueprint("admin", __name__)
 

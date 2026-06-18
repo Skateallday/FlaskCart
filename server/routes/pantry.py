@@ -1,8 +1,8 @@
 import sqlite3
 from flask import Blueprint, jsonify
 
-from ..db import get_db_connection
-from ..auth import login_required
+from db import get_db_connection
+from auth import login_required
 
 pantry_bp = Blueprint("pantry", __name__)
 

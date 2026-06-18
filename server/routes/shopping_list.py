@@ -1,7 +1,7 @@
 import sqlite3
 from flask import Blueprint, jsonify, request
 
-from ..db import get_db_connection
+from db import get_db_connection
 
 shopping_list_bp = Blueprint("shopping_list", __name__)
 
