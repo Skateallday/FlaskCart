@@ -80,7 +80,7 @@ jobs:
             fi
 
             source venv/bin/activate
-            pip install -r requirements.txt
+            pip install -r ./server/requirements.txt
 
       - name: Reload PythonAnywhere
         run: |
