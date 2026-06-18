@@ -8,26 +8,35 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
+
     steps:
       - name: Checkout production
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ref: production
 
       - name: Checkout app folder from master
-        run: git fetch origin master && git checkout origin/master -- app/
+        run: |
+          git fetch origin master
+          git checkout origin/master -- app/
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
 
-      - name: Install and build
+      - name: Install frontend dependencies
         run: |
           cd app
           npm install
-          chmod +x node_modules/.bin/react-scripts
-          npm run build
+
+      - name: Build frontend
+        run: |
+          cd app
+          node ./node_modules/react-scripts/bin/react-scripts.js build
 
       - name: Copy build to server/static
         run: |
@@ -38,20 +47,24 @@ jobs:
           cp app/build/manifest.json server/static/
           cp app/build/robots.txt server/static/
           cp app/build/favicon.ico server/static/
-          cp -r app/build/static server/static/
+          cp -r app/build/static/* server/static/
 
-
-
-      - name: Commit and push static files
+      - name: Commit and push built static files
         run: |
           git config user.name "GitHub Actions"
           cp server/app.db server/app.db.backup
           git config user.email "actions@github.com"
-          git add -A server/static/
-          git commit -m "Auto deploy $(date)" || echo "Nothing to commit"
-          git push origin production
 
-      - name: Pull on PythonAnywhere
+          git add -A server/static/
+
+          if git diff --cached --quiet; then
+            echo "No static files changed"
+          else
+            git commit -m "Auto deploy built static files [skip ci]"
+            git push origin production
+          fi
+
+      - name: Deploy on PythonAnywhere
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ssh.pythonanywhere.com
@@ -59,18 +72,33 @@ jobs:
           key: ${{ secrets.PYTHONANYWHERE_SSH_KEY }}
           script: |
             cd ~/FlaskCart
+
+            git fetch origin production
+            git reset --hard origin/production
+
+            if [ ! -d "venv" ]; then
+              python3.10 -m venv venv
+            fi
+
             source venv/bin/activate
-            cp server/app.db server/app.db.pythonanywhere-backup || true
-            git checkout -- server/app.db server/app.py
-            git pull origin production
+            pip install -r ./server/requirements.txt
 
       - name: Reload PythonAnywhere
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
-            -H "Authorization: Token ${{ secrets.PYTHONANYWHERE_TOKEN }}" \
-            https://www.pythonanywhere.com/api/v0/user/${{ secrets.PYTHONANYWHERE_USERNAME }}/webapps/skateallday.pythonanywhere.com/reload/)
-          if [ "$response" != "200" ]; then
-            echo "Failed to reload PythonAnywhere, status code: $response"
-            exit 1
-          fi
-          echo "Successfully reloaded PythonAnywhere!"
+          for i in 1 2 3 4 5 6; do
+            response=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+              -H "Authorization: Token ${{ secrets.PYTHONANYWHERE_TOKEN }}" \
+              https://www.pythonanywhere.com/api/v0/user/${{ secrets.PYTHONANYWHERE_USERNAME }}/webapps/skateallday.pythonanywhere.com/reload/)
+
+            echo "Reload attempt $i returned status: $response"
+
+            if [ "$response" = "200" ]; then
+              echo "Successfully reloaded PythonAnywhere"
+              exit 0
+            fi
+
+            sleep 10
+          done
+
+          echo "Failed to reload PythonAnywhere after several attempts"
+          exit 1

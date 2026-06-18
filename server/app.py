@@ -1,29 +1,24 @@
 
 import os
 from flask import Flask,  session, g
-from .config import Config
+from config import Config
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_mail import Mail
-from .routes.pantry import pantry_bp
-from .routes.frontend import frontend_bp
-from .routes.shopping_list import shopping_list_bp
-from .routes.recipes import recipes_bp
-from .routes.contact import contact_bp
-from .routes.admin import admin_bp
-
+from routes.pantry import pantry_bp
+from routes.frontend import frontend_bp
+from routes.shopping_list import shopping_list_bp
+from routes.recipes import recipes_bp
+from routes.contact import contact_bp
+from routes.admin import admin_bp
 
 
 app = Flask(__name__, static_folder='static')
 
 app.config.from_object(Config)
-
-CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
-
 app.register_blueprint(pantry_bp, url_prefix="/api")
 app.register_blueprint(shopping_list_bp, url_prefix="/api")
 app.register_blueprint(recipes_bp, url_prefix="/api")
-app.register_blueprint(contact_bp, url_prefix="/api")
 app.register_blueprint(admin_bp)
 app.register_blueprint(frontend_bp)
 
