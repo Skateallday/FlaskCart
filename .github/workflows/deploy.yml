@@ -60,9 +60,10 @@ jobs:
           script: |
             cd ~/FlaskCart
             source venv/bin/activate
-            cp server/app.db server/app.db.pythonanywhere-backup || true
-            git checkout -- server/app.db server/app.py
-            git pull origin production
+
+            git fetch origin production
+            git reset --hard origin/production
+            git clean -fd
 
       - name: Reload PythonAnywhere
         run: |
