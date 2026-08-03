@@ -18,10 +18,10 @@ jobs:
         with:
           ref: production
 
-      - name: Checkout app folder from master
+      - name: Checkout app folder from production
         run: |
-          git fetch origin master
-          git checkout origin/master -- app/
+          git fetch origin production
+          git checkout origin/production -- app/
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

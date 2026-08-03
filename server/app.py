@@ -4,7 +4,7 @@ from flask import Flask,  session, g
 from config import Config
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-from flask_mail import Mail
+from extensions import mail
 from routes.pantry import pantry_bp
 from routes.frontend import frontend_bp
 from routes.shopping_list import shopping_list_bp
@@ -15,24 +15,18 @@ from routes.admin import admin_bp
 
 app = Flask(__name__, static_folder='static')
 
+CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
+
 app.config.from_object(Config)
+mail.init_app(app)
 app.register_blueprint(pantry_bp, url_prefix="/api")
 app.register_blueprint(shopping_list_bp, url_prefix="/api")
 app.register_blueprint(recipes_bp, url_prefix="/api")
 app.register_blueprint(admin_bp)
 app.register_blueprint(frontend_bp)
+app.register_blueprint(contact_bp, url_prefix="/api")
 
 csrf = CSRFProtect(app)
-
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-
-mail =Mail(app)
-
 
 
 @app.after_request
