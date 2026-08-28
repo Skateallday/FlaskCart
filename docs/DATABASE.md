@@ -125,18 +125,19 @@ Use a transaction for:
 
 On any failure, roll back the whole operation.
 
-## Contact Enquiries
+## `ContactEnquiries`
 
-If contact enquiries are persisted, add a dedicated table with fields such as:
+Contact enquiries are now persisted before email notification is attempted. Current server code uses fields including:
 
 - `enquiry_id`
 - `name`
 - `email`
 - `message`
-- `created_at`
-- `status`
+- `email_status`
+- `email_attempted_at`
+- `email_sent_at`
 
-Document retention and deletion. Do not place real enquiry data in seed files.
+The exact table definition should remain documented alongside future schema/migration work. Define and document retention/deletion because these rows contain personal data. Do not place real enquiry data in seed files or test fixtures committed to Git.
 
 ## Backups and Migrations
 

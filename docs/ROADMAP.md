@@ -1,11 +1,15 @@
 # Roadmap
 
+## Status Update — 2026-08-28
+
+The public UI has undergone a major refresh, recipe filtering now works, dedicated recipe detail routes exist, the homepage is limited to three recipe previews, and Playwright tooling has been installed/verified. Priority 1 is **not** complete because inventory, shopping-list, auth/permissions, global 404 and E2E isolation/coverage remain open.
+
 ## Phase 1: Fix Broken or Misleading Functionality
 
 Goal: every visible control works, permissions are clear and UI state matches the server.
 
-- Repair contact form registration, payload, validation, delivery/persistence and states.
-- Connect recipe filters to the recipe grid.
+- Maintain the now-functional contact persistence/email workflow and add regression coverage.
+- Finish recipe taxonomy/semantics after the core filter connection was completed.
 - Repair or remove nonfunctional shopping-list filters.
 - Fix inventory `NaN` updates.
 - Allow stock to reach zero while preventing negative stock.
@@ -27,8 +31,8 @@ Exit criteria:
 
 Goal: reduce duplicate requests, unnecessary startup work and inconsistent API handling.
 
-- Fetch recipe datasets once or lazily per opened recipe.
-- Limit the home page to featured recipes.
+- Optimise the dedicated recipe detail page so it does not need all three full shared datasets.
+- Keep the completed three-recipe homepage preview.
 - Mount pantry and shopping-list data providers only where needed.
 - Add a batch shopping-list endpoint and one summary toast.
 - Add loading, error and empty states.
@@ -50,15 +54,13 @@ Exit criteria:
 
 Goal: make the portfolio experience polished across mobile, tablet and desktop.
 
-- Use responsive recipe-card grids.
-- Replace fixed small-screen sidebars.
-- Redesign or intentionally scroll data tables on mobile.
-- Fix blank mobile action buttons.
-- Repair hero overlay positioning.
-- Add homepage calls to action.
-- Improve hero copy width and spacing.
-- Standardise recipe image aspect ratios.
-- Consider dedicated recipe pages or a modal.
+- Maintain the completed responsive recipe-card grid.
+- Finish the recipe sidebar/mobile filter treatment and semantics.
+- Keep the completed pantry mobile-card layout and redesign the shopping list similarly.
+- Fix blank mobile inventory action labels.
+- Maintain the refreshed hero positioning, copy width and calls to action.
+- Maintain the fixed-aspect-ratio recipe cards.
+- Continue improving the now-implemented dedicated recipe pages.
 - Add active filter states and result counts.
 - Normalise recipe categories and remove duplicate colour definitions.
 - Centralise typography and layout tokens.

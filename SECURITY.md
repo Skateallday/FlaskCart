@@ -2,7 +2,7 @@
 
 ## Scope
 
-FlaskCart is a public portfolio application with an authenticated admin area. It does not process payments, but it handles credentials, sessions, stock mutations and potentially contact personal data.
+FlaskCart is a public portfolio application with an authenticated admin area. It does not process payments, but it handles credentials, sessions, stock mutations and persisted contact personal data.
 
 ## Authentication
 
@@ -37,14 +37,14 @@ Review:
 
 ## Contact Data
 
-Names, email addresses and messages are personal data.
+Names, email addresses and messages are personal data. The current contact workflow persists enquiries to `ContactEnquiries` and attempts an email notification.
 
 - Do not print full payloads in production.
 - Do not commit real messages.
-- Store only what the chosen contact workflow requires.
-- Document retention if messages are persisted.
-- Keep mail credentials in environment variables.
-- Return success only after the chosen operation succeeds.
+- Store only what the contact workflow requires.
+- Document and enforce a retention/deletion policy for persisted enquiries.
+- Keep mail credentials and `CONTACT_RECIPIENT` configuration out of source control.
+- Distinguish saved, email-sent and failure states accurately in API responses.
 
 ## Database Safety
 
@@ -61,6 +61,13 @@ Names, email addresses and messages are personal data.
 - Avoid broad exception handling that returns an apparently successful page after failure.
 
 ## Frontend Security
+
+### Browser-test safety
+
+- The current local frontend configuration points API calls at the live PythonAnywhere backend.
+- Do not run Playwright tests that submit contact forms, mutate pantry stock, modify shopping lists or use admin actions against that production backend.
+- Establish local/test API and database isolation before adding mutating E2E coverage.
+- Read-only production smoke checks, if deliberately used, must not be treated as a substitute for isolated regression tests.
 
 - Never put secrets in React environment variables or source files.
 - Treat API responses as untrusted data.

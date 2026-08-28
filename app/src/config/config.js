@@ -1,5 +1,7 @@
-//development
-export const BASE_URL = 'http://localhost:5000';
+const isLocal =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
 
-//production
-//export const BASE_URL = 'https://skateallday.pythonanywhere.com';
+export const BASE_URL = isLocal
+  ? "https://skateallday.pythonanywhere.com"
+  : "";

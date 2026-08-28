@@ -37,6 +37,8 @@ Current implementation returns every row from `RecipeInstructions` as an array.
 
 ### List ingredients
 
+Client note: `/recipes/:recipeSlug` is a React route, not a new backend endpoint. The current detail page loads `/api/recipes`, `/api/ingredients` and `/api/instructions` in parallel and filters them client-side. A focused detail endpoint remains a possible performance improvement.
+
 ```http
 GET /api/ingredients
 ```
@@ -161,19 +163,13 @@ POST /api/shoppinglist/batch
 
 ## Contact Endpoint
 
-### Intended route
+### Submit contact enquiry
 
 ```http
 POST /api/contact
 ```
 
-Current defects:
-
-- The contact blueprint is imported but not registered in `server/app.py`.
-- The active React component sends an empty JSON object.
-- The backend prints the payload and returns success without sending or saving the enquiry.
-
-Target request:
+Request:
 
 ```json
 {
@@ -183,7 +179,18 @@ Target request:
 }
 ```
 
-The final success response must reflect actual email delivery, persistence, or both.
+Current implementation:
+
+- The contact blueprint is registered under `/api`.
+- Input is trimmed and validated server-side.
+- Invalid JSON returns `400`.
+- Field validation errors return `422`.
+- The enquiry is persisted to `ContactEnquiries` before email notification is attempted.
+- Persistence failure returns `500` with `saved: false`.
+- Missing email-recipient configuration or email delivery failure returns `502` with `saved: true` and `email_sent: false`.
+- Successful persistence plus email delivery returns `201` with `saved: true` and `email_sent: true`.
+
+The API deliberately distinguishes persistence from notification delivery so the frontend can avoid duplicate submissions when a message was saved but email failed.
 
 ## Admin Routes
 

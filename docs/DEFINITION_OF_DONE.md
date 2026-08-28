@@ -32,7 +32,10 @@ A task is complete only when all applicable items are satisfied.
 
 - [ ] A regression test covers the repaired bug where practical.
 - [ ] Relevant backend tests pass.
-- [ ] Relevant frontend tests pass.
+- [ ] Relevant frontend unit/component tests pass.
+- [ ] Relevant FlaskCart Playwright E2E tests pass when that workflow has E2E coverage.
+- [ ] Generated/demo Playwright tests are not cited as proof of FlaskCart behaviour.
+- [ ] No mutating browser test targets production data.
 - [ ] `npm run build` passes for frontend changes.
 - [ ] The changed workflow is manually smoke-tested.
 - [ ] Authentication success and failure paths are checked when relevant.

@@ -1,35 +1,46 @@
 # FlaskCart
 
-A simple web application built with Flask (Python) and React (JavaScript) that demonstrates a full‑stack cart experience.
+A full-stack learning and portfolio application built with Flask, React and SQLite for browsing recipes, tracking pantry stock and maintaining a shopping list.
 
 ## Overview
 
-FlaskCart is a full‑stack project combining a Flask backend with a React frontend. The application allows users to browse products, add recipes to a shopping cart, and interact with the backend API for product and cart management.
+FlaskCart combines a Flask backend with a React public application and a Flask/Jinja admin area. The public application supports recipe browsing, category filtering and search, dedicated recipe detail pages, pantry viewing, shopping-list workflows and contact enquiries.
 
-This project was created as a way to explore and practice full‑stack development using Python and modern frontend technologies.
+The project is intentionally kept approachable as a full-stack learning project while still demonstrating API design, state management, authentication, database work, responsive UI and deployment.
 
 ## Built With
 
 ### Backend
 - Python
-- Flask
+- Flask 2.2.5
 - SQLite
-- Flask‑RESTful API
+- Flask blueprints and JSON API routes
+- Flask-Bcrypt
+- Flask-WTF / CSRF protection
+- Flask-Mail
 
 ### Frontend
-- React
+- React 19
+- React Router 6
 - JavaScript
-- CSS Modules
+- Tailwind CSS utilities
+- React Toastify
 
-### Development Tools
-- Git and GitHub for version control
-- REST API design and communication
+### Testing and Development
+- Testing Library / Jest through Create React App
+- Playwright 1.62.1 for browser E2E testing
+- Docker / Docker Compose
+- Git and GitHub
 
 ## Features
 
-- REST API for product data
-- Separation of backend API and frontend UI
-- Example of a full‑stack workflow
+- Recipe library with search and category filtering.
+- Dedicated slug-based recipe detail pages with ingredients and instructions.
+- Responsive recipe cards and pantry layouts.
+- Pantry inventory and shopping-list data backed by Flask/SQLite.
+- Contact enquiries persisted to SQLite with email notification handling.
+- Session-based Flask admin authentication and admin data-management pages.
+- PythonAnywhere deployment.
 
 ## Demo
 
@@ -37,76 +48,96 @@ This project was created as a way to explore and practice full‑stack developme
 
 ## Getting Started
 
-### Prerequisites
+### Backend
 
-Make sure you have the following installed:
-- Python 3.12+ (or 3.10+)
-- Node.js and npm (or yarn)
+```bash
+cd server
+python -m venv venv
+```
 
-### Backend Setup
+Activate the environment, install requirements and run Flask:
 
-1. Navigate to the backend folder:
-   ```bash
-   cd server
-   ```
+```bash
+pip install -r requirements.txt
+python app.py
+```
 
-2. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   ```
+Flask CLI alternative:
 
-3. Activate the virtual environment:
-   ```bash
-   # macOS / Linux
-   source venv/bin/activate
-   # Windows
-   venv\Scripts\activate
-   ```
+```bash
+flask --app app run --debug
+```
 
-4. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Frontend
 
-5. Run the Flask API:
-   ```bash
-   flask run
-   ```
+```bash
+cd app
+npm install
+npm start
+```
 
-### Frontend Setup
+### Local API configuration warning
 
-1. Navigate to the frontend folder:
-   ```bash
-   cd app
-   ```
+The current `app/src/config/config.js` points browser requests from `localhost` or `127.0.0.1` at the live PythonAnywhere API. Production uses same-origin API requests.
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+This configuration must be corrected before running any automated test that changes data. The preferred direction is local React -> local Flask -> local/test SQLite, while production remains same-origin.
 
-3. Start the React development server:
-   ```bash
-   npm start
-   ```
+## Testing
 
+### Frontend unit/component tests
+
+```bash
+cd app
+npm test
+```
+
+### Playwright
+
+Playwright is installed under `app` and currently has the generated configuration plus generated example tests. The generated example suite contains two tests and is configured for Chromium, Firefox and WebKit, so a complete run produces six test executions.
+
+On the current Windows development machine, Playwright is run through Node 24 in Docker instead of the outdated host Node installation:
+
+```powershell
+docker run --rm -it `
+  --ipc=host `
+  -v "${PWD}:/app" `
+  -v /app/node_modules `
+  -w /app `
+  node:24-bookworm `
+  bash -lc "npm ci && npx playwright install --with-deps && npx playwright test"
+```
+
+The generated suite was verified on 2026-08-28 with six passing test executions. This proves the Playwright setup works; it does **not** yet prove FlaskCart behaviour because `tests/example.spec.js` still targets `playwright.dev`.
+
+To view the HTML report from Docker:
+
+```powershell
+docker run --rm -it `
+  -p 9323:9323 `
+  -v "${PWD}:/app" `
+  -v /app/node_modules `
+  -w /app `
+  node:24-bookworm `
+  bash -lc "npm ci && npx playwright show-report --host 0.0.0.0 --port 9323"
+```
+
+Then open `http://localhost:9323`.
+
+The next E2E milestone is a read-only FlaskCart recipe journey: `/recipes` -> View recipe -> slug URL -> ingredients -> instructions. Mutating E2E tests must wait until local/test API isolation is fixed.
 
 ## Project Status
 
-For a feature-focused site development roadmap, see `NEXT_STEPS.md`.
+For the ordered implementation backlog, see `TASKS.md` and `NEXT_STEPS.md`.
 
 ## Learning Points
 
-- Building a REST API with Flask
-- Connecting frontend and backend through API calls
-- State management in React
-- Full‑stack development workflow
-
-## Future Improvements
-
-- Add authentication and user accounts
-- Add unit and integration tests
+- Building a Flask JSON API.
+- Connecting React and Flask.
+- State management and routing in React.
+- Responsive and accessible UI work.
+- Browser E2E testing with Playwright.
+- Full-stack deployment and debugging.
 
 ## Acknowledgements
 
-Thanks to the Flask and React communities for documentation and tools that make full‑stack development accessible.
+Thanks to the Flask, React and Playwright communities for their documentation and tooling.
