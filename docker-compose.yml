@@ -13,5 +13,7 @@ services:
     volumes:
       - ./app:/app
       - /app/node_modules
+    environment:
+      - WATCHPACK_POLLING=true
     depends_on:
       - server

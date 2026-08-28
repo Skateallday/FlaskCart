@@ -3,13 +3,11 @@ import { Link } from "react-router-dom";
 
 import { BASE_URL } from "../config/config";
 
-
 const INITIAL_FORM = {
   name: "",
   email: "",
   message: "",
 };
-
 
 function getCookie(name) {
   const cookie = document.cookie
@@ -22,7 +20,6 @@ function getCookie(name) {
 
   return decodeURIComponent(cookie.split("=")[1]);
 }
-
 
 function validateForm(values) {
   const errors = {};
@@ -53,7 +50,6 @@ function validateForm(values) {
   return errors;
 }
 
-
 async function readResponseBody(response) {
   const contentType = response.headers.get("content-type") || "";
 
@@ -67,7 +63,6 @@ async function readResponseBody(response) {
     return {};
   }
 }
-
 
 export default function Contact() {
   const [formValues, setFormValues] = useState(INITIAL_FORM);
@@ -143,9 +138,7 @@ export default function Contact() {
         setFormValues(INITIAL_FORM);
         setSubmissionStatus({
           type: "success",
-          message:
-            responseData.message ||
-            "Thanks — your message has been received.",
+          message: responseData.message || "Thanks — your message has been received.",
         });
         return;
       }
@@ -158,10 +151,6 @@ export default function Contact() {
 
       setFieldErrors(serverFieldErrors);
 
-      /*
-       * The enquiry reached the database, so clearing the fields prevents
-       * the visitor from accidentally submitting the same message twice.
-       */
       if (responseData.saved === true) {
         setFormValues(INITIAL_FORM);
         setSubmissionStatus({
@@ -173,10 +162,6 @@ export default function Contact() {
         return;
       }
 
-      /*
-       * Nothing was saved, so formValues remain unchanged and the visitor
-       * can correct or retry the submission.
-       */
       setSubmissionStatus({
         type: "error",
         message:
@@ -197,179 +182,159 @@ export default function Contact() {
   }
 
   const statusClasses = {
-    success: "border-green-300 bg-green-50 text-green-800",
-    warning: "border-amber-300 bg-amber-50 text-amber-900",
-    error: "border-red-300 bg-red-50 text-red-800",
+    success: "border-green-200 bg-green-50 text-green-800",
+    warning: "border-amber-200 bg-amber-50 text-amber-900",
+    error: "border-red-200 bg-red-50 text-red-800",
   };
 
   return (
-    <div className="w-full flex flex-wrap">
-      <div className="w-full bg-white flex flex-col p-4 m-4 rounded shadow-md">
-        <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl py-5 font-bold text-center mt-8 pb-8">
-            Contact us
-          </h2>
+    <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
+      <div className="grid lg:grid-cols-[0.8fr_1.2fr]">
 
-          <p>
-            Have questions about our recipes, ingredients, or anything else?
-            Fill out the form below and we'll get back to you as soon as
-            possible.
-          </p>
-
-          <p className="mt-2">
-            In the meantime, why not explore some of our recipes?
-          </p>
-
-          <p>
-            <Link
-              to="/recipes"
-              className="inline-block py-4 text-teal-600 hover:underline"
-            >
-              View our recipes
-            </Link>
-          </p>
-        </div>
-
-        <form
-          className="w-full max-w-3xl mx-auto"
-          onSubmit={sendContactForm}
-          noValidate
-        >
-          {submissionStatus && (
-            <div
-              className={`mb-4 rounded border p-3 ${
-                statusClasses[submissionStatus.type]
-              }`}
-              role={
-                submissionStatus.type === "error" ? "alert" : "status"
-              }
-              aria-live="polite"
-            >
-              {submissionStatus.message}
+        {/* Contact intro */}
+        <div className="flex flex-col justify-between bg-teal-50 p-8 sm:p-10 lg:p-12">
+          <div>
+            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-white shadow-sm">
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M4 4h16v16H4z" />
+                <path d="m4 6 8 7 8-7" />
+              </svg>
             </div>
-          )}
 
-          <label
-            htmlFor="contact-name"
-            className="block text-gray-700 pt-2 text-sm font-bold mb-2"
-          >
-            Full name
-          </label>
-
-          <input
-            id="contact-name"
-            name="name"
-            type="text"
-            value={formValues.name}
-            onChange={handleChange}
-            className="border p-2 w-full"
-            placeholder="Full name"
-            autoComplete="name"
-            maxLength={100}
-            required
-            aria-invalid={Boolean(fieldErrors.name)}
-            aria-describedby={
-              fieldErrors.name ? "contact-name-error" : undefined
-            }
-          />
-
-          {fieldErrors.name && (
-            <p
-              id="contact-name-error"
-              className="mt-1 text-sm text-red-700"
-            >
-              {fieldErrors.name}
-            </p>
-          )}
-
-          <label
-            htmlFor="contact-email"
-            className="block text-gray-700 pt-2 text-sm font-bold mb-2"
-          >
-            Email address
-          </label>
-
-          <input
-            id="contact-email"
-            name="email"
-            type="email"
-            value={formValues.email}
-            onChange={handleChange}
-            className="border p-2 w-full"
-            placeholder="Email address"
-            autoComplete="email"
-            maxLength={254}
-            required
-            aria-invalid={Boolean(fieldErrors.email)}
-            aria-describedby={
-              fieldErrors.email ? "contact-email-error" : undefined
-            }
-          />
-
-          {fieldErrors.email && (
-            <p
-              id="contact-email-error"
-              className="mt-1 text-sm text-red-700"
-            >
-              {fieldErrors.email}
-            </p>
-          )}
-
-          <label
-            htmlFor="contact-message"
-            className="block text-gray-700 pt-2 text-sm font-bold mb-2"
-          >
-            Your message
-          </label>
-
-          <textarea
-            id="contact-message"
-            name="message"
-            value={formValues.message}
-            onChange={handleChange}
-            className="border w-full p-2"
-            placeholder="Your message"
-            rows={7}
-            maxLength={5000}
-            required
-            aria-invalid={Boolean(fieldErrors.message)}
-            aria-describedby={
-              fieldErrors.message
-                ? "contact-message-error"
-                : "contact-message-help"
-            }
-          />
-
-          <div className="flex justify-between gap-4">
-            <p
-              id="contact-message-help"
-              className="mt-1 text-sm text-gray-600"
-            >
-              Maximum 5,000 characters.
+            <p className="font-slab mb-2 text-sm font-bold uppercase tracking-wider text-teal-700">
+              Get in touch
             </p>
 
-            <p className="mt-1 text-sm text-gray-600">
-              {formValues.message.length}/5,000
+            <h2 className="font-slab mb-4 text-3xl font-bold text-slate-900 sm:text-4xl">
+              We&apos;d love to hear from you
+            </h2>
+
+            <p className="max-w-md text-slate-600">
+              Have a question about a recipe, ingredient, or FlaskCart itself?
+              Send us a message and we&apos;ll get back to you as soon as we can.
             </p>
           </div>
 
-          {fieldErrors.message && (
-            <p
-              id="contact-message-error"
-              className="mt-1 text-sm text-red-700"
-            >
-              {fieldErrors.message}
+          <div className="mt-10 border-t border-teal-200 pt-6">
+            <p className="text-sm text-slate-600">
+              Looking for some cooking inspiration instead?
             </p>
-          )}
 
-          <button
-            className="bg-teal-600 text-black font-bold px-4 py-2 rounded mt-4 disabled:cursor-not-allowed disabled:opacity-60"
-            type="submit"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Sending…" : "Submit"}
-          </button>
-        </form>
+            <Link to="/recipes" className="mt-3 inline-flex items-center gap-2 font-bold text-teal-700 transition hover:gap-3 hover:text-teal-900">
+              Explore our recipes
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Contact form */}
+        <div className="p-8 sm:p-10 lg:p-12">
+          <form onSubmit={sendContactForm} noValidate>
+            {submissionStatus && (
+              <div className={`mb-6 rounded-lg border p-4 ${statusClasses[submissionStatus.type]}`} role={submissionStatus.type === "error" ? "alert" : "status"} aria-live="polite">
+                {submissionStatus.message}
+              </div>
+            )}
+
+            <div className="mb-5">
+              <label htmlFor="contact-name" className="mb-2 block text-sm font-bold text-slate-700">
+                Full name <span className="text-teal-700" aria-hidden="true">*</span>
+              </label>
+
+              <input
+                id="contact-name"
+                name="name"
+                type="text"
+                value={formValues.name}
+                onChange={handleChange}
+                className={`w-full rounded-lg border bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-teal-500/30 ${fieldErrors.name ? "border-red-400 focus:border-red-500" : "border-slate-300 focus:border-teal-600"}`}
+                placeholder="Your full name"
+                autoComplete="name"
+                maxLength={100}
+                required
+                aria-invalid={Boolean(fieldErrors.name)}
+                aria-describedby={fieldErrors.name ? "contact-name-error" : undefined}
+              />
+
+              {fieldErrors.name && (
+                <p id="contact-name-error" className="mt-2 text-sm font-medium text-red-700">
+                  {fieldErrors.name}
+                </p>
+              )}
+            </div>
+
+            <div className="mb-5">
+              <label htmlFor="contact-email" className="mb-2 block text-sm font-bold text-slate-700">
+                Email address <span className="text-teal-700" aria-hidden="true">*</span>
+              </label>
+
+              <input
+                id="contact-email"
+                name="email"
+                type="email"
+                value={formValues.email}
+                onChange={handleChange}
+                className={`w-full rounded-lg border bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-teal-500/30 ${fieldErrors.email ? "border-red-400 focus:border-red-500" : "border-slate-300 focus:border-teal-600"}`}
+                placeholder="you@example.com"
+                autoComplete="email"
+                maxLength={254}
+                required
+                aria-invalid={Boolean(fieldErrors.email)}
+                aria-describedby={fieldErrors.email ? "contact-email-error" : undefined}
+              />
+
+              {fieldErrors.email && (
+                <p id="contact-email-error" className="mt-2 text-sm font-medium text-red-700">
+                  {fieldErrors.email}
+                </p>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <label htmlFor="contact-message" className="mb-2 block text-sm font-bold text-slate-700">
+                Your message <span className="text-teal-700" aria-hidden="true">*</span>
+              </label>
+
+              <textarea
+                id="contact-message"
+                name="message"
+                value={formValues.message}
+                onChange={handleChange}
+                className={`min-h-40 w-full resize-y rounded-lg border bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-teal-500/30 ${fieldErrors.message ? "border-red-400 focus:border-red-500" : "border-slate-300 focus:border-teal-600"}`}
+                placeholder="How can we help?"
+                rows={6}
+                maxLength={5000}
+                required
+                aria-invalid={Boolean(fieldErrors.message)}
+                aria-describedby={fieldErrors.message ? "contact-message-error" : "contact-message-help"}
+              />
+
+              <div className="mt-2 flex items-center justify-between gap-4">
+                <p id="contact-message-help" className="text-sm text-slate-500">
+                  Maximum 5,000 characters.
+                </p>
+
+                <p className="text-sm tabular-nums text-slate-500">
+                  {formValues.message.length} / 5,000
+                </p>
+              </div>
+
+              {fieldErrors.message && (
+                <p id="contact-message-error" className="mt-2 text-sm font-medium text-red-700">
+                  {fieldErrors.message}
+                </p>
+              )}
+            </div>
+
+            <button
+              className="inline-flex min-w-36 items-center justify-center rounded-lg bg-teal-600 px-6 py-3 font-bold text-white shadow-sm transition hover:bg-teal-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Sending…" : "Send message"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
