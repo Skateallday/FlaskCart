@@ -78,13 +78,13 @@ function Header() {
           {!isAuthenticated ? (
 
           
-              <Link className="rounded-full px-4 py-2 text-sm font-semibold bg-blue-300 text-teal-800 shadow-sm"to="/login">Login</Link>
+              <Link className="rounded-full px-4 py-2 text-sm font-semibold bg-blue-300 text-teal-800 shadow-sm"to="/login">Login!</Link>
           
           ):(
 
          
             
-              <Link className="rounded-full px-4 py-2 text-sm font-semibold bg-blue-300 text-teal-800 shadow-sm" to="/logout">Logout</Link>
+              <Link className="rounded-full px-4 py-2 text-sm font-semibold bg-blue-300 text-teal-800 shadow-sm" to="/logout">Logout!</Link>
           
           )}
           
