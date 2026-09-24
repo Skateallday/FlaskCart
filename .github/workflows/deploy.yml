@@ -1,5 +1,7 @@
 name: Deploy to Production
-
+concurrency:
+  group: flaskcart-production-deploy
+  cancel-in-progress: false
 on:
   push:
     branches:
@@ -26,12 +28,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "24"
 
       - name: Install frontend dependencies
         run: |
           cd app
-          npm install
+          npm ci
 
       - name: Build frontend
         run: |
@@ -52,7 +54,6 @@ jobs:
       - name: Commit and push built static files
         run: |
           git config user.name "GitHub Actions"
-          cp server/app.db server/app.db.backup
           git config user.email "actions@github.com"
 
           git add -A server/static/
@@ -71,17 +72,33 @@ jobs:
           username: ${{ secrets.PYTHONANYWHERE_USERNAME }}
           key: ${{ secrets.PYTHONANYWHERE_SSH_KEY }}
           script: |
-            cd ~/FlaskCart
+              set -e
+              cd ~/FlaskCart
 
-            git fetch origin production
-            git reset --hard origin/production
+              if [ -e .git/index.lock ]; then
+                echo "ERROR: .git/index.lock exists; refusing to deploy."
+                exit 1
+              fi
 
-            if [ ! -d "venv" ]; then
-              python3.10 -m venv venv
-            fi
+              git fetch origin production
+              git reset --hard origin/production
 
-            source venv/bin/activate
-            pip install -r ./server/requirements.txt
+              deployed_sha="$(git rev-parse HEAD)"
+              remote_sha="$(git rev-parse origin/production)"
+
+              if [ "$deployed_sha" != "$remote_sha" ]; then
+                echo "ERROR: deployed commit does not match origin/production."
+                exit 1
+              fi
+
+              echo "Deployed commit: $(git rev-parse --short HEAD)"
+
+              if [ ! -d "venv" ]; then
+                python3.10 -m venv venv
+              fi
+
+              source venv/bin/activate
+              pip install -r ./server/requirements.txt
 
       - name: Reload PythonAnywhere
         run: |
