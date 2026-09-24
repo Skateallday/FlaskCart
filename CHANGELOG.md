@@ -49,7 +49,7 @@ All notable FlaskCart changes should be documented here.
 
 ## Release Template
 
-## [Version] - YYYY-MM-DD
+## 0.0.5 - 2026/08/28
 
 ### Added
 
