@@ -44,6 +44,18 @@ The authoritative state for a dataset. FlaskCart should avoid separate frontend 
 
 Updating the UI before or immediately after a request. Optimistic changes must be rolled back or reconciled when a request fails.
 
+## E2E test
+
+An end-to-end browser test that exercises the application through user-visible routes and controls across frontend/backend boundaries. FlaskCart uses Playwright for this layer.
+
+## Playwright
+
+The browser automation/test framework installed under `app` for FlaskCart E2E regression coverage. The current generated demo spec validates Playwright itself but is not yet FlaskCart coverage.
+
+## Recipe slug
+
+A URL-safe value derived from a recipe name and used by the React route `/recipes/:recipeSlug` to identify the recipe detail page.
+
 ## PythonAnywhere
 
 The current hosting platform for the live FlaskCart application.

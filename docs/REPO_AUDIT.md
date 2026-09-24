@@ -111,6 +111,23 @@ The contact route is defined as `POST /contact` inside a blueprint, but the blue
 - Food record identifiers are referenced as both `ID` and `ROWID`.
 - Backend requirements contain packages that may be unrelated to FlaskCart.
 
+## Follow-up Verification — 2026-08-28
+
+The original audit above describes the 2026-07-23 repository state. Later source verification shows these material changes:
+
+- Contact is no longer unregistered: `contact_bp` is registered under `/api`.
+- Contact now validates the JSON payload, persists to `ContactEnquiries`, attempts email delivery and distinguishes persistence/delivery outcomes.
+- `GetRecipes` now consumes `FilterContext`, supports search, shows result count/active category, checks `response.ok`, and renders loading/error/empty states.
+- Recipe cards now use a responsive one/two/three-column grid and link to dedicated slug routes.
+- `/recipes/:recipeSlug` and `recipeDetails.js` now exist, with ingredients/instructions and recipe-specific loading/error/not-found states.
+- The home page now renders three recipe previews and links to the full recipe library.
+- The pantry view has a refreshed desktop table and mobile-card layout, but the older add/remove callback files still omit quantity in `onUpdate`, so the `NaN` risk is not resolved by the visual refresh.
+- A 2026-08-28 commit records a major UI overhaul across contact, footer, header, home, pantry and recipe components.
+- Local/uncommitted frontend files show Playwright 1.62.1 installed with generated configuration and generated example tests. The demo suite was run successfully through Docker (six executions), but no FlaskCart-specific E2E spec exists yet.
+- Local frontend API configuration still points localhost/127.0.0.1 at the production PythonAnywhere API, which blocks safe mutating E2E tests.
+
+Where this follow-up conflicts with an older finding above, use the follow-up as the current state and keep the older section as historical audit evidence.
+
 ## Source Files Reviewed
 
 - `README.md`

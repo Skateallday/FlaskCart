@@ -6,15 +6,20 @@ import { FilterProvider } from './context/filterContext';
 import { ToastContainer } from 'react-toastify';
 import { InventoryProvider } from './context/inventoryContext.jsx';
 import { ShoppingListProvider } from './context/shoppingListContext.jsx';
+import { AuthProvider } from "./context/authContext";
+
 
 function App() {
 
   return (
+    
+    <AuthProvider>
     <FilterProvider>
       <InventoryProvider>
 
     <ShoppingListProvider>
     <div className="app">
+
       <ToastContainer />
 
       <Header />
@@ -28,11 +33,13 @@ function App() {
       </div>
 
       <Footer />
+      
     </div>
-
     </ShoppingListProvider>
     </InventoryProvider>
     </FilterProvider>
+    
+</AuthProvider>
   );
 }
 

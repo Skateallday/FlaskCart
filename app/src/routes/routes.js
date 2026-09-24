@@ -6,6 +6,8 @@ import RecipesPage from "../recipes/recipesdisplay";
 import DisplayInvent from "../inventory/displayInvent";
 import ShoppingList from "../shoppingList/shoppinglist";
 import RecipeDetail from "../recipes/recipeDetails";
+import Login from "../login/login";
+import Logout from "../login/logout";
 
 export default function AppRoutes() {
   return (
@@ -16,6 +18,8 @@ export default function AppRoutes() {
       <Route path="/recipes" element={<RecipesPage />} />
       <Route path="/recipes/:recipeSlug" element={<RecipeDetail />} />
       <Route path="/shoppinglist" element={<ShoppingList />} />
+      <Route path="/login" element={<Login />}/>
+      <Route path='/logout' element={<Logout />}/>
     </Routes>
   );
 }

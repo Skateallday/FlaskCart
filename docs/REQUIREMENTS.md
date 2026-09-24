@@ -41,6 +41,8 @@ Recipe deletion must be verified and implemented safely before it is documented 
 
 ### Recipes
 
+Current implementation note (2026-08-28): the recipe grid now supports search/category filtering and dedicated `/recipes/:recipeSlug` pages. Full taxonomy normalisation, E2E regression coverage and structured data remain outstanding.
+
 - Display recipe image, name, summary, category, servings, calories and cooking time.
 - Filter the visible recipe grid by selected category.
 - Show the active filter and result count.
@@ -127,7 +129,7 @@ Aim for WCAG 2.2 AA principles:
 
 - Add route-specific titles and descriptions.
 - Add canonical and Open Graph metadata.
-- Add Recipe structured data when dedicated recipe URLs exist.
+- Add Recipe structured data to the now-existing dedicated recipe URLs.
 
 ## Out of Scope
 

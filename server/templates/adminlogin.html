@@ -59,11 +59,11 @@
       <p class="py-4">Or...</p>
 
       {% if form_type == 'login'%}
-      <a href="{{url_for('adminlogin', form_type='signup')}}" class="bg-blue-600 hover:bg-blue-600 text-white px-2 py-1 rounded mt-2">
+      <a href="{{url_for('admin.adminlogin', form_type='signup')}}" class="bg-blue-600 hover:bg-blue-600 text-white px-2 py-1 rounded mt-2">
         Click here to Sign Up
       </a>
       {% elif form_type == 'signup'%}
-        <a href="{{url_for('adminlogin', form_type='login')}}" class="bg-blue-600 hover:bg-blue-600 text-white px-2 py-1 rounded mt-2">
+        <a href="{{url_for('admin.adminlogin', form_type='login')}}" class="bg-blue-600 hover:bg-blue-600 text-white px-2 py-1 rounded mt-2">
             Click here to Login</a>
         {% endif %}
     </div>

@@ -1,23 +1,24 @@
 # Known Issues
 
-## Priority 1 Confirmed Issues
+## Priority 1 Open Issues
 
-### Contact form does not process enquiries
+### Local frontend can target production API during development
 
-**Status:** Open
+**Status:** Open / blocks mutating E2E tests
 
-- `app/src/contact/contact.js` sends `{}`.
-- `server/routes/contact.py` only prints the payload and returns success.
-- `server/app.py` imports but does not register `contact_bp`.
-- No visible sending, success or error state exists.
+`app/src/config/config.js` sends API requests from `localhost` and `127.0.0.1` to `https://skateallday.pythonanywhere.com`. This bypasses the intended local Flask service/proxy and means an automated mutation could alter production data.
 
-### Recipe filters do not affect recipes
+### Playwright has no FlaskCart-specific regression tests yet
 
 **Status:** Open
 
-- `RecipeSidebar` updates global filter state.
-- `GetRecipes` does not read that state.
-- Taxonomy values are inconsistent.
+Playwright 1.62.1 is installed and the generated two-test demo suite passes in all three configured browser projects. However, `tests/example.spec.js` still tests `playwright.dev`, and `baseURL`/`webServer` are still commented in the generated configuration.
+
+### Recipe taxonomy and filter semantics are incomplete
+
+**Status:** Open
+
+The recipe grid now filters correctly and handles `Snack`/`Snacks` as a targeted alias, but the complete taxonomy is not normalised. The committed recipe sidebar still uses `role="tab"` for ordinary filter buttons.
 
 ### Shopping-list filter UI is misleading
 
@@ -29,57 +30,77 @@ The page displays filtering controls without applying filter state to shopping-l
 
 **Status:** Open
 
-The inventory context requires a quantity, but add/remove buttons call the update callback with only the food name.
+The refreshed inventory screen passes `value` into the action components, but the older `AddButton`/`RemoveButton` callback path still calls the local update callback without the quantity. The state bug therefore remains.
 
-### Inventory cannot be reduced exactly to zero
+### Inventory cannot safely be reduced to zero/negative constraints are incomplete
 
 **Status:** Open
 
-The client blocks any removal where the result is zero or lower. The server also lacks negative-stock validation.
+Client/server stock validation still needs authoritative repair and regression tests.
 
 ### Public inventory controls call admin-only endpoints
 
 **Status:** Open
 
-The React UI displays stock controls to all visitors, but Flask protects the mutation endpoints with session authentication.
+The React UI displays stock controls to visitors while Flask protects mutation endpoints with session authentication.
 
 ### Shopping-list Add more is incomplete
 
 **Status:** Open
 
-The table contains an input but no action. It also mixes `foodname`, `foodName` and `fooditem_name`.
+The shopping-list workflow still has schema/action gaps documented in `TASKS.md`.
 
-### Purchased state is raw data
+### Purchased state is raw/incomplete
 
 **Status:** Open
 
-`is_purchased` is printed directly instead of using an interactive and understandable control.
+Purchased state still needs an interactive, understandable control and backend mutation route.
 
 ### Shopping list can remain stale after recipe addition
 
 **Status:** Open
 
-Recipe ingredients are posted directly through API helpers and do not update shopping-list context. The context also expects a different schema.
+Recipe-to-shopping-list additions and shopping-list context still need a single consistent state/data contract.
 
-### No React 404 route
+### No global React 404 route
 
 **Status:** Open
 
-Unknown client paths have no designed not-found screen.
+Recipe detail has an unknown-slug state, but React Router still has no wildcard application route.
 
 ## Repository Findings Requiring Verification
 
 ### Admin recipe editing appears inconsistent
 
-The recipe creation fields use names such as `recipe_name` and `total_time_minutes`, while the reviewed edit SQL refers to `recipeName`, `method` and `prepTime`.
+The recipe creation fields use names such as `recipe_name` and `total_time_minutes`, while the reviewed edit SQL refers to older-looking names.
 
 ### Admin recipe deletion appears unwired
 
-The reviewed template contains a delete button, but no matching handler was found.
+The reviewed template contains a delete button, but no matching handler was found in the earlier audit.
 
 ### Food identifier usage may be inconsistent
 
-Recipe ingredient queries join food records by `ROWID`, while the shopping-list query joins on `FoodItems.ID`.
+Recipe ingredient queries and shopping-list queries have historically used different `ID`/`ROWID` assumptions. Verify before schema or deletion work.
+
+## Resolved / Superseded Findings
+
+### Contact form processing
+
+**Status:** Resolved in current repository state
+
+The contact blueprint is registered, the frontend sends real field values, the backend validates input, enquiries are persisted, email notification is attempted, and persistence/delivery outcomes are distinguished.
+
+### Recipe filters did not affect recipes
+
+**Status:** Resolved for core filtering
+
+`GetRecipes` now consumes `FilterContext`, applies category filtering/search, exposes clear filters and shows result count/active category. Taxonomy/semantics cleanup remains open separately.
+
+### Recipe detail was embedded in cards
+
+**Status:** Replaced
+
+Recipe cards now link to dedicated `/recipes/:recipeSlug` pages.
 
 ## Accepted Limitations
 

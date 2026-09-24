@@ -38,15 +38,18 @@ The application is not intended for commercial grocery operations or real custom
 
 ## Current Capabilities
 
-- Recipe listing with images, descriptions, servings, calories and cooking times.
-- Recipe ingredients and instructions.
-- Recipe category filter controls, although the recipe grid is not currently connected to them.
-- Pantry inventory listing, filtering and search.
+- Responsive recipe listing with images, descriptions, servings, calories and cooking times.
+- Recipe search and category filtering with result counts and clear-filter controls.
+- Dedicated slug-based recipe pages with ingredients and ordered instructions.
+- A three-recipe homepage preview linking to the full recipe library.
+- Pantry inventory listing, filtering/search, desktop table and mobile-card presentation.
 - Shopping-list storage and removal.
 - Adding recipe ingredients to the shopping list.
+- Contact enquiries persisted to SQLite with email notification handling.
 - Flask session-based admin authentication.
 - Admin forms for food and recipe management.
 - Public deployment on PythonAnywhere.
+- Playwright browser-test tooling, with FlaskCart-specific E2E tests still to be added.
 
 ## Goals
 
@@ -75,8 +78,8 @@ The current project does not aim to:
 The project is successful when a reviewer can:
 
 1. Use the live demo without encountering misleading or dead controls.
-2. Browse and filter recipes.
-3. inspect recipe ingredients and instructions without duplicate request storms.
+2. Browse, search and filter recipes.
+3. Open a dedicated recipe URL and inspect ingredients and instructions without per-card duplicate request storms.
 4. Add recipe ingredients to the shopping list and see the UI update immediately.
 5. Manage pantry and shopping-list data with clear permissions and feedback.
 6. Submit a contact enquiry and receive an honest success or error result.

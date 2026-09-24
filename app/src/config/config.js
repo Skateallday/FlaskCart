@@ -3,5 +3,5 @@ const isLocal =
   window.location.hostname === "127.0.0.1";
 
 export const BASE_URL = isLocal
-  ? "https://skateallday.pythonanywhere.com"
+  ? "http://localhost:5000"
   : "";

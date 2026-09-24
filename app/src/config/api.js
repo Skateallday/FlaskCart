@@ -7,7 +7,7 @@ const csrfToken = document.cookie
 
 
 export async function addToStock(item, value) {
-  const res = await fetch(`${BASE_URL}/api/pantry/${item}/add/${value}`, {
+  const res = await fetch(`${BASE_URL}/pantry/${item}/add/${value}`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export async function addToStock(item, value) {
     }
 
 export async function removeFromStock(item, value) {
-  const res = await fetch(`${BASE_URL}/api/pantry/${item}/remove/${value}`, {
+  const res = await fetch(`${BASE_URL}/pantry/${item}/remove/${value}`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

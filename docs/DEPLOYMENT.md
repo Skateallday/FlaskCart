@@ -47,9 +47,11 @@ Do not rely on the fallback Flask secret key in production.
 
 ## Configuration Risks
 
-### Hard-coded API origin
+### Local-to-production API coupling
 
-`app/src/config/config.js` exports the production PythonAnywhere URL directly. Replace this with build-time or same-origin configuration so local and production builds do not require source edits.
+`app/src/config/config.js` currently selects `https://skateallday.pythonanywhere.com` when the browser hostname is `localhost` or `127.0.0.1`, and uses same-origin requests otherwise. This means local React development bypasses local Flask even though the frontend package defines a localhost proxy.
+
+Correct this before mutating E2E tests. The preferred direction is local React -> local Flask/local SQLite, with production remaining same-origin.
 
 ### Contact email
 
@@ -71,6 +73,8 @@ Confirm:
 - Whether admin changes persist across reloads and deployments.
 
 ## Deployment Checklist
+
+Testing note: Playwright is currently run locally through Docker/Node 24. The generated demo suite passing is not a deployment gate until FlaskCart-specific E2E specs and safe local/test data isolation are in place.
 
 - [ ] Frontend tests pass.
 - [ ] Frontend production build passes.

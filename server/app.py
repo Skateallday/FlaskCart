@@ -11,6 +11,7 @@ from routes.shopping_list import shopping_list_bp
 from routes.recipes import recipes_bp
 from routes.contact import contact_bp
 from routes.admin import admin_bp
+from routes.auth_api import auth_api_bp
 
 
 app = Flask(__name__, static_folder='static')
@@ -25,6 +26,7 @@ app.register_blueprint(recipes_bp, url_prefix="/api")
 app.register_blueprint(admin_bp)
 app.register_blueprint(frontend_bp)
 app.register_blueprint(contact_bp, url_prefix="/api")
+app.register_blueprint(auth_api_bp, url_prefix="/api")
 
 csrf = CSRFProtect(app)
 

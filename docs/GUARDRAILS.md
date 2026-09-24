@@ -50,6 +50,14 @@ Do not begin broad redesigns or build-tool migrations while Priority 1 controls 
 
 ## Frontend Rules
 
+## Browser Test Rules
+
+- Never run a Playwright test that mutates data against the live PythonAnywhere backend.
+- Treat generated Playwright demo-test passes as tooling validation, not FlaskCart regression evidence.
+- Establish local/test Flask and SQLite isolation before automating contact, pantry, shopping-list or admin mutations.
+- Prefer accessible locators and assertions over fixed sleeps and brittle selectors.
+
+
 - Keep one source of truth for pantry and shopping-list data.
 - Use consistent API field names.
 - Do not mount expensive detail components solely to hide them with CSS.

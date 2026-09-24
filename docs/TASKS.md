@@ -2,31 +2,50 @@
 
 ## Current Focus
 
-Work through Priority 1 in the order below. Keep each checkbox as a separate reviewable change where practical.
+Continue Priority 1 functional work, but first make the browser-test environment safe enough to add regression coverage without touching production data.
 
 ## Priority 1: Fix Broken or Misleading Functionality
 
 ### Contact form
 
-- [ ] Register `contact_bp` in the Flask application under `/api`.
-- [ ] Send the actual name, email and message instead of `{}`.
-- [ ] Decide whether contact enquiries are emailed, persisted, or both.
-- [ ] Add server-side validation and safe error responses.
-- [ ] Disable the submit button while sending.
-- [ ] Show visible success confirmation.
-- [ ] Show field and request errors.
-- [ ] Retain field values after failed submission.
-- [ ] Replace the incorrect "form on the left" copy or change the layout.
+- [x] Register `contact_bp` in the Flask application under `/api`.
+- [x] Send the actual name, email and message.
+- [x] Choose SQLite persistence plus email notification.
+- [x] Add server-side validation and structured/safe error responses.
+- [x] Disable the submit button while sending.
+- [x] Show visible success confirmation.
+- [x] Show field and request errors.
+- [x] Retain field values when the enquiry was not saved; avoid duplicate resubmission when it was saved but email failed.
+- [x] Replace the old contact layout/copy during the public UI refresh.
 - [ ] Add frontend and backend regression tests.
 
 ### Recipe filters
 
-- [ ] Read `FilterContext` inside the recipe grid.
-- [ ] Filter recipes by the selected category.
-- [ ] Add a Show All state.
-- [ ] Show the active category and result count.
-- [ ] Normalise `Snack` versus `Snacks`, `Others`, `Easy`, `Soup` and other category values.
-- [ ] Replace filter `role="tab"` with appropriate button semantics.
+- [x] Read `FilterContext` inside the recipe grid.
+- [x] Filter recipes by the selected category.
+- [x] Provide Show All / clear-filter behaviour.
+- [x] Show the active category and result count.
+- [ ] Fully normalise `Snack` versus `Snacks`, `Others`, `Easy`, `Soup` and other category values. (`Snack`/`Snacks` currently has a targeted alias only.)
+- [ ] Replace filter `role="tab"` with appropriate button semantics and selected-state accessibility.
+
+### Recipe detail routing
+
+- [x] Add `/recipes/:recipeSlug`.
+- [x] Link recipe cards to the dedicated route.
+- [x] Display recipe metadata, ingredients and ordered instructions.
+- [x] Add recipe-detail loading, error and unknown-slug states.
+- [x] Set a recipe-specific document title.
+- [ ] Add FlaskCart Playwright regression coverage for the recipe journey.
+
+### Playwright / E2E environment
+
+- [x] Install `@playwright/test` 1.62.1.
+- [x] Generate a Playwright config with Chromium, Firefox, WebKit and HTML reporting.
+- [x] Verify the generated two-test demo suite in Docker: six passing executions across three browsers.
+- [x] Verify HTML report serving through Docker port `9323`.
+- [ ] Fix local API configuration so localhost tests do not target the live PythonAnywhere backend.
+- [ ] Enable a FlaskCart `baseURL` / controlled test-server workflow after local API isolation is decided.
+- [ ] Replace generated `playwright.dev` specs with FlaskCart-specific E2E tests.
 
 ### Shopping-list sidebar
 
@@ -36,8 +55,8 @@ Work through Priority 1 in the order below. Keep each checkbox as a separate rev
 
 ### Inventory updates
 
-- [ ] Pass both `foodName` and quantity to `addStock`.
-- [ ] Pass both `foodName` and quantity to `removeStock`.
+- [ ] Pass both `foodName` and quantity to `addStock` from the action callback.
+- [ ] Pass both `foodName` and quantity to `removeStock` from the action callback.
 - [ ] Prevent `NaN` from entering local inventory state.
 - [ ] Change the client removal check from `<= 0` to `< 0`.
 - [ ] Validate current stock and requested reduction on the server.
@@ -49,7 +68,7 @@ Work through Priority 1 in the order below. Keep each checkbox as a separate rev
 - [ ] Define how React knows whether an admin session exists.
 - [ ] Hide protected add/remove controls from guests or provide a clear admin sign-in mode.
 - [ ] Handle `401 Unauthorized` consistently.
-- [ ] Ensure protected controls are not blank on mobile.
+- [ ] Ensure protected controls retain visible/accessibly named actions on mobile.
 
 ### Shopping-list controls
 
@@ -72,7 +91,9 @@ Work through Priority 1 in the order below. Keep each checkbox as a separate rev
 ### Routing
 
 - [ ] Add a wildcard React route.
-- [ ] Build a useful 404 page with a route back to recipes or home.
+- [ ] Build a useful global 404 page with a route back to recipes or home.
+
+Note: recipe detail has its own unknown-slug state, but that does not replace the missing global wildcard route.
 
 ### Admin verification
 
@@ -82,26 +103,25 @@ Work through Priority 1 in the order below. Keep each checkbox as a separate rev
 
 ## Priority 2: Largest Performance Improvements
 
-- [ ] Stop each recipe card fetching the same ingredient dataset.
-- [ ] Stop each recipe card fetching the same instruction dataset.
-- [ ] Stop the add-to-shopping-list component fetching all ingredients per card.
-- [ ] Fetch recipe, ingredient and instruction data once and group by `recipe_id`, or lazy-fetch and cache details on first open.
-- [ ] Prevent collapsed recipe details from mounting expensive children before they are opened.
-- [ ] Limit the homepage to three featured or recently added recipes.
-- [ ] Link the homepage preview to the full recipe library.
+- [x] Stop each recipe card fetching the ingredient dataset.
+- [x] Stop each recipe card fetching the instruction dataset.
+- [x] Stop the recipe-grid card tree from mounting the old per-card detail/additional dataset fetch pattern.
+- [x] Prevent collapsed per-card recipe details from mounting by replacing that pattern with dedicated recipe routes.
+- [x] Limit the homepage to three recipe previews.
+- [x] Link the homepage preview to the full recipe library.
+- [x] Add recipe-list loading, error and empty states.
+- [x] Check `response.ok` before parsing recipe-list JSON.
+- [ ] Replace the detail page's three full-dataset downloads with a focused recipe-detail API or equivalent cache strategy.
 - [ ] Move inventory data fetching to inventory routes.
 - [ ] Move shopping-list data fetching to shopping-list and recipe workflows that need it.
 - [ ] Create a batch shopping-list endpoint.
 - [ ] Add recipe ingredients in one database transaction.
 - [ ] Replace ingredient-level toast spam with one useful summary message.
-- [ ] Add loading, error and empty states to recipes.
-- [ ] Add loading, error and empty states to pantry.
+- [ ] Add complete loading/error states to pantry data fetching, not only filtered empty-state UI.
 - [ ] Add loading, error and empty states to shopping list.
 - [ ] Add retry actions where useful.
-- [ ] Centralise fetch handling and check `response.ok` before parsing.
-- [ ] Normalise unauthorised, validation and server errors.
-- [ ] Add image lazy loading, dimensions, responsive sources and fixed aspect ratio.
-- [ ] Generate or serve WebP/AVIF recipe images where practical.
+- [ ] Centralise fetch handling and error normalisation across the frontend.
+- [ ] Finish image optimisation: explicit dimensions/responsive sources plus WebP/AVIF where practical. Lazy loading and fixed card aspect ratio are already present.
 - [ ] Add server cache headers or ETags for recipe data.
 - [ ] Cache stable recipe data client-side.
 - [ ] Add API category, search, limit and page parameters.
@@ -114,62 +134,55 @@ Work through Priority 1 in the order below. Keep each checkbox as a separate rev
 
 ## Priority 3: Responsive Design and Visual Hierarchy
 
-- [ ] Replace fixed `w-[30%]` recipe cards with a responsive grid.
-- [ ] Use one column on mobile, two on tablet and three on desktop.
-- [ ] Replace fixed one-sixth sidebars on small screens.
-- [ ] Use filter chips, a disclosure or a drawer on mobile.
-- [ ] Redesign pantry tables for mobile or add intentional horizontal scrolling.
-- [ ] Redesign shopping-list tables for mobile or add intentional horizontal scrolling.
-- [ ] Keep concise action labels visible on mobile or add labelled icons.
-- [ ] Add accessible names to all icon-only controls.
-- [ ] Add `position: relative` to the hero container.
-- [ ] Constrain and vertically centre the hero overlay.
-- [ ] Add Browse recipes and View pantry calls to action.
-- [ ] Replace fixed hero copy width with a responsive max width and padding.
-- [ ] Give recipe images a consistent aspect ratio with `object-fit: cover`.
-- [ ] Align recipe actions consistently at the card bottom.
-- [ ] Evaluate dedicated recipe routes or an accessible modal.
-- [ ] Show active filters and result counts.
-- [ ] Normalise recipe taxonomy.
-- [ ] Remove the duplicate `Easy` colour definition.
-- [ ] Centralise typography, colours, spacing, radius and focus styles.
+- [x] Replace fixed recipe-card widths with a responsive grid.
+- [x] Use one column on mobile, two on tablet and three on desktop.
+- [x] Make the recipe page layout stack on small screens and use a fixed-width sidebar region from medium viewports upward.
+- [x] Redesign pantry data as mobile cards while retaining a desktop/tablet table.
+- [ ] Redesign shopping-list tables for mobile or add intentional horizontal scrolling/cards.
+- [ ] Keep inventory action labels visible/accessibly named on mobile; the older action button components still hide their text below `md`.
+- [ ] Add accessible names to any remaining icon-only controls.
+- [x] Improve hero overlay/layout spacing and responsive copy width.
+- [x] Add Browse recipes and View pantry calls to action.
+- [x] Give recipe card images a consistent aspect ratio with `object-fit: cover`.
+- [x] Align recipe actions at the card bottom.
+- [x] Replace the old embedded recipe-detail pattern with dedicated recipe routes.
+- [x] Show active recipe filters and result counts.
+- [ ] Fully normalise recipe taxonomy.
+- [x] Remove the duplicate `Easy` colour definition in the current recipe card map.
+- [ ] Continue centralising typography, colours, spacing, radius and focus styles.
 - [ ] Consolidate Google Font requests.
-- [ ] Make the footer stack responsively.
-- [ ] Replace `width: 100vw` with `width: 100%` where it causes overflow.
-- [ ] Correct contact-section copy and layout.
+- [x] Refresh the footer/header/home/contact visual hierarchy in the 2026-08-28 UI overhaul.
+- [x] Correct the contact-section layout/copy during the UI overhaul.
 
 ## Priority 4: Accessibility, Semantics and SEO
 
-- [ ] Add a `main` landmark around routed content.
-- [ ] Replace recipe accordion tab roles with a normal button.
-- [ ] Add `aria-expanded` and a matching `aria-controls` relationship.
-- [ ] Give each controlled recipe region a valid accessible relationship.
-- [ ] Remove `role="tab"` from filter buttons.
-- [ ] Use `aria-pressed` for the selected filter where appropriate.
-- [ ] Add a visible label or `aria-label` to pantry search.
-- [ ] Add a clear-search control.
-- [ ] Add `aria-expanded`, `aria-controls` and a descriptive name to the mobile menu button.
-- [ ] Close the mobile menu after navigation.
-- [ ] Prevent background scroll while the mobile menu is open.
-- [ ] Replace internal anchors with `Link` or `NavLink`.
-- [ ] Wrap footer navigation links in list items.
-- [ ] Add route-specific page titles and descriptions.
-- [ ] Add Recipe JSON-LD for dedicated recipe pages.
+- [~] `main` landmarks now exist on several refreshed primary screens, including recipes, recipe detail and pantry; verify all routed content consistently.
+- [x] Remove the old recipe-card accordion interaction by moving details to a dedicated page.
+- [ ] Remove inappropriate tab roles from recipe filter buttons.
+- [ ] Use `aria-pressed` or equivalent selected-state semantics for recipe filters where appropriate.
+- [ ] Verify pantry search labelling and add clear-search semantics where needed.
+- [ ] Add `aria-expanded`, `aria-controls` and a descriptive name to the mobile menu button where needed.
+- [ ] Close the mobile menu after navigation and verify focus/scroll behaviour.
+- [~] New/refreshed recipe and home navigation uses React Router links; audit remaining internal anchors.
+- [ ] Verify footer list semantics after the footer refresh.
+- [~] Recipe detail now sets a route-specific document title; complete titles/descriptions for all routes.
+- [ ] Add Recipe JSON-LD to dedicated recipe URLs.
 - [ ] Add canonical URLs and Open Graph metadata.
 - [ ] Add a share image.
-- [ ] Add consistent visible `:focus-visible` styles.
+- [~] Refreshed components include many `focus-visible` styles; audit for consistent coverage.
 
-## Completed
+## Completed Baseline / Historical
 
 - [x] Confirmed the project is a learning and portfolio application.
 - [x] Confirmed the live PythonAnywhere deployment.
 - [x] Confirmed the React public application and Flask/Jinja admin split.
 - [x] Confirmed session-based admin authentication exists.
-- [x] Confirmed recipe, pantry and shopping-list API routes.
-- [x] Reviewed the supplied task list against the repository.
+- [x] Confirmed recipe, pantry, shopping-list and contact API registration/current routes.
+- [x] Reviewed the original task list against the repository.
 
 ## Task Maintenance Rules
 
-- Keep this order unless a blocking dependency requires a small supporting task.
+- Keep the priority order unless a blocking dependency requires a small supporting task.
 - Record new findings without silently displacing the owner's priorities.
-- Move completed work to `CHANGELOG.md` and keep this file current.
+- Move completed work into `CHANGELOG.md` and keep this file current.
+- Use `[~]` only for deliberately documented partial completion; do not treat it as done.

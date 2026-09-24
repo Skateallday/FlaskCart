@@ -17,13 +17,13 @@ FlaskCart should look deliberate and remain usable across mobile, tablet and des
 
 ### Recipe pages
 
-Use a responsive grid:
+The recipe library now implements the target responsive grid:
 
 - One column on mobile.
 - Two columns on tablet.
 - Three columns on larger screens.
 
-Do not use a fixed `w-[30%]` card width.
+Recipe cards link to a dedicated `/recipes/:recipeSlug` page rather than expanding full detail content inside each card.
 
 ### Filters
 
@@ -39,8 +39,8 @@ Show the active category and result count.
 
 For pantry and shopping-list screens:
 
-- Prefer responsive cards below a chosen breakpoint, or
-- Use an intentionally styled horizontal-scroll container.
+- Pantry now uses a table on medium+ viewports and cards on mobile.
+- Shopping list should follow a similarly intentional responsive pattern.
 
 Do not allow controls to become unreadable or unlabeled.
 
@@ -53,7 +53,7 @@ Expected reusable UI pieces:
 - Hero with primary actions
 - Filter controls
 - Recipe card
-- Recipe details disclosure
+- Dedicated recipe detail page
 - Loading skeleton
 - Error state with retry
 - Empty state
