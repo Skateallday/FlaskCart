@@ -3,10 +3,10 @@
 ## Conventions
 
 - API routes use JSON unless noted otherwise.
-- State-changing requests are protected by Flask-WTF CSRF handling.
-- Authenticated pantry mutations use the Flask session cookie.
-- Client code must check HTTP status before parsing a response.
-- Error responses should move towards a consistent shape:
+- State-changing requests are protected by Flask-WTF CSRF handling where applicable.
+- Authenticated mutations use the Flask session cookie.
+- Client code should check HTTP status before parsing response bodies.
+- Error responses should continue moving towards a consistent shape:
 
 ```json
 {
@@ -25,7 +25,7 @@
 GET /api/recipes
 ```
 
-Current implementation returns every row from `Recipes` as an array.
+Current implementation returns recipe rows as an array.
 
 ### List instructions
 
@@ -33,11 +33,9 @@ Current implementation returns every row from `Recipes` as an array.
 GET /api/instructions
 ```
 
-Current implementation returns every row from `RecipeInstructions` as an array.
+Current implementation returns `RecipeInstructions` rows as an array.
 
 ### List ingredients
-
-Client note: `/recipes/:recipeSlug` is a React route, not a new backend endpoint. The current detail page loads `/api/recipes`, `/api/ingredients` and `/api/instructions` in parallel and filters them client-side. A focused detail endpoint remains a possible performance improvement.
 
 ```http
 GET /api/ingredients
@@ -55,6 +53,12 @@ Current response fields include:
   "unit": "cups"
 }
 ```
+
+### Recipe detail client note
+
+`/recipes/:recipeSlug` is a React route, not a dedicated backend endpoint.
+
+The current detail page loads `/api/recipes`, `/api/ingredients` and `/api/instructions` and filters those datasets client-side. A focused recipe-detail endpoint remains a future performance improvement.
 
 ## Confirmed Pantry Endpoints
 
@@ -82,13 +86,14 @@ POST /api/pantry/{foodName}/remove/{quantity}
 
 Requires an authenticated admin session.
 
-Required repair:
+Remaining repair requirements:
 
 - Validate the item exists.
 - Validate the quantity.
 - Prevent negative resulting stock.
-- Return the updated item or stock value.
-- Correct the remove success message.
+- Allow a valid reduction to exactly zero.
+- Return the updated item or stock value consistently.
+- Keep client state aligned with the confirmed server result.
 
 ## Confirmed Shopping-List Endpoints
 
@@ -98,7 +103,7 @@ Required repair:
 GET /api/shoppinglist/
 ```
 
-Current response fields:
+Current response fields include:
 
 ```json
 {
@@ -183,18 +188,17 @@ Current implementation:
 
 - The contact blueprint is registered under `/api`.
 - Input is trimmed and validated server-side.
-- Invalid JSON returns `400`.
-- Field validation errors return `422`.
+- Invalid JSON returns an error.
+- Field validation errors return a validation response.
 - The enquiry is persisted to `ContactEnquiries` before email notification is attempted.
-- Persistence failure returns `500` with `saved: false`.
-- Missing email-recipient configuration or email delivery failure returns `502` with `saved: true` and `email_sent: false`.
-- Successful persistence plus email delivery returns `201` with `saved: true` and `email_sent: true`.
+- Persistence and notification delivery outcomes are distinguished.
+- The frontend can tell when a message was saved even if email notification failed and therefore avoid asking the user to resubmit unnecessarily.
 
-The API deliberately distinguishes persistence from notification delivery so the frontend can avoid duplicate submissions when a message was saved but email failed.
+## Authentication / Admin
 
-## Admin Routes
+The repository has Flask session-based authentication plus React login/logout surfaces.
 
-These are server-rendered routes rather than JSON API endpoints:
+Server-rendered admin routes include:
 
 ```http
 GET|POST /adminlogin
@@ -203,6 +207,8 @@ GET /logout
 ```
 
 `/admin-home` requires a Flask session through `login_required`.
+
+The React logout flow currently calls an API auth logout route and refreshes client auth state. Pantry-control integration with that auth state still needs completion/verification.
 
 ## Future Query Parameters
 
@@ -214,4 +220,4 @@ As content grows, add support for:
 - `limit`
 - `featured`
 
-Avoid unrestricted `SELECT *` responses indefinitely.
+Avoid unrestricted full-table responses indefinitely.

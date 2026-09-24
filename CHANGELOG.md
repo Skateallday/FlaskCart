@@ -6,50 +6,67 @@ All notable FlaskCart changes should be documented here.
 
 ### Added
 
-- Dedicated slug-based React recipe detail routes at `/recipes/:recipeSlug`.
-- A dedicated recipe detail page with recipe metadata, ingredients, ordered instructions, loading/error/not-found states and a per-recipe document title.
-- Recipe search, category filtering, result count, active-category display, clear-filter controls and an empty state.
-- Responsive recipe cards using a one/two/three-column grid and lazy-loaded fixed-aspect-ratio images.
-- Homepage recipe preview limited to three recipes with links into the full recipe library.
-- Responsive pantry presentation with a desktop/tablet table and mobile cards.
-- Major visual refresh across the public header, footer, home, contact, recipe and pantry surfaces.
-- Playwright 1.62.1 browser-test tooling in the frontend development dependencies.
-- Generated Playwright configuration for Chromium, Firefox and WebKit with the HTML reporter.
+- Dedicated slug-based recipe routes at `/recipes/:recipeSlug`.
+- Recipe search, active category/result count and clear-filter controls.
+- Recipe-list loading, error and empty states.
+- Contact enquiry persistence in SQLite with email notification outcome handling.
+- Playwright 1.62.1 browser-test tooling with Chromium, Firefox and WebKit projects.
+- Deployment concurrency protection, stale Git-lock detection and deployed-SHA verification.
+- Documentation for the automated `master` -> `production` -> GitHub Actions -> PythonAnywhere release path.
 
 ### Changed
 
-- Recipe cards now link to dedicated recipe pages instead of mounting recipe detail content inside every card.
-- Recipe list fetching now checks `response.ok` and exposes useful loading and error UI.
-- Recipe detail data is fetched once per opened detail page in parallel rather than once per recipe card.
-- The current Windows Playwright workflow uses a Node 24 Docker container so the outdated host Node installation is not involved.
+- Recipe cards now use a responsive one/two/three-column grid and link to dedicated recipe pages.
+- The homepage now shows three recipe previews and links to the full recipe library.
+- Pantry presentation now includes desktop/tablet and mobile layouts.
+- Public UI areas including home, header, footer, contact and recipes received a visual refresh.
+- Local frontend API configuration now uses `http://localhost:5000`; production uses same-origin requests.
+- Deployment now uses Node 24 and `npm ci`.
+- `node_modules` is no longer tracked in Git.
+- Local `venv/` and `server/app.db.backup*` files are ignored.
 
 ### Fixed
 
-- Recipe category selection now affects the visible recipe grid.
-- The recipe page now shows the active category and current result count.
-- The homepage no longer renders the full recipe library.
+- Contact no longer sends an empty payload or returns false success without persistence/delivery handling.
+- Recipe filters now affect the visible recipe grid.
+- Recipe-list fetches check `response.ok` before parsing JSON.
+- The recipe grid no longer mounts per-card ingredient/instruction fetchers.
+- Deployment no longer silently continues after a failed PythonAnywhere Git checkout.
+- The stale `.git/index.lock` incident from 2026-09-24 was recovered, PythonAnywhere was reset to the current production revision, and the correct site version was confirmed live.
 
-### Verified
+### Testing
 
-- On 2026-08-28, the generated Playwright demo suite ran successfully in Docker: two generated tests across three configured browsers, for six passing test executions.
-- The Playwright HTML report was successfully served from Docker and viewed from Windows through port `9323`.
-- These six passes validate the Playwright installation only; the generated tests still target `playwright.dev` and are not FlaskCart regression coverage.
+- Generated Playwright demo suite verified through Docker on 2026-08-28: six passing executions across Chromium, Firefox and WebKit.
+- Playwright HTML report serving verified on port `9323`.
+- Normal hardened production deployment smoke-tested successfully on 2026-09-24.
+- FlaskCart-specific Playwright regression coverage is still pending.
+- The deliberate stale-lock deployment failure-path test is still pending.
+
+### Deployment
+
+- Production deploys remain automatic after pushing `production`; normal releases do not require logging into PythonAnywhere.
+- The workflow now fails fast with `set -e`, rejects an existing `.git/index.lock`, verifies the deployed SHA and reloads PythonAnywhere only after a successful deployment step.
 
 ### Known Issues
 
-- `app/src/config/config.js` sends API requests from `localhost` and `127.0.0.1` to the live PythonAnywhere backend. Do not run mutating Playwright tests until local/test API isolation is fixed.
-- Playwright `baseURL` and `webServer` remain commented in the generated configuration, so FlaskCart-specific E2E setup is not complete.
-- Full recipe taxonomy normalisation and recipe-sidebar semantics still need work.
-- Inventory, shopping-list, authentication and React 404 issues remain in the Priority 1 backlog.
+- `server/app.db` remains tracked and can be overwritten by `git reset --hard` during deployment.
+- GitHub Actions still commits generated React static assets back to `production`, which can leave local `production` behind the remote.
+- Local `production` remote tracking should be normalised to avoid `origin`/`upstream` confusion.
+- Inventory update/auth issues remain open.
+- Shopping-list schema/actions remain incomplete.
+- Global React 404 remains missing.
+- Admin recipe edit/delete behaviour still requires verification.
+- Recipe taxonomy and filter semantics still need cleanup.
 
 ### Security
 
-- Mutating browser tests must never run against the production PythonAnywhere database.
-- Contact enquiries are now persisted and email delivery is attempted; personal-data handling and retention requirements remain applicable.
+- Contact enquiries are now persisted personal data and require an explicit retention/deletion policy.
+- The insecure fallback Flask secret key remains a production risk until removed or made fail-closed.
+- Production SQLite deployment safety is now explicitly tracked as an operational/data-integrity risk.
 
 ## Release Template
 
-## 0.0.5 - 2026/08/28
+## [Version] - YYYY-MM-DD
 
 ### Added
 

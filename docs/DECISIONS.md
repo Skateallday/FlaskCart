@@ -63,25 +63,19 @@ Continue with Flask, React, JavaScript and SQLite for the current project phase.
 
 ### Context
 
-The Flask server includes session login, registration, protected admin pages and a logout route.
+The Flask server includes session login, protected admin pages and logout behaviour.
 
 ### Decision
 
-Documentation must no longer describe authentication as purely future work. Public user accounts remain out of scope, but admin authentication exists and must be completed coherently across protected controls.
+Documentation must not describe authentication as purely future work. Public user accounts remain out of scope, but admin authentication exists and must be completed coherently across protected controls.
 
 ## 2026-07-23: Contact delivery and persistence
 
 **Status:** Replaced by the accepted 2026-08-03 decision
 
-### Options
-
-1. Email only.
-2. SQLite persistence only.
-3. SQLite persistence plus email.
-
 ### Historical outcome
 
-Option 3 was subsequently selected and implemented: persist to SQLite and attempt an email notification. See the accepted 2026-08-03 decision below.
+SQLite persistence plus email notification was selected and implemented.
 
 ## 2026-08-03: Persist contact enquiries and send email notification
 
@@ -117,31 +111,95 @@ Recipe cards link to `/recipes/:recipeSlug`, where a dedicated React page presen
 
 ### Decision
 
-Use Playwright for browser-level regression tests of important public workflows. On the current Windows workstation, execute Playwright through a Node 24 Docker container rather than relying on the outdated host Node installation.
+Use Playwright for browser-level regression tests of important public workflows. On the current Windows workstation, execute Playwright through a Node 24 Docker container when host tooling is unsuitable.
 
 ### Current state
 
-The generated two-test example suite has been verified in Chromium, Firefox and WebKit (six passing executions), but those tests target `playwright.dev` and are not FlaskCart regression tests.
+The generated two-test example suite has been verified in Chromium, Firefox and WebKit (six passing executions), and its HTML report has been served successfully. Those tests target `playwright.dev` and are not FlaskCart regression tests.
 
 ### Safety constraint
 
-Do not add mutating E2E tests until the local frontend is isolated from the production PythonAnywhere API/database.
+Mutating E2E tests must use isolated local/test data and must never target the production SQLite database.
 
 ## 2026-08-28: Local API configuration for E2E safety
 
-**Status:** Proposed / deferred
+**Status:** Replaced by the accepted 2026-09-24 decision
 
-### Problem
+The earlier local configuration pointed localhost at the production PythonAnywhere API. This was later corrected.
 
-`app/src/config/config.js` currently sends API calls from `localhost` and `127.0.0.1` to the production PythonAnywhere origin even though `package.json` also defines a local Flask proxy.
+## 2026-09-24: Use local Flask during local frontend development
 
-### Preferred direction
+**Status:** Accepted
 
-Use local/same-origin `/api` requests during development so Create React App can proxy to local Flask, while production continues to use the same deployed origin. Confirm the final implementation before changing it.
+### Decision
+
+When the React app runs on `localhost` or `127.0.0.1`, use `http://localhost:5000` as the API base. In production, use same-origin API requests.
 
 ### Consequences
 
-Until resolved, Playwright work should remain read-only and must not mutate production data.
+- Local frontend development no longer targets production by default.
+- Playwright can be developed against local Flask once a disposable/test SQLite database is configured.
+- Production does not require a hard-coded PythonAnywhere API origin.
+
+## 2026-09-24: Keep the master-to-production automated deployment model
+
+**Status:** Accepted
+
+### Decision
+
+Keep the existing release model:
+
+`master` -> merge to `production` -> push `production` -> GitHub Actions -> PythonAnywhere -> automatic reload.
+
+Normal releases should not require logging into PythonAnywhere.
+
+### Required local release sequence
+
+```powershell
+git checkout master
+git pull origin master
+
+git checkout production
+git pull origin production
+git merge master
+git push origin production
+
+git checkout master
+```
+
+### Consequences
+
+- Deployment automation should be hardened rather than replaced with a new deployment architecture.
+- Manual PythonAnywhere intervention is reserved for recovery/troubleshooting.
+
+## 2026-09-24: Fail production deployment visibly on Git/SSH errors
+
+**Status:** Accepted
+
+### Context
+
+A stale PythonAnywhere `.git/index.lock` caused `git reset --hard origin/production` to fail while the SSH script continued and the GitHub Action still appeared green.
+
+### Decision
+
+Use fail-fast SSH execution, refuse deployment while a Git lock exists, verify the deployed SHA matches `origin/production`, and only reload after those checks succeed.
+
+### Consequences
+
+- A checkout failure should now make the Action red instead of silently reloading stale code.
+- The workflow must not automatically delete `.git/index.lock`; stale-lock cleanup remains a deliberate recovery action after checking for active Git processes.
+
+## 2026-09-24: Production SQLite persistence strategy
+
+**Status:** Proposed / unresolved
+
+### Problem
+
+`server/app.db` is tracked while deployment uses `git reset --hard origin/production`, which can replace the live database.
+
+### Decision needed
+
+Choose a durable strategy before treating production data as persistent. Options include removing the live DB from Git and managing schema/seed data separately, or explicitly preserving/restoring the live database around deploys with a documented migration process.
 
 ## Decision Template
 

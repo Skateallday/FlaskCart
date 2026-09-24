@@ -1,14 +1,39 @@
 # Roadmap
 
-## Status Update — 2026-08-28
+## Status Update — 2026-09-24
 
-The public UI has undergone a major refresh, recipe filtering now works, dedicated recipe detail routes exist, the homepage is limited to three recipe previews, and Playwright tooling has been installed/verified. Priority 1 is **not** complete because inventory, shopping-list, auth/permissions, global 404 and E2E isolation/coverage remain open.
+The public UI has undergone a major refresh, recipe filtering works, dedicated recipe detail routes exist, the homepage is limited to three recipe previews, contact processing is implemented, Playwright tooling is installed/verified, and the automated PythonAnywhere deployment workflow has been hardened and successfully smoke-tested.
+
+Priority 1 is **not** complete because inventory, shopping-list, auth/permissions, global 404, admin verification and FlaskCart-specific regression coverage remain open. Production SQLite safety is also an operational blocker that must be resolved before production data is treated as durable.
+
+## Operational Reliability Track
+
+Goal: keep releases simple, automated and trustworthy.
+
+Completed:
+
+- Keep the `master` -> `production` deployment model.
+- Automatic GitHub Actions deployment to PythonAnywhere.
+- Node 24 and `npm ci` deployment build.
+- Concurrency protection.
+- Fail-fast SSH execution.
+- Stale `.git/index.lock` detection.
+- Deployed-SHA verification.
+- Automatic PythonAnywhere reload.
+- Normal hardened deployment smoke test.
+
+Remaining:
+
+- Protect the live SQLite database from hard-reset replacement.
+- Remove/redesign the Action-generated static commit that advances `production` after a developer push.
+- Normalise local `production` remote tracking.
+- Deliberately verify the stale-lock failure path.
 
 ## Phase 1: Fix Broken or Misleading Functionality
 
 Goal: every visible control works, permissions are clear and UI state matches the server.
 
-- Maintain the now-functional contact persistence/email workflow and add regression coverage.
+- Maintain the functional contact persistence/email workflow and add regression coverage.
 - Finish recipe taxonomy/semantics after the core filter connection was completed.
 - Repair or remove nonfunctional shopping-list filters.
 - Fix inventory `NaN` updates.
@@ -19,6 +44,7 @@ Goal: every visible control works, permissions are clear and UI state matches th
 - Update shopping-list state immediately after adding a recipe.
 - Add a React 404 route.
 - Verify admin recipe edit and delete behaviour.
+- Replace generated Playwright demo tests with FlaskCart regression journeys.
 
 Exit criteria:
 
@@ -35,9 +61,9 @@ Goal: reduce duplicate requests, unnecessary startup work and inconsistent API h
 - Keep the completed three-recipe homepage preview.
 - Mount pantry and shopping-list data providers only where needed.
 - Add a batch shopping-list endpoint and one summary toast.
-- Add loading, error and empty states.
+- Add complete loading, error and empty states across remaining data surfaces.
 - Centralise API status/error handling.
-- Optimise recipe images.
+- Optimise recipe images further.
 - Add client and server caching.
 - Add API filtering and pagination.
 - Route-split larger React pages.
@@ -59,30 +85,28 @@ Goal: make the portfolio experience polished across mobile, tablet and desktop.
 - Keep the completed pantry mobile-card layout and redesign the shopping list similarly.
 - Fix blank mobile inventory action labels.
 - Maintain the refreshed hero positioning, copy width and calls to action.
-- Maintain the fixed-aspect-ratio recipe cards.
-- Continue improving the now-implemented dedicated recipe pages.
-- Add active filter states and result counts.
-- Normalise recipe categories and remove duplicate colour definitions.
+- Maintain fixed-aspect-ratio recipe cards.
+- Continue improving the dedicated recipe pages.
+- Keep active filter states and result counts.
+- Normalise recipe categories.
 - Centralise typography and layout tokens.
 - Consolidate font loading.
-- Improve the responsive footer.
-- Correct contact-section wording and layout.
+- Verify responsive footer behaviour after the UI refresh.
 
 ## Phase 4: Accessibility, Semantics and SEO
 
 Goal: make the application understandable to browsers, assistive technology and search engines.
 
-- Add a `main` landmark.
-- Correct accordion semantics and relationships.
+- Verify `main` landmarks on all routed pages.
 - Remove inappropriate tab roles from filters.
-- Label pantry search and add clear search.
+- Add selected-state semantics to filters.
+- Verify pantry search and clear-search accessibility.
 - Improve mobile navigation accessibility and behaviour.
-- Use React links for internal navigation.
-- Correct footer list semantics.
-- Add route-specific metadata.
+- Audit remaining internal anchors and footer list semantics.
+- Complete route-specific titles and descriptions.
 - Add Recipe JSON-LD for dedicated recipe URLs.
 - Add canonical and social-sharing metadata.
-- Add visible keyboard focus styles.
+- Audit visible keyboard focus styles.
 
 ## Deferred Ideas
 
@@ -90,4 +114,4 @@ Goal: make the application understandable to browsers, assistive technology and 
 - TypeScript migration.
 - Dedicated public user accounts.
 - Real payments.
-- Database replacement.
+- Database replacement beyond the SQLite learning scope.

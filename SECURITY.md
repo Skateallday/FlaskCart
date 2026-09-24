@@ -2,77 +2,97 @@
 
 ## Scope
 
-FlaskCart is a public portfolio application with an authenticated admin area. It does not process payments, but it handles credentials, sessions, stock mutations and persisted contact personal data.
+FlaskCart is a public portfolio application with an authenticated admin area. It does not process payments, but it handles credentials, sessions, stock mutations, contact personal data and a live SQLite database.
 
 ## Authentication
 
-- Admin login is session-based.
+- Admin authentication is session-based.
 - Passwords are checked with Flask-Bcrypt.
-- `/admin-home` and pantry mutation endpoints use `login_required`.
-- The session lifetime is two hours.
+- Protected admin/pantry behaviour uses authentication checks.
+- React now has login/logout surfaces and client auth state, but pantry-control integration still needs completion/verification.
 
 Required improvements:
 
-- Provide the React UI with a safe way to know whether protected controls are available.
-- Hide or disable admin-only controls for guests.
+- Hide or disable admin-only pantry controls for guests.
 - Handle `401` responses consistently.
-- Verify admin registration should remain publicly reachable in production.
+- Verify the intended production registration policy.
 
 ## Secret Key
 
-`server/config.py` currently falls back to a predictable secret value when `SECRET_KEY` is missing.
+`server/config.py` has historically included a predictable fallback secret when `SECRET_KEY` is missing.
 
-Production must fail closed or use a securely configured environment value. Do not use the fallback for the live deployment.
+Production must use a securely configured environment value and should fail closed rather than rely on a known fallback.
 
 ## CSRF
 
-Flask-WTF CSRF protection is enabled and a token is placed in a cookie after requests.
+Flask-WTF CSRF protection is enabled and a token is made available to state-changing requests.
 
 Review:
 
 - Cookie `Secure`, `HttpOnly` and `SameSite` settings.
 - Token refresh behaviour.
-- Whether public JSON mutations require and correctly receive the token.
 - Consistent CSRF error responses.
+- Coverage of public and authenticated JSON mutations.
 
 ## Contact Data
 
-Names, email addresses and messages are personal data. The current contact workflow persists enquiries to `ContactEnquiries` and attempts an email notification.
+Names, email addresses and messages are personal data.
+
+The contact workflow now persists enquiries in `ContactEnquiries` and attempts email notification.
+
+Requirements:
 
 - Do not print full payloads in production.
-- Do not commit real messages.
-- Store only what the contact workflow requires.
-- Document and enforce a retention/deletion policy for persisted enquiries.
-- Keep mail credentials and `CONTACT_RECIPIENT` configuration out of source control.
-- Distinguish saved, email-sent and failure states accurately in API responses.
+- Do not commit real messages or production database contents containing personal data.
+- Store only what the workflow requires.
+- Define retention and deletion for persisted enquiries.
+- Keep mail credentials in environment variables.
+- Distinguish persistence from notification delivery honestly.
 
 ## Database Safety
 
 - Use parameterised SQL.
 - Validate quantities and stock on the server.
-- Prevent negative stock with application validation and preferably a database constraint.
+- Prevent negative stock with application validation and preferably database constraints.
 - Use transactions for multi-record operations.
 - Verify related records before recipe deletion.
+- Treat production database deployment as a data-integrity concern.
+
+### Open deployment risk
+
+`server/app.db` is tracked by Git and PythonAnywhere deployment uses `git reset --hard origin/production`.
+
+A normal code deployment can therefore replace live SQLite data. This must be resolved before production data is treated as durable.
+
+Backups should never be committed, and restoring a backup must be deliberate when schema changes are involved.
+
+## Deployment Security
+
+- PythonAnywhere credentials and tokens belong in GitHub Secrets/environment configuration, never source control.
+- The deployment workflow must fail on Git/SSH errors.
+- Do not automatically delete `.git/index.lock`; verify no real Git process is using it first.
+- Do not force-push production as a routine deployment fix.
+- Verify the deployed SHA before reload.
 
 ## Error Handling
 
 - Do not expose stack traces or raw database errors publicly.
 - Replace `print`-only exception handling with structured logs and safe API errors.
-- Avoid broad exception handling that returns an apparently successful page after failure.
+- Avoid broad exception handling that returns an apparently successful result after failure.
 
 ## Frontend Security
-
-### Browser-test safety
-
-- The current local frontend configuration points API calls at the live PythonAnywhere backend.
-- Do not run Playwright tests that submit contact forms, mutate pantry stock, modify shopping lists or use admin actions against that production backend.
-- Establish local/test API and database isolation before adding mutating E2E coverage.
-- Read-only production smoke checks, if deliberately used, must not be treated as a substitute for isolated regression tests.
 
 - Never put secrets in React environment variables or source files.
 - Treat API responses as untrusted data.
 - Do not render untrusted HTML.
-- Use React Router links for internal navigation rather than forcing full reloads.
+- Use React Router links for internal navigation.
+- Keep localhost connected to local Flask, not production.
+
+## Test Safety
+
+- Never run mutating browser tests against production data.
+- Use disposable/test SQLite data for automated mutations.
+- Generated Playwright demo-test passes validate tooling only.
 
 ## Dependency Security
 
@@ -82,4 +102,4 @@ Names, email addresses and messages are personal data. The current contact workf
 
 ## Vulnerability Reporting
 
-Before promoting the repository publicly, add a private contact method for reporting security concerns.
+Before promoting the repository broadly, add a private contact method for reporting security concerns.

@@ -23,17 +23,17 @@ The recipe library now implements the target responsive grid:
 - Two columns on tablet.
 - Three columns on larger screens.
 
-Recipe cards link to a dedicated `/recipes/:recipeSlug` page rather than expanding full detail content inside each card.
+Recipe cards link to dedicated `/recipes/:recipeSlug` pages rather than expanding full detail content inside each card.
 
 ### Filters
 
-On small screens, replace fixed sidebars with one of:
+The recipe grid now shows active category/result information and clear-filter behaviour.
 
-- Horizontal filter chips.
-- A disclosure above results.
-- An accessible filter drawer.
+Remaining filter design/accessibility work:
 
-Show the active category and result count.
+- Fully normalise the category taxonomy.
+- Replace the remaining incomplete `role="tab"` pattern with ordinary button semantics and selected state.
+- Keep the small-screen filter presentation compact and clearly labelled.
 
 ### Data tables
 
@@ -54,24 +54,26 @@ Expected reusable UI pieces:
 - Filter controls
 - Recipe card
 - Dedicated recipe detail page
-- Loading skeleton
-- Error state with retry
+- Loading state
+- Error state with retry where useful
 - Empty state
 - Pantry row/card
 - Shopping-list row/card
 - Quantity control
 - Purchased control
 - Toast or inline confirmation
-- 404 page
+- Global 404 page
 
 ## Recipe Images
 
-- Use a fixed aspect ratio.
-- Use `object-fit: cover`.
-- Set explicit dimensions.
-- Lazy-load below-the-fold images.
-- Provide responsive image sources where practical.
-- Use accurate alternative text.
+Current recipe cards already use lazy loading and a fixed aspect ratio with `object-fit: cover`.
+
+Remaining improvements:
+
+- Set explicit dimensions where practical.
+- Provide responsive image sources.
+- Generate/serve WebP or AVIF where useful.
+- Keep alternative text accurate.
 
 ## Interaction States
 
@@ -87,7 +89,7 @@ Every interactive control should define:
 
 ## Typography and Tokens
 
-Centralise:
+Continue centralising:
 
 - Body and heading font families.
 - Type scale.
@@ -97,21 +99,22 @@ Centralise:
 - Shadows.
 - Focus-ring style.
 
-Consolidate Google Font requests or self-host only required weights.
+Consolidate Google Font requests or self-host only required weights where appropriate.
 
 ## Accessibility
 
 - Use semantic headings and landmarks.
 - Keep visible focus styles.
 - Label search and quantity inputs.
-- Use `aria-expanded` for disclosures.
-- Use `aria-pressed` for selected filters when appropriate.
+- Use selected-state semantics for filters.
 - Do not use tab roles without the complete tab pattern.
 - Keep mobile menu state accessible.
+- Keep mobile action labels visible or provide equivalent accessible names.
 
 ## Content Style
 
 - Use plain, direct labels.
 - Prefer action language: Add, Remove, Mark purchased, Browse recipes.
-- Do not tell users a form is "on the left" unless the layout always supports that statement.
+- Do not describe layout position (for example, “on the left”) when responsive layout may change it.
 - Use one category taxonomy throughout the app.
+- Clearly distinguish saved contact enquiries from notification-delivery problems.

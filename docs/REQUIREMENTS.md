@@ -8,8 +8,8 @@ A public visitor can:
 
 - View the home and about pages.
 - Browse recipes.
-- Filter recipes by category.
-- View ingredients and instructions.
+- Search and filter recipes by category.
+- View dedicated recipe detail pages with ingredients and instructions.
 - View pantry data.
 - View and maintain the shopping list where public mutation is intentionally allowed.
 - Submit a contact enquiry.
@@ -18,7 +18,8 @@ A public visitor can:
 
 An authenticated admin can:
 
-- Sign in through the Flask admin interface.
+- Sign in.
+- Access protected administration functionality.
 - Add and edit food records.
 - Add and edit recipe records.
 - Perform protected pantry stock changes.
@@ -30,24 +31,28 @@ Recipe deletion must be verified and implemented safely before it is documented 
 
 ### Contact form
 
+Current implementation meets the core behavioural requirements below; regression tests remain outstanding.
+
 - Send the entered name, email and message.
 - Validate required fields and email format on client and server.
 - Disable submission while sending.
-- Show a useful success confirmation.
-- Show validation and server errors.
-- Retain entered values after a failed request.
-- Deliver the enquiry by email, save it, or both according to a documented decision.
-- Never report success if delivery or persistence failed.
+- Show useful success, warning and error outcomes.
+- Retain entered values when a request fails before persistence.
+- Persist the enquiry to SQLite.
+- Attempt email notification.
+- Distinguish saved data from notification failure.
+- Never report success for work that did not occur.
 
 ### Recipes
 
-Current implementation note (2026-08-28): the recipe grid now supports search/category filtering and dedicated `/recipes/:recipeSlug` pages. Full taxonomy normalisation, E2E regression coverage and structured data remain outstanding.
+Current implementation includes search/category filtering and dedicated `/recipes/:recipeSlug` pages. Full taxonomy normalisation, E2E regression coverage and structured data remain outstanding.
 
 - Display recipe image, name, summary, category, servings, calories and cooking time.
 - Filter the visible recipe grid by selected category.
+- Search recipe names/descriptions.
 - Show the active filter and result count.
 - Use one normalised category taxonomy.
-- Display ingredients and instructions accessibly.
+- Display ingredients and instructions accessibly on a dedicated recipe route.
 - Avoid downloading the same shared datasets for every recipe card.
 - Add all recipe ingredients to the shopping list in one user action.
 - Update shopping-list state immediately after success.
@@ -57,6 +62,7 @@ Current implementation note (2026-08-28): the recipe grid now supports search/ca
 
 - Display pantry items, categories and stock quantities.
 - Support category filtering and name search.
+- Provide responsive desktop/table and mobile-card presentation.
 - Show mutation controls only to users authorised to use them, or provide a clear admin mode.
 - Pass both item name and quantity to local state updates.
 - Allow stock to reach exactly zero.
@@ -66,7 +72,7 @@ Current implementation note (2026-08-28): the recipe grid now supports search/ca
 ### Shopping list
 
 - Display item name, quantity, unit and purchased state.
-- Filter items when category controls are shown.
+- Filter items only when functional filter controls are intentionally present.
 - Add a user-entered quantity through a visible action.
 - Use one consistent schema across API, context and components.
 - Mark an item purchased or unpurchased.
@@ -77,9 +83,11 @@ Current implementation note (2026-08-28): the recipe grid now supports search/ca
 
 ### Routing
 
-- Unknown React routes must show a designed 404 page.
-- Internal navigation must use React Router links.
-- Larger routes should be code-split after core behaviour is stable.
+- Known React routes must render directly on refresh in production.
+- Dedicated recipe slug routes must render recipe detail.
+- Unknown React routes must show a designed global 404 page.
+- Internal navigation should use React Router links.
+- Larger routes can be code-split after core behaviour is stable.
 
 ### Admin
 
@@ -89,6 +97,22 @@ Current implementation note (2026-08-28): the recipe grid now supports search/ca
 - Recipe deletion must remove or preserve related data according to explicit database rules.
 - Public UI must not expose controls that only admins can use without explaining the required sign-in.
 
+## Deployment Requirements
+
+Normal releases must follow:
+
+`master` -> merge to `production` -> push `production` -> GitHub Actions -> PythonAnywhere -> reload.
+
+- Normal releases must not require a manual PythonAnywhere login.
+- A failed Git/SSH deployment command must make the Action fail.
+- Deployment must refuse to proceed through an unexplained `.git/index.lock`.
+- The deployed checkout must match `origin/production` before reload.
+- Overlapping production deploy jobs must not run concurrently.
+- The live database must not be silently destroyed or replaced by ordinary code deployment.
+- Deployment verification must expose the deployed commit SHA and reload result.
+
+The live SQLite preservation requirement is not yet satisfied and is tracked as an open operational issue.
+
 ## Non-Functional Requirements
 
 ### Reliability
@@ -97,6 +121,7 @@ Current implementation note (2026-08-28): the recipe grid now supports search/ca
 - Use consistent API error objects.
 - Keep UI state aligned with confirmed backend changes.
 - Do not rely on page refresh to show successful mutations.
+- Make deployment failures visible instead of false-green.
 
 ### Performance
 
@@ -117,10 +142,9 @@ Current implementation note (2026-08-28): the recipe grid now supports search/ca
 
 Aim for WCAG 2.2 AA principles:
 
-- Add a `main` landmark.
-- Use correct accordion semantics.
-- Use normal filter buttons with `aria-pressed` where appropriate.
-- Label the pantry search.
+- Use `main` landmarks consistently.
+- Use normal filter buttons with selected-state semantics rather than incomplete tab patterns.
+- Label pantry search and clear-search actions.
 - Improve mobile navigation semantics and focus handling.
 - Use proper list markup in the footer.
 - Provide visible `:focus-visible` styles.
@@ -129,7 +153,14 @@ Aim for WCAG 2.2 AA principles:
 
 - Add route-specific titles and descriptions.
 - Add canonical and Open Graph metadata.
-- Add Recipe structured data to the now-existing dedicated recipe URLs.
+- Add Recipe structured data to dedicated recipe URLs.
+
+### Testing
+
+- Do not cite generated Playwright demo tests as FlaskCart regression evidence.
+- Add real FlaskCart browser tests incrementally.
+- Mutating E2E tests must use isolated/local disposable data.
+- Select and document a backend test runner.
 
 ## Out of Scope
 

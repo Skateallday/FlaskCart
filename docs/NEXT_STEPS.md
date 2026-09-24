@@ -1,6 +1,6 @@
 # Next Steps
 
-## Current Checkpoint — 2026-08-28
+## Current Checkpoint — 2026-09-24
 
 Completed/verified recently:
 
@@ -10,18 +10,22 @@ Completed/verified recently:
 - Dedicated `/recipes/:recipeSlug` detail pages are implemented.
 - Recipe cards use a responsive grid and the homepage is limited to three recipe previews.
 - Pantry presentation has desktop/tablet and mobile layouts.
-- Playwright 1.62.1 is installed and its generated two-test example suite passes in Chromium, Firefox and WebKit through Docker.
+- Playwright 1.62.1 is installed; its generated two-test example suite passes in Chromium, Firefox and WebKit through Docker, and the HTML report has been viewed successfully.
+- Local frontend API configuration now uses `http://localhost:5000`; production uses same-origin API requests.
+- `node_modules` is no longer tracked as deployment content.
+- The production deployment workflow now uses Node 24, `npm ci`, concurrency protection, fail-fast SSH execution, stale-lock detection, deployed-SHA verification and automatic PythonAnywhere reload.
+- A normal hardened deployment was completed successfully and the correct version was confirmed live on 2026-09-24.
 
-The six Playwright executions are tooling validation only, not FlaskCart regression coverage.
+The six Playwright executions remain tooling validation only, not FlaskCart regression coverage.
 
 ## Immediate Implementation Sequence
 
-### 1. Make the E2E environment safe
+### 1. Finish deployment reliability
 
-- Correct the local API configuration so localhost does not point at the live PythonAnywhere backend.
-- Confirm local React -> local Flask -> local/test SQLite behaviour.
-- Keep production on same-origin API requests.
-- Do not run mutating browser tests until this isolation is verified.
+- Decide how the live SQLite database should persist independently of `git reset --hard` deployments.
+- Stop or redesign the GitHub Actions commit of generated React static assets back to `production`, because it can leave the local `production` branch behind the remote after every deploy.
+- Confirm the local `production` branch tracks the intended remote.
+- Deliberately test the `.git/index.lock` failure path once and confirm the Action fails red before reload.
 
 ### 2. Add the first FlaskCart Playwright test
 
@@ -35,11 +39,12 @@ Start read-only:
 
 Then replace/remove the generated `playwright.dev` example tests once equivalent FlaskCart coverage exists.
 
+Before mutating E2E tests, point them at a disposable/local test database rather than the development or production database.
+
 ### 3. Finish recipe filter cleanup
 
 - Normalise the complete recipe taxonomy rather than only handling `Snack`/`Snacks` as an alias.
 - Replace inappropriate `role="tab"` filter semantics with normal button semantics and selected-state accessibility.
-- Verify the current uncommitted/local sidebar styling before documenting it as complete.
 
 ### 4. Repair inventory state and permissions
 
@@ -73,7 +78,7 @@ Then replace/remove the generated `playwright.dev` example tests once equivalent
 
 ### 8. Expand regression coverage
 
-After the environment is isolated:
+After test data isolation is in place:
 
 - Contact success/validation/failure tests.
 - Recipe filtering/search tests.

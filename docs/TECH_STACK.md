@@ -2,7 +2,7 @@
 
 ## Backend
 
-Confirmed from `server/requirements.txt`:
+Confirmed from the repository:
 
 - Python
 - Flask 2.2.5
@@ -38,23 +38,45 @@ The frontend currently includes:
 - `tailwindcss` 3.4.x
 - Create React App 5
 
-Standardise the Tailwind toolchain before doing broader build work. A Vite migration is optional and must not displace higher-priority functional fixes.
+Standardise the Tailwind toolchain before doing broader build-system work. A Vite migration is optional and must not displace higher-priority functional fixes.
 
-## Deployment
+## Local Development Configuration
+
+`app/src/config/config.js` now uses:
+
+- `http://localhost:5000` for `localhost` / `127.0.0.1`;
+- same-origin API requests in production.
+
+This fixes the earlier local-to-production API coupling.
+
+## Browser Testing
+
+- Playwright 1.62.1 is installed.
+- Chromium, Firefox and WebKit projects are configured.
+- Generated demo tests have been verified through Docker using Node 24: six passing executions.
+- The HTML report has been served successfully on port `9323`.
+- FlaskCart-specific specs, `baseURL`, controlled server startup and disposable test data are still pending.
+
+## Deployment Stack
 
 - PythonAnywhere hosts the live application.
 - Flask serves the React production build.
-- `app/src/config/config.js` currently uses the production PythonAnywhere origin when the browser hostname is `localhost` or `127.0.0.1`, while production falls back to same-origin requests. This local-to-production coupling must be corrected before mutating E2E tests.
+- GitHub Actions deploys pushes to `production`.
+- The deployment build uses Node 24 and `npm ci`.
+- GitHub Actions connects to PythonAnywhere over SSH, verifies the deployed commit and calls the PythonAnywhere reload API.
 
 ## Current Technical Debt
 
 - Global providers still fetch some route-specific data eagerly.
-- Recipe list fetching now checks `response.ok`, but API error handling is not yet centralised across the frontend.
-- The recipe list no longer mounts per-card ingredient/instruction fetchers; the dedicated recipe detail page currently downloads the full recipes, ingredients and instructions datasets once and filters them client-side.
-- Backend requirements include packages that appear unrelated to FlaskCart, including Discord and async networking packages; verify whether they are needed before removing them.
+- Recipe list fetching now checks `response.ok`, but API error handling is not centralised across the frontend.
+- The recipe list no longer mounts per-card ingredient/instruction fetchers; the dedicated detail page still downloads the full recipes, ingredients and instructions datasets and filters them client-side.
+- Inventory local update and authentication-state behaviour remains incomplete.
+- Shopping-list schema/state behaviour remains incomplete.
+- Backend requirements include packages that appear unrelated to FlaskCart; verify before removing them.
 - The Flask secret key has an insecure fallback value.
-- Playwright is configured for frontend browser tests, but FlaskCart-specific E2E specs are not yet present.
 - There is no confirmed backend test runner in the requirements.
+- `server/app.db` is tracked and is vulnerable to replacement during hard-reset deployment.
+- The deployment workflow still commits generated React static assets back to `production`, creating avoidable branch churn.
 
 ## Approved Direction
 

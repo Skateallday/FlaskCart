@@ -9,7 +9,7 @@ The frontend has two testing layers available:
 
 A dedicated backend test runner is still not confirmed in `server/requirements.txt`. `pytest` remains the recommended direction when that dependency decision is made.
 
-## Playwright Status — 2026-08-28
+## Playwright Status
 
 `app/playwright.config.js` currently contains the generated Playwright configuration:
 
@@ -20,14 +20,14 @@ A dedicated backend test runner is still not confirmed in `server/requirements.t
 - Firefox / Desktop Firefox project
 - WebKit / Desktop Safari project
 - `trace: 'on-first-retry'`
-- `baseURL` is still commented out
-- automatic `webServer` startup is still commented out
+- `baseURL` still needs FlaskCart configuration
+- automatic controlled local server startup is not yet enabled
 
-`app/tests/example.spec.js` contains the two generated Playwright documentation tests. They visit `https://playwright.dev/`; they do not test FlaskCart.
+`app/tests/example.spec.js` contains the generated Playwright documentation tests. They visit `https://playwright.dev/`; they do not test FlaskCart.
 
-### Verified run
+### Verified run — 2026-08-28
 
-On 2026-08-28, the generated two-test suite ran in all three browser projects through Docker:
+The generated two-test suite ran in all three browser projects through Docker:
 
 ```text
 Running 6 tests using 6 workers
@@ -35,6 +35,10 @@ Running 6 tests using 6 workers
 ```
 
 This validates the Playwright installation and browser setup only.
+
+### HTML report
+
+The HTML report was also served successfully through Docker on port `9323` and viewed from the Windows host.
 
 ### Current Windows Docker command
 
@@ -52,7 +56,7 @@ docker run --rm -it `
 
 The `/app/node_modules` anonymous volume keeps Linux dependencies separate from the Windows host folder.
 
-### HTML report
+### HTML report command
 
 ```powershell
 docker run --rm -it `
@@ -66,15 +70,17 @@ docker run --rm -it `
 
 Open `http://localhost:9323` on Windows.
 
-## E2E Safety Blocker
+## E2E Data Safety
 
-`app/src/config/config.js` currently sends API requests from `localhost`/`127.0.0.1` to `https://skateallday.pythonanywhere.com`.
+The earlier configuration problem where localhost targeted the production PythonAnywhere API is resolved.
 
-Therefore:
+`app/src/config/config.js` now sends localhost/127.0.0.1 requests to local Flask at `http://localhost:5000`, while production uses same-origin requests.
 
-- Read-only browser checks can be developed cautiously.
-- Do **not** write/run Playwright tests that mutate contact enquiries, pantry stock, shopping lists or admin data against the current local frontend configuration.
-- Before mutating E2E coverage, establish local React -> local Flask -> local/test SQLite behaviour.
+However, mutating E2E tests still require deliberate data isolation:
+
+- Do not point automated mutations at the production SQLite database.
+- Prefer a disposable test database or resettable local fixture database.
+- Keep contact, pantry, shopping-list and admin mutation tests isolated from meaningful development data.
 
 ## First FlaskCart Playwright Journey
 
@@ -88,7 +94,7 @@ Replace/augment the generated demo tests with a small read-only recipe journey:
 6. Confirm the Ingredients section is visible.
 7. Confirm the Instructions section is visible.
 
-This should be taught and built incrementally rather than copied as a large suite.
+Once this passes reliably, remove the generated Playwright documentation specs.
 
 ## Priority 1 Regression Matrix
 
@@ -99,6 +105,7 @@ This should be taught and built incrementally rather than copied as a large suit
 - The button is disabled while sending.
 - Persistence and email outcomes are represented honestly.
 - A failed unsaved request preserves entered values.
+- A saved-but-email-failed response does not encourage duplicate resubmission.
 - The server never returns a false success.
 
 ### Recipe filters
@@ -147,6 +154,22 @@ This should be taught and built incrementally rather than copied as a large suit
 - Add recipe persists recipe, steps, ingredients and tags.
 - Edit recipe updates the intended fields.
 - Delete recipe safely handles related records.
+
+## Deployment Regression Checks
+
+The hardened deployment workflow adds operational checks that should be treated like regression coverage:
+
+- A normal `production` push completes successfully.
+- The Action prints the deployed short SHA.
+- The PythonAnywhere checkout matches `origin/production`.
+- The reload API returns HTTP 200.
+- A stale `.git/index.lock` should make the deploy step fail red before reload.
+
+### Verified deployment run — 2026-09-24
+
+The normal success path was verified after hardening and the updated site was confirmed live.
+
+The deliberate stale-lock failure-path test has not yet been run after the hardening change.
 
 ## Frontend Commands
 

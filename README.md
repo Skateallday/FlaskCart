@@ -1,50 +1,68 @@
 # FlaskCart
 
-A full-stack learning and portfolio application built with Flask, React and SQLite for browsing recipes, tracking pantry stock and maintaining a shopping list.
+FlaskCart is a full-stack learning and portfolio application built with Flask, React and SQLite. It combines recipe browsing, pantry inventory, a shopping list, contact enquiries and an authenticated admin area in one deployed project.
 
-## Overview
+## Live Demo
 
-FlaskCart combines a Flask backend with a React public application and a Flask/Jinja admin area. The public application supports recipe browsing, category filtering and search, dedicated recipe detail pages, pantry viewing, shopping-list workflows and contact enquiries.
+`https://skateallday.pythonanywhere.com/`
 
-The project is intentionally kept approachable as a full-stack learning project while still demonstrating API design, state management, authentication, database work, responsive UI and deployment.
+## What It Demonstrates
+
+- React single-page application development.
+- Flask JSON APIs and server-rendered admin pages.
+- SQLite persistence and relational data handling.
+- Session-based admin authentication and CSRF protection.
+- Frontend state management and API integration.
+- Responsive recipe and pantry interfaces.
+- Contact enquiry persistence plus email notification handling.
+- Browser automation tooling with Playwright.
+- Automated deployment to PythonAnywhere with GitHub Actions.
+
+## Current Features
+
+- Recipe library with search and category filtering.
+- Responsive one/two/three-column recipe cards.
+- Dedicated `/recipes/:recipeSlug` detail pages.
+- Ingredients and ordered cooking instructions.
+- Three-recipe homepage preview.
+- Pantry search/filter UI with desktop table and mobile cards.
+- Shopping-list persistence and removal.
+- Contact form with client/server validation and SQLite persistence.
+- Flask/Jinja admin interface with session authentication.
+- Automatic production deployment from the `production` branch.
+
+Some pantry, shopping-list, admin verification, accessibility and regression-test work remains. See `TASKS.md` and `NEXT_STEPS.md` for the current backlog.
 
 ## Built With
 
 ### Backend
+
 - Python
 - Flask 2.2.5
 - SQLite
-- Flask blueprints and JSON API routes
 - Flask-Bcrypt
-- Flask-WTF / CSRF protection
 - Flask-Mail
+- Flask-WTF / WTForms
+- Flask blueprints and JSON routes
+
+FlaskCart does **not** currently use Flask-RESTful resources.
 
 ### Frontend
+
 - React 19
 - React Router 6
 - JavaScript
+- Create React App / react-scripts 5
 - Tailwind CSS utilities
 - React Toastify
 
-### Testing and Development
-- Testing Library / Jest through Create React App
-- Playwright 1.62.1 for browser E2E testing
-- Docker / Docker Compose
+### Testing and Tooling
+
+- Testing Library dependencies
+- Playwright 1.62.1
 - Git and GitHub
-
-## Features
-
-- Recipe library with search and category filtering.
-- Dedicated slug-based recipe detail pages with ingredients and instructions.
-- Responsive recipe cards and pantry layouts.
-- Pantry inventory and shopping-list data backed by Flask/SQLite.
-- Contact enquiries persisted to SQLite with email notification handling.
-- Session-based Flask admin authentication and admin data-management pages.
-- PythonAnywhere deployment.
-
-## Demo
-
-[View the live demo](https://skateallday.pythonanywhere.com/)
+- GitHub Actions
+- Docker for the current Playwright browser-test workflow on Windows
 
 ## Getting Started
 
@@ -55,7 +73,7 @@ cd server
 python -m venv venv
 ```
 
-Activate the environment, install requirements and run Flask:
+Activate the environment, then:
 
 ```bash
 pip install -r requirements.txt
@@ -76,68 +94,59 @@ npm install
 npm start
 ```
 
-### Local API configuration warning
-
-The current `app/src/config/config.js` points browser requests from `localhost` or `127.0.0.1` at the live PythonAnywhere API. Production uses same-origin API requests.
-
-This configuration must be corrected before running any automated test that changes data. The preferred direction is local React -> local Flask -> local/test SQLite, while production remains same-origin.
+When the React app runs on `localhost` or `127.0.0.1`, it uses the local Flask API at `http://localhost:5000`. Production uses same-origin API requests.
 
 ## Testing
 
-### Frontend unit/component tests
+Frontend unit/component tooling is available through Create React App:
 
 ```bash
 cd app
 npm test
+npm run build
 ```
 
-### Playwright
+Playwright is installed and its generated demo suite has been verified across Chromium, Firefox and WebKit. Those generated tests target Playwright's own site and are not yet FlaskCart regression tests.
 
-Playwright is installed under `app` and currently has the generated configuration plus generated example tests. The generated example suite contains two tests and is configured for Chromium, Firefox and WebKit, so a complete run produces six test executions.
+See `TESTING.md` for the current Docker commands and coverage plan.
 
-On the current Windows development machine, Playwright is run through Node 24 in Docker instead of the outdated host Node installation:
+## Deployment
+
+Normal releases follow this branch flow:
 
 ```powershell
-docker run --rm -it `
-  --ipc=host `
-  -v "${PWD}:/app" `
-  -v /app/node_modules `
-  -w /app `
-  node:24-bookworm `
-  bash -lc "npm ci && npx playwright install --with-deps && npx playwright test"
+git checkout master
+git pull origin master
+
+git checkout production
+git pull origin production
+git merge master
+git push origin production
+
+git checkout master
 ```
 
-The generated suite was verified on 2026-08-28 with six passing test executions. This proves the Playwright setup works; it does **not** yet prove FlaskCart behaviour because `tests/example.spec.js` still targets `playwright.dev`.
+Pushing `production` triggers GitHub Actions, which builds the React app, deploys the repository to PythonAnywhere, verifies the deployed commit and reloads the live application.
 
-To view the HTML report from Docker:
+Normal releases should not require logging into PythonAnywhere.
 
-```powershell
-docker run --rm -it `
-  -p 9323:9323 `
-  -v "${PWD}:/app" `
-  -v /app/node_modules `
-  -w /app `
-  node:24-bookworm `
-  bash -lc "npm ci && npx playwright show-report --host 0.0.0.0 --port 9323"
-```
+See `DEPLOYMENT.md` for the full process and the remaining production-database risk.
 
-Then open `http://localhost:9323`.
+## Project Documentation
 
-The next E2E milestone is a read-only FlaskCart recipe journey: `/recipes` -> View recipe -> slug URL -> ingredients -> instructions. Mutating E2E tests must wait until local/test API isolation is fixed.
+The project documentation records the current implementation and backlog:
+
+- `PROJECT.md` — scope and success criteria.
+- `TASKS.md` — completed and outstanding work.
+- `NEXT_STEPS.md` — immediate sequence.
+- `ARCHITECTURE.md` — application structure and data flow.
+- `API.md` — current API contracts.
+- `DATABASE.md` — data model and integrity notes.
+- `TESTING.md` — regression strategy and verified commands.
+- `DEPLOYMENT.md` — production release process.
+- `KNOWN_ISSUES.md` — confirmed open problems.
+- `DECISIONS.md` — architectural and workflow decisions.
 
 ## Project Status
 
-For the ordered implementation backlog, see `TASKS.md` and `NEXT_STEPS.md`.
-
-## Learning Points
-
-- Building a Flask JSON API.
-- Connecting React and Flask.
-- State management and routing in React.
-- Responsive and accessible UI work.
-- Browser E2E testing with Playwright.
-- Full-stack deployment and debugging.
-
-## Acknowledgements
-
-Thanks to the Flask, React and Playwright communities for their documentation and tooling.
+FlaskCart remains an active learning/portfolio project. Contact and core recipe flows are substantially improved; inventory, shopping-list, global routing, admin verification, test coverage and production SQLite safety remain the main unfinished areas.

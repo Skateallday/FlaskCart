@@ -8,7 +8,7 @@ FlaskCart uses SQLite through `server/app.db` and Python's standard `sqlite3` mo
 
 ### `users`
 
-Used by admin login and registration.
+Used by admin login and registration/authentication.
 
 Observed fields include:
 
@@ -89,14 +89,30 @@ Observed fields:
 - `Unit`
 - `IsPurchased`
 
+### `ContactEnquiries`
+
+Contact enquiries are now persisted before email notification is attempted.
+
+Current server code uses fields including:
+
+- `enquiry_id`
+- `name`
+- `email`
+- `message`
+- `email_status`
+- `email_attempted_at`
+- `email_sent_at`
+
+These rows contain personal data and therefore need an explicit retention/deletion policy.
+
 ## Integrity Concerns to Verify
 
 - Recipe and food code mixes explicit IDs and SQLite `ROWID`.
-- The shopping-list join uses `FoodItems.ID`, while recipe ingredients join using `FoodItems.ROWID`.
-- Recipe editing SQL refers to older-looking columns such as `recipeName`, `method` and `prepTime`, while recipe creation uses the current field names above.
-- Recipe deletion behaviour and related-record cleanup are not implemented in the reviewed route/handler code.
+- Shopping-list and recipe-ingredient code has historically used different `ID`/`ROWID` assumptions.
+- Recipe editing SQL/form names previously appeared inconsistent with recipe creation fields.
+- Recipe deletion behaviour and related-record cleanup still need verification.
 
-These should be confirmed against the actual schema before migrations or deletion work.
+Confirm the actual schema before migrations or deletion work.
 
 ## Required Constraints
 
@@ -125,22 +141,32 @@ Use a transaction for:
 
 On any failure, roll back the whole operation.
 
-## `ContactEnquiries`
+## Production Deployment Risk — Open
 
-Contact enquiries are now persisted before email notification is attempted. Current server code uses fields including:
+`server/app.db` is currently tracked by Git.
 
-- `enquiry_id`
-- `name`
-- `email`
-- `message`
-- `email_status`
-- `email_attempted_at`
-- `email_sent_at`
+PythonAnywhere deployment uses:
 
-The exact table definition should remain documented alongside future schema/migration work. Define and document retention/deletion because these rows contain personal data. Do not place real enquiry data in seed files or test fixtures committed to Git.
+```bash
+git fetch origin production
+git reset --hard origin/production
+```
+
+That means a normal code deployment can replace the live database file with the copy stored in Git.
+
+A manual timestamped backup was created during the 2026-09-24 deployment recovery, but this is not a durable production strategy.
+
+Before production data is treated as persistent, choose and document one approach, for example:
+
+- stop tracking the live database and maintain schema/seed/migration scripts separately; or
+- explicitly preserve the live database around code deployments with a tested migration/rollback process.
+
+Do not implement an automatic blind restore if a schema migration may legitimately change the database.
 
 ## Backups and Migrations
 
 - Back up `app.db` before destructive work.
+- Verify backup bytes and location before a risky deploy/migration.
 - Prefer reproducible schema and seed scripts over a manually edited database file.
 - Document every schema change in `CHANGELOG.md` and this file.
+- Never commit real contact enquiries or other private production data.

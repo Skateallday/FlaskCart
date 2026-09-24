@@ -2,7 +2,38 @@
 
 ## Current Focus
 
-Continue Priority 1 functional work, but first make the browser-test environment safe enough to add regression coverage without touching production data.
+Continue Priority 1 functional work while keeping the now-working deployment path stable. The deployment success path is automated again; remaining operational work is to protect the live SQLite database and remove avoidable production-branch churn.
+
+## Operational Reliability
+
+### Deployment workflow
+
+- [x] Keep the owner workflow as `master` -> `production` -> GitHub Actions -> PythonAnywhere.
+- [x] Build the React frontend automatically on pushes to `production`.
+- [x] Use Node 24 in the deployment workflow.
+- [x] Use `npm ci` for reproducible frontend dependency installation in deployment.
+- [x] Prevent overlapping production deploys with a GitHub Actions concurrency group.
+- [x] Fail the PythonAnywhere SSH step immediately when a command fails (`set -e`).
+- [x] Refuse deployment when `.git/index.lock` exists instead of silently continuing.
+- [x] Verify the PythonAnywhere checked-out SHA matches `origin/production` before reload.
+- [x] Reload the PythonAnywhere web app automatically after a successful deploy.
+- [x] Ignore local `venv/` and `server/app.db.backup*` files.
+- [x] Smoke-test a normal hardened deployment on 2026-09-24 and confirm the updated site is live.
+- [ ] Deliberately test the failure path with a temporary `.git/index.lock` and confirm the Action turns red and does not reload.
+- [ ] Stop the Action from committing generated React static files back to `production`, or otherwise remove the resulting local/remote branch churn.
+- [ ] Decide and implement a safe production SQLite persistence strategy before relying on `git reset --hard` long term.
+- [ ] Confirm local `production` tracks the intended remote so `origin`/`upstream` status messages are not misleading.
+
+### Playwright / E2E environment
+
+- [x] Install `@playwright/test` 1.62.1.
+- [x] Generate a Playwright config with Chromium, Firefox, WebKit and HTML reporting.
+- [x] Verify the generated two-test demo suite in Docker: six passing executions across three browsers.
+- [x] Verify HTML report serving through Docker port `9323`.
+- [x] Fix frontend API configuration so localhost uses local Flask on `http://localhost:5000` and production uses same-origin requests.
+- [ ] Confirm mutating Playwright tests use a disposable/local test database rather than the live SQLite database.
+- [ ] Enable a FlaskCart `baseURL` / controlled test-server workflow.
+- [ ] Replace generated `playwright.dev` specs with FlaskCart-specific E2E tests.
 
 ## Priority 1: Fix Broken or Misleading Functionality
 
@@ -37,16 +68,6 @@ Continue Priority 1 functional work, but first make the browser-test environment
 - [x] Set a recipe-specific document title.
 - [ ] Add FlaskCart Playwright regression coverage for the recipe journey.
 
-### Playwright / E2E environment
-
-- [x] Install `@playwright/test` 1.62.1.
-- [x] Generate a Playwright config with Chromium, Firefox, WebKit and HTML reporting.
-- [x] Verify the generated two-test demo suite in Docker: six passing executions across three browsers.
-- [x] Verify HTML report serving through Docker port `9323`.
-- [ ] Fix local API configuration so localhost tests do not target the live PythonAnywhere backend.
-- [ ] Enable a FlaskCart `baseURL` / controlled test-server workflow after local API isolation is decided.
-- [ ] Replace generated `playwright.dev` specs with FlaskCart-specific E2E tests.
-
 ### Shopping-list sidebar
 
 - [ ] Decide whether the shopping list should be filterable by pantry category.
@@ -65,7 +86,7 @@ Continue Priority 1 functional work, but first make the browser-test environment
 
 ### Inventory authentication
 
-- [ ] Define how React knows whether an admin session exists.
+- [ ] Define how React knows whether an admin session exists for pantry controls.
 - [ ] Hide protected add/remove controls from guests or provide a clear admin sign-in mode.
 - [ ] Handle `401 Unauthorized` consistently.
 - [ ] Ensure protected controls retain visible/accessibly named actions on mobile.

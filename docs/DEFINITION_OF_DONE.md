@@ -18,7 +18,8 @@ A task is complete only when all applicable items are satisfied.
 - [ ] Negative stock and invalid quantities are rejected.
 - [ ] Protected routes require an authenticated session.
 - [ ] No secrets or personal data are committed or logged.
-- [ ] Contact success is returned only after the chosen delivery/persistence action succeeds.
+- [ ] Contact outcomes accurately represent persistence/delivery state.
+- [ ] Database-impacting changes have an explicit backup/migration plan.
 
 ## Code Quality
 
@@ -31,14 +32,25 @@ A task is complete only when all applicable items are satisfied.
 ## Testing
 
 - [ ] A regression test covers the repaired bug where practical.
-- [ ] Relevant backend tests pass.
+- [ ] Relevant backend tests pass when a backend runner exists.
 - [ ] Relevant frontend unit/component tests pass.
-- [ ] Relevant FlaskCart Playwright E2E tests pass when that workflow has E2E coverage.
+- [ ] Relevant FlaskCart Playwright E2E tests pass when that workflow has coverage.
 - [ ] Generated/demo Playwright tests are not cited as proof of FlaskCart behaviour.
 - [ ] No mutating browser test targets production data.
 - [ ] `npm run build` passes for frontend changes.
 - [ ] The changed workflow is manually smoke-tested.
 - [ ] Authentication success and failure paths are checked when relevant.
+
+## Deployment Changes
+
+For changes to deployment/CI:
+
+- [ ] The normal production path is smoke-tested.
+- [ ] The deployed SHA is visible and matches `origin/production`.
+- [ ] Reload success is confirmed.
+- [ ] Failure paths fail visibly rather than continuing silently.
+- [ ] The live database cannot be accidentally overwritten by the change, or the remaining risk is explicitly documented.
+- [ ] Normal releases still do not require manual PythonAnywhere intervention unless recovery is being tested.
 
 ## Responsive and Accessible UI
 
@@ -51,15 +63,16 @@ A task is complete only when all applicable items are satisfied.
 ## Documentation
 
 - [ ] `API.md` is updated for API changes.
-- [ ] `DATABASE.md` is updated for schema changes.
+- [ ] `DATABASE.md` is updated for schema/data changes.
 - [ ] `SECURITY.md` is updated for auth or personal-data changes.
-- [ ] `CHANGELOG.md` records notable user-visible changes.
+- [ ] `DEPLOYMENT.md` is updated for release/CI changes.
+- [ ] `CHANGELOG.md` records notable changes.
 - [ ] `TASKS.md` is updated.
 - [ ] Significant choices are recorded in `DECISIONS.md`.
 
 ## Review Readiness
 
 - [ ] The commit or pull request explains what changed and why.
-- [ ] Screenshots are included for visible changes.
+- [ ] Screenshots are included for visible changes where useful.
 - [ ] Test commands and results are recorded honestly.
 - [ ] Known limitations are documented.
