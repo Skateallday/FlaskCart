@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/authContext";
 
 import cartAvo from "../assets/images/cart-avo.png";
 
@@ -17,6 +18,10 @@ function Header() {
   const closeMenu = () => {
     setOpen(false);
   };
+
+    const { isAuthenticated } = useAuth();
+  
+
 
   return (
     <header className="relative z-50 w-full bg-teal-700 shadow-md">
@@ -69,6 +74,20 @@ function Header() {
               {link.label}
             </NavLink>
           ))}
+
+          {!isAuthenticated ? (
+
+          
+              <Link className="rounded-full px-4 py-2 text-sm font-semibold bg-blue-300 text-teal-800 shadow-sm"to="/login">Login</Link>
+          
+          ):(
+
+         
+            
+              <Link className="rounded-full px-4 py-2 text-sm font-semibold bg-blue-300 text-teal-800 shadow-sm" to="/logout">Logout</Link>
+          
+          )}
+          
         </nav>
 
         {/* Mobile hamburger */}
