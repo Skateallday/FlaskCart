@@ -54,6 +54,9 @@ def handle_new_food(form):
 
 
 def handle_edit_food(form):
+
+    food_id = request.args.get('food_id')
+    print(food_id)
     conn = get_db_connection()
 
     try:
@@ -72,7 +75,7 @@ def handle_edit_food(form):
                 int(bool(form.isVegan.data)),
                 int(bool(form.isGlutenFree.data)),
                 form.stock.data,
-                form.food_id.data,
+                food_id,
             )
         )
 
@@ -89,8 +92,7 @@ def handle_edit_food(form):
     finally:
         conn.close()
 
-    return redirect(url_for('adminhome', section='edit_food'))
-
+    return redirect(url_for('admin.adminhome', section='edit_food', food_id=food_id))
 
 def handle_new_recipe(form):
     conn = get_db_connection()

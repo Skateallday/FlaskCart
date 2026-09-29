@@ -1,6 +1,21 @@
-<h3 class="text-xl font-bold mb-4">Add new recipe</h3>
+<h3 class="text-xl font-bold mb-4">Edit recipe</h3>
 
-<form method="POST" action="{{ url_for('adminhome', section='new_recipe') }}" class="space-y-6">
+<form method="GET">
+  <input type="hidden" name="section" value="edit_recipe">
+  <select name="recipe_id" onchange="this.form.submit()" class="w-full border rounded p-2 my-2">
+    <option value="">Select a recipe...</option>
+    {% for recipe in recipes_list%}
+    <option value="{{recipe['id']}}"
+    {% if selected_recipe and recipe['id'] == selected_recipe['id'] %} selected{% endif %} >
+    {{recipe['recipe_name']}}  
+    {% endfor %}
+  </option>
+  </select>
+</form>
+
+{% if selected_recipe %}
+
+<form method="POST" action="{{ url_for('admin.adminhome', section='edit_recipe', recipe_id=selected_recipe['id']) }}"class="space-y-6">
   {{ form.hidden_tag() }}
 
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -18,11 +33,14 @@
     {% endif %}
   {% endwith %}
 
+  
+
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
     <div>
       {{ form.recipe_name.label(class="block mb-1 font-semibold") }}
       {{ form.recipe_name(class="w-full border rounded p-2") }}
-      {% for error in form.recipe_name.errors %}
+      {% for error in form.servings.errors %}
         <p class="text-red-600 text-sm mt-1">{{ error }}</p>
       {% endfor %}
     </div>
@@ -209,6 +227,8 @@
     {{ form.submit(class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded") }}
   </div>
 </form>
+
+{%endif%}
 
 <button id="deleteRecipeButton" type="button" class="bg-red-500 text-black px-4 py-2 rounded">
             DELETE RECIPE

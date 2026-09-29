@@ -46,20 +46,24 @@ class NewRecipeForm(FlaskForm):
 
 
 class EditFoodForm(FlaskForm):
-    foodName = StringField('foodName', validators=[DataRequired(), Length(min=2, max=30)])
-    foodType = StringField('foodType', validators=[DataRequired(), Length(min=2, max=30)])
-    calories = IntegerField('calories', validators=[DataRequired(), NumberRange(min=0)])
-    servingSize = IntegerField('servingSize', validators=[DataRequired(), NumberRange(min=0)])
+    foodName = StringField('foodName', validators=[ Length(min=2, max=30)])
+    foodType = StringField('foodType', validators=[ Length(min=2, max=30)])
+    calories = IntegerField('calories', validators=[ NumberRange(min=0)])
+    servingSize = IntegerField('servingSize', validators=[ NumberRange(min=0)])
     isVegan=BooleanField('isVegan')
     isGlutenFree=BooleanField('isGlutenFree')
-    stock = IntegerField('stock', validators=[DataRequired(), NumberRange(min=0)])     
+    stock = IntegerField('stock', validators=[ NumberRange(min=0)])     
 
 
 class EditRecipeForm(FlaskForm):
-    foodName = StringField('foodName', validators=[DataRequired(), Length(min=2, max=30)])
-    foodType = StringField('foodType', validators=[DataRequired(), Length(min=2, max=30)])
-    calories = IntegerField('calories', validators=[DataRequired(), NumberRange(min=0)])
-    servingSize = IntegerField('servingSize', validators=[DataRequired(), NumberRange(min=0)])
-    isVegan=BooleanField('isVegan')
-    isGlutenFree=BooleanField('isGlutenFree')
-    stock = IntegerField('stock', validators=[DataRequired(), NumberRange(min=0)])                                
+    recipe_name = StringField('Recipe name', validators=[Length(min=2, max=100)])
+    servings = IntegerField('Servings', validators=[ NumberRange(min=1)])
+    image_url = StringField('Image URL', validators=[Optional(), URL()])
+    image_alt = StringField('Image alt text', validators=[Optional(), Length(max=255)])
+    short_description = TextAreaField('Short description', validators=[Optional(), Length(max=500)])
+    prep_time_minutes = IntegerField('Prep time (minutes)', validators=[ NumberRange(min=0)])
+    cook_time_minutes = IntegerField('Cook time (minutes)', validators=[ NumberRange(min=0)])
+    total_time_minutes = IntegerField('Total time (minutes)', validators=[ NumberRange(min=0)])
+    recipeType = StringField('Recipe type', validators=[Length(min=2, max=50)])
+    calories = IntegerField('Calories', validators=[Optional(), NumberRange(min=0)])
+    submit = SubmitField('Save recipe')                              

@@ -1,47 +1,70 @@
- <h3 class="text-xl font-bold mb-4">Edit food item</h3>
-        <form method="POST">
-          {{ form.hidden_tag() }}
+    <h3 class="text-xl font-bold mb-4">Edit food item</h3>
 
-          <div class="mb-4">
-            {{ form.foodName.label }}
-            {{ form.foodName(class="w-full border rounded p-2") }}
-          </div>
+    <form method="GET">
 
-          <div class="mb-4">
-            {{ form.foodType.label }}
-            {{ form.foodType(class="w-full border rounded p-2") }}
-          </div>
+      <input type="hidden" name="section" value="edit_food">
+            <select name="food_id" onchange="this.form.submit()" class="w-full border rounded p-2 my-2">
+        <option value="">Select a food item...</option>
+        {% for food in pantry_list %}
+        <option value="{{food['id']}}"
+            {% if selected_food and food['id'] == selected_food['id'] %}selected{% endif %}
+>
+          {{food['foodName']}}</option>
 
-          <div class="mb-4">
-            {{ form.calories.label }}
-            {{ form.calories(class="w-full border rounded p-2") }}
-          </div>
+        {% endfor%}
+      </select>
+    </form>
 
-          <div class="mb-4">
-            {{ form.servingSize.label }}
-            {{ form.servingSize(class="w-full border rounded p-2") }}
-          </div>
 
-          <div class="mb-4">
-            {{ form.isVegan() }} {{ form.isVegan.label }}
-          </div>
+    {% if selected_food %}
+    <form method="POST">
+      {{ form.hidden_tag() }}
 
-          <div class="mb-4">
-            {{ form.isGlutenFree() }} {{ form.isGlutenFree.label }}
-          </div>
 
-          <div class="mb-4">
-            {{ form.stock.label }}
-            {{ form.stock(class="w-full border rounded p-2") }}
-          </div>
+      <div class="mb-4">
+        {{ form.foodName.label }}
+        {{ form.foodName(class="w-full border rounded p-2") }}
 
-          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
-            Save food item
-          </button>
-        </form>
+      </div>
 
-        <h2>Or...</h2>
-        
-        <button id="deleteFoodButton" class="bg-red-500 text-black px-4 py-2 rounded">
-            DELETE FOOD ITEM
-        </button>
+      <div class="mb-4">
+        {{ form.foodType.label }}
+        {{ form.foodType(class="w-full border rounded p-2") }}
+      </div>
+
+      <div class="mb-4">
+        {{ form.calories.label }}
+        {{ form.calories(class="w-full border rounded p-2") }}
+      </div>
+
+      <div class="mb-4">
+        {{ form.servingSize.label }}
+        {{ form.servingSize(class="w-full border rounded p-2") }}
+      </div>
+
+      <div class="mb-4">
+        {{ form.isVegan() }} {{ form.isVegan.label }}
+      </div>
+
+      <div class="mb-4">
+        {{ form.isGlutenFree() }} {{ form.isGlutenFree.label }}
+      </div>
+
+      <div class="mb-4">
+        {{ form.stock.label }}
+        {{ form.stock(class="w-full border rounded p-2") }}
+      </div>
+
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">
+        Save food item
+      </button>
+      
+    </form>
+
+    {% endif %}
+
+    <h2>Or...</h2>
+
+    <button id="deleteFoodButton" class="bg-red-500 text-white bold px-4 py-2 rounded cursor-pointer">
+      DELETE FOOD ITEM
+    </button>

@@ -80,6 +80,11 @@ def adminlogin():
 @login_required
 def adminhome():
     section = request.args.get('section', 'none')
+    selected_food_id = request.args.get('food_id')
+    selected_food = None
+    
+    selected_recipe_id = request.args.get('recipe_id')
+    selected_recipe = None
 
     form_map = {
         'new_food': NewFoodsForm,
@@ -96,19 +101,46 @@ def adminhome():
     }
 
     conn = get_db_connection()
-    food_items = conn.execute("SELECT ROWID as id, * FROM FoodItems").fetchall()
+    food_items = conn.execute("SELECT ROWID as id, * FROM FoodItems").fetchall()    
+    recipes = conn.execute("SELECT ROWID as id, * FROM Recipes").fetchall()
     tags = conn.execute("SELECT * FROM Tags").fetchall()
     conn.close()
 
+    
+    pantry_list = [dict(row) for row in food_items]
+    if selected_food_id:
+        for food in pantry_list:
+            if str(food['id']) == selected_food_id:
+                selected_food = food
+                break
+
+    recipes_list = [dict(row) for row in recipes]
+    if selected_recipe_id:
+        for recipe in recipes_list:
+            if str(recipe['id']) == selected_recipe_id:
+                selected_recipe = recipe
+                break
+
+
     form_class = form_map.get(section)
-    form = form_class() if form_class else None
+
+    if section =='edit_food' and selected_food and request.method == 'GET':
+        form = form_class(data=selected_food)
+
+    elif section =="edit_recipe" and selected_recipe and request.method == 'GET':
+        form = form_class(data=selected_recipe)
+
+    else: 
+        form = form_class() if form_class else None
+
+
 
     if form and section in handler_map and form.validate_on_submit():
         response = handler_map[section](form)
         if response:
             return response
 
-    return render_template('admin.html', active_section=section, form=form, food_items=food_items, tags=tags)
+    return render_template('admin.html', active_section=section, form=form, food_items=food_items, selected_recipe=selected_recipe, selected_food=selected_food, pantry_list=pantry_list, recipes_list=recipes_list, tags=tags)
 
 @admin_bp.route("/logout")
 def logout():        
